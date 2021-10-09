@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import { AiOutlineMenu } from "react-icons/ai";
+import Login from "../features/auth/login";
 
 function Header() {
   return (
@@ -17,6 +18,7 @@ function Header() {
         <div className="middle">HeaderStyled</div>
 
         <div className="right">
+          <Login />
           <button type="button">회원가입</button>
           <button type="button">로그인</button>
           <button type="button">로그아웃</button>
@@ -69,10 +71,6 @@ const HeaderWrapper = styled.div`
     display: flex;
     flex: 0 0 auto;
   }
-  /* .align-items-center {
-    display: flex;
-    align-items: center;
-  } */
 `;
 
 export default Header;
