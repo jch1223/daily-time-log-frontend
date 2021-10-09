@@ -5,8 +5,9 @@ import { BrowserRouter as Router } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
 
 import App from "./app/App";
-import store from "./app/configureStore";
+import store from "./app/store";
 
+import "./config/initFirebase";
 import "./index.css";
 
 ReactDOM.render(
