@@ -22,5 +22,6 @@ module.exports = {
     "jsx-a11y/no-noninteractive-element-interactions": 0,
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "no-param-reassign": ["error", { props: true, ignorePropertyModificationsFor: ["state"] }],
+    "no-plusplus": ["error", { allowForLoopAfterthoughts: true }],
   },
 };
