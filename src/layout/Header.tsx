@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import { AiOutlineMenu } from "react-icons/ai";
-import Login from "../features/auth/login";
+import Login from "../features/auth/Login";
 
 function Header() {
   return (

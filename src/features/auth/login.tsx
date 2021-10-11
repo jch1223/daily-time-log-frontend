@@ -3,7 +3,7 @@ import { useHistory } from "react-router";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import firebase from "firebase";
 
-import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import { useAppSelector, useAppDispatch } from "../../app/store";
 // import { uiConfig } from "../../config/initFirebase";
 import { logIn } from "./authSlice";
 
