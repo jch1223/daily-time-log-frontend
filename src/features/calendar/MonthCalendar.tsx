@@ -10,8 +10,8 @@ import MonthCalendarDate from "./MonthCalendarDate";
 export const WEEKS = ["일", "월", "화", "수", "목", "금", "토"];
 
 function MonthCalendar() {
-  const displayed = useAppSelector((state) => state.calendar.displayed, shallowEqual);
   const allDatesId = useAppSelector((state) => state.calendar.allDatesId, shallowEqual);
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -24,7 +24,7 @@ function MonthCalendar() {
     };
 
     dispatch(init(dateInfo));
-  }, [displayed]);
+  }, []);
 
   return (
     <div>

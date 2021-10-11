@@ -13,25 +13,3 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-
-export const uiConfig: firebaseui.auth.Config = {
-  signInFlow: "popup",
-  signInSuccessUrl: "/signedIn",
-  signInOptions: [
-    {
-      provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-      scopes: ["profile", "email", "https://www.googleapis.com/auth/calendar"],
-      requireDisplayName: true,
-      customParameters: {
-        prompt: "select_account",
-        auth_type: "reauthenticate",
-      },
-    },
-  ],
-  callbacks: {
-    signInSuccessWithAuthResult: (authResult) => {
-      console.log(authResult.credential.accessToken);
-      return false;
-    },
-  },
-};

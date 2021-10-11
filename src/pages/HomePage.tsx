@@ -13,7 +13,9 @@ function HomePage() {
           <MonthCalendar />
         </div>
       </Side>
-      <ContentWrap>home page</ContentWrap>
+      <ContentWrap>
+        <MonthCalendar />
+      </ContentWrap>
     </Layout>
   );
 }
