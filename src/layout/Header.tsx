@@ -19,9 +19,6 @@ function Header() {
 
         <div className="right">
           <Login />
-          <button type="button">회원가입</button>
-          <button type="button">로그인</button>
-          <button type="button">로그아웃</button>
         </div>
       </HeaderWrapper>
     </HeaderStyled>
@@ -29,13 +26,16 @@ function Header() {
 }
 
 const HeaderStyled = styled.header`
-  min-height: 40px;
+  display: flex;
+  align-items: center;
+  min-height: 92px;
 `;
 
 const HeaderWrapper = styled.div`
   display: flex;
   padding: 10px;
   align-items: center;
+  width: 100%;
 
   .left {
     display: flex;

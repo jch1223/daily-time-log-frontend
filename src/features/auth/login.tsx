@@ -1,33 +1,53 @@
-import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router";
+import React, { useEffect } from "react";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import firebase from "firebase";
+import { useQuery } from "react-query";
 
 import { useAppSelector, useAppDispatch } from "../../app/store";
-// import { uiConfig } from "../../config/initFirebase";
-import { logIn } from "./authSlice";
+import { logIn, logOut, setGoogleAccessToken } from "./authSlice";
+import { addGoogleSchedules } from "../schedules/schedulesSlice";
+import { getSchedules } from "../../utils/api/schedules";
 
 export default function Login() {
-  const [isSignedIn, setIsSignedIn] = useState(false); // Local signed-in state.
+  const isLogIn = useAppSelector((state) => state.auth.isLogIn);
+  const googleAccessToken = useAppSelector((state) => state.auth.googleAccessToken);
+
+  const dispatch = useAppDispatch();
+  const { data, isError, isSuccess } = useQuery<any, Error>(
+    ["schedules", googleAccessToken],
+    () => getSchedules(googleAccessToken),
+    {
+      enabled: !!googleAccessToken,
+      retry: false,
+      refetchOnWindowFocus: false,
+      staleTime: 60 * 1000,
+    },
+  );
 
   useEffect(() => {
     const unregisterAuthObserver = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        user.getIdToken().then(function (accessToken) {
-          console.log(accessToken);
+        return user.getIdToken().then((accessToken) => {
+          dispatch(
+            logIn({
+              isLogIn: !!user,
+              name: user.displayName,
+              email: user.email,
+              googleAccessToken: localStorage.getItem("googleAccessToken") || "",
+              firebaseAccessToken: accessToken,
+            }),
+          );
         });
       }
-      setIsSignedIn(!!user);
+
+      return dispatch(logOut());
     });
 
-    console.log("useEffect", firebase.auth);
-    return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
+    return () => unregisterAuthObserver();
   }, []);
 
-  // custom hooks으로 만들면 될듯?
   const uiConfig: firebaseui.auth.Config = {
     signInFlow: "popup",
-    signInSuccessUrl: "/signedIn",
     signInOptions: [
       {
         provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
@@ -36,52 +56,38 @@ export default function Login() {
         customParameters: {
           prompt: "select_account",
           auth_type: "reauthenticate",
+          access_type: "offline",
         },
       },
     ],
     callbacks: {
       signInSuccessWithAuthResult: (authResult) => {
-        dispatch(logIn({ isLogIn: false, user: authResult.credential.accessToken }));
-        console.log(authResult.credential.accessToken);
+        const googleAccessToken = authResult.credential.accessToken;
+
+        localStorage.setItem("googleAccessToken", googleAccessToken);
+        dispatch(setGoogleAccessToken(googleAccessToken));
+
         return false;
       },
     },
   };
 
-  const history = useHistory();
+  if (isError) {
+    firebase.auth().signOut();
+  }
 
-  const { isLogIn, user } = useAppSelector((state) => state.auth);
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(logIn({ isLogIn: false, user: "user" }));
-  }, []);
+  if (isSuccess) {
+    dispatch(addGoogleSchedules(data.items));
+  }
 
   return (
     <div>
-      <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
-      <button
-        type="button"
-        onClick={() => {
-          fetch("https://www.googleapis.com/calendar/v3/calendars/primary", {
-            headers: {
-              Authorization:
-                "Bearer ya29.a0ARrdaM-GpCYFioY5ZBmtH-BsouEsGFPIrVjJK37abwwray2UaUgyXmWJi6mg4QGCBg20FkCbeGW3BgHH7mVQqvs1VJ6B9_4Gt9k4mNov8B-RESj-K5tU6DpLRfBeTCsFhNKtysgixkmU5aGPHCymhFSERgrxKA",
-            },
-          })
-            .then((res) => {
-              return res.json();
-            })
-            .then((res) => {
-              console.log(res);
-            });
-        }}
-      >
-        calendar
-      </button>
-      <button type="button" onClick={() => firebase.auth().signOut()}>
-        Sign-out
-      </button>
+      {!isLogIn && <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />}
+      {isLogIn && (
+        <button type="button" onClick={() => firebase.auth().signOut()}>
+          Sign-out
+        </button>
+      )}
     </div>
   );
 }

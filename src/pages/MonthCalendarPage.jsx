@@ -5,11 +5,13 @@ import Layout from "../layout";
 import Side from "../layout/Side";
 import MonthCalendar from "../features/calendar/MonthCalendar";
 
-function HomePage() {
+function MonthCalendarPage() {
   return (
     <Layout>
       <Side>
-        <div>{/* <MonthCalendar /> */}</div>
+        <div>
+          <MonthCalendar />
+        </div>
       </Side>
       <ContentWrap>
         <MonthCalendar />
@@ -18,8 +20,6 @@ function HomePage() {
   );
 }
 
-const ContentWrap = styled.div`
-  width: 100%;
-`;
+const ContentWrap = styled.div``;
 
-export default HomePage;
+export default MonthCalendarPage;

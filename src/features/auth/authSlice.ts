@@ -1,13 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface LoginState {
-  isLogIn: null | boolean;
-  user: null | string;
+  isLogIn: boolean;
+  name: string | null;
+  email: string | null;
+  googleAccessToken: string;
+  firebaseAccessToken: string;
 }
 
 const initialState: LoginState = {
-  isLogIn: null,
-  user: null,
+  isLogIn: false,
+  name: "",
+  email: "",
+  googleAccessToken: "",
+  firebaseAccessToken: "",
 };
 
 const authSlice = createSlice({
@@ -15,14 +21,27 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     logIn: (state, action: PayloadAction<LoginState>) => {
-      const { isLogIn, user } = action.payload;
+      const { isLogIn, name, email, googleAccessToken, firebaseAccessToken } = action.payload;
 
       state.isLogIn = isLogIn;
-      state.user = user;
+      state.name = name;
+      state.email = email;
+      state.googleAccessToken = googleAccessToken;
+      state.firebaseAccessToken = firebaseAccessToken;
+    },
+    logOut: (state) => {
+      state.isLogIn = false;
+      state.name = "";
+      state.email = "";
+      state.googleAccessToken = "";
+      state.firebaseAccessToken = "";
+    },
+    setGoogleAccessToken: (state, action: PayloadAction<string>) => {
+      state.googleAccessToken = action.payload;
     },
   },
 });
 
-export const { logIn } = authSlice.actions;
+export const { logIn, logOut, setGoogleAccessToken } = authSlice.actions;
 
 export default authSlice.reducer;

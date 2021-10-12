@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../app/store";
 import { createCalendarData } from "../../utils/createCalendar";
+import { ScheduleInfo } from "../schedules/schedulesSlice";
 
 export interface CalendarState {
   displayed: DateInfo;
@@ -23,7 +24,7 @@ interface DateDetailInfo extends DateInfo {
   isToday: boolean;
   isSunday: boolean;
   isSaturday: boolean;
-  events: [];
+  events: ScheduleInfo[];
 }
 
 export interface ByDateId {
@@ -40,6 +41,11 @@ const initialState: CalendarState = {
   },
 };
 
+interface EventPayLoad {
+  dateId: string;
+  event: ScheduleInfo;
+}
+
 const calendarSlice = createSlice({
   name: "calendar",
   initialState,
@@ -51,10 +57,17 @@ const calendarSlice = createSlice({
       state.allDatesId = calendarAllDatesId;
       state.byDateId = calendarByDateId;
     },
+    addEvent: (state, action: PayloadAction<EventPayLoad>) => {
+      const { dateId, event } = action.payload;
+
+      if (state.byDateId[dateId]) {
+        state.byDateId[dateId].events = [...state.byDateId[dateId].events, event];
+      }
+    },
   },
 });
 
-export const { init } = calendarSlice.actions;
+export const { init, addEvent } = calendarSlice.actions;
 
 export const selectCalendar = (state: RootState) => state.calendar;
 
