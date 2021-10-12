@@ -4,7 +4,7 @@ import firebase from "firebase";
 import { useQuery } from "react-query";
 
 import { useAppSelector, useAppDispatch } from "../../app/store";
-import { logIn, setGoogleAccessToken } from "./authSlice";
+import { logIn, logOut, setGoogleAccessToken } from "./authSlice";
 import { getSchedules } from "../../utils/api/schedules";
 
 export default function Login() {
@@ -12,16 +12,24 @@ export default function Login() {
   const googleAccessToken = useAppSelector((state) => state.auth.googleAccessToken);
 
   const dispatch = useAppDispatch();
-  const result = useQuery<any[], Error>("schedules", () => getSchedules(googleAccessToken), {
-    enabled: !!googleAccessToken,
-  });
+  const { data, isLoading, isError, isSuccess } = useQuery<any, Error>(
+    ["schedules", googleAccessToken],
+    () => getSchedules(googleAccessToken),
+    {
+      enabled: !!googleAccessToken,
+      retry: false,
+    },
+  );
+  console.log(data);
 
-  console.log(result);
+  if (isError) {
+    firebase.auth().signOut();
+  }
 
   useEffect(() => {
     const unregisterAuthObserver = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        user.getIdToken().then((accessToken) => {
+        return user.getIdToken().then((accessToken) => {
           dispatch(
             logIn({
               isLogIn: !!user,
@@ -33,6 +41,8 @@ export default function Login() {
           );
         });
       }
+
+      return dispatch(logOut());
     });
 
     return () => unregisterAuthObserver();
@@ -40,7 +50,6 @@ export default function Login() {
 
   const uiConfig: firebaseui.auth.Config = {
     signInFlow: "popup",
-    signInSuccessUrl: "/signedIn",
     signInOptions: [
       {
         provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
@@ -69,10 +78,12 @@ export default function Login() {
 
   return (
     <div>
-      <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
-      <button type="button" onClick={() => firebase.auth().signOut()}>
-        Sign-out
-      </button>
+      {!isLogIn && <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />}
+      {isLogIn && (
+        <button type="button" onClick={() => firebase.auth().signOut()}>
+          Sign-out
+        </button>
+      )}
     </div>
   );
 }

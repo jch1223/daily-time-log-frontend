@@ -29,12 +29,19 @@ const authSlice = createSlice({
       state.googleAccessToken = googleAccessToken;
       state.firebaseAccessToken = firebaseAccessToken;
     },
+    logOut: (state) => {
+      state.isLogIn = false;
+      state.name = "";
+      state.email = "";
+      state.googleAccessToken = "";
+      state.firebaseAccessToken = "";
+    },
     setGoogleAccessToken: (state, action: PayloadAction<string>) => {
       state.googleAccessToken = action.payload;
     },
   },
 });
 
-export const { logIn, setGoogleAccessToken } = authSlice.actions;
+export const { logIn, logOut, setGoogleAccessToken } = authSlice.actions;
 
 export default authSlice.reducer;
