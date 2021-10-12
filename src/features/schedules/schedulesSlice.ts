@@ -7,7 +7,7 @@ interface ScheduleInfo {
   summary: string;
   description: string;
   creator: {
-    email: "ico1828@gmail.com";
+    email: string;
     self: true;
   };
   start: {
@@ -31,7 +31,7 @@ const initialState: SchedulesState = {
 };
 
 const schedulesSlice = createSlice({
-  name: "calendar",
+  name: "schedules",
   initialState,
   reducers: {
     addGoogleSchedules: (state, action: PayloadAction<ScheduleInfo[]>) => {

@@ -5,6 +5,7 @@ import { useQuery } from "react-query";
 
 import { useAppSelector, useAppDispatch } from "../../app/store";
 import { logIn, logOut, setGoogleAccessToken } from "./authSlice";
+import { addGoogleSchedules } from "../schedules/schedulesSlice";
 import { getSchedules } from "../../utils/api/schedules";
 
 export default function Login() {
@@ -12,19 +13,16 @@ export default function Login() {
   const googleAccessToken = useAppSelector((state) => state.auth.googleAccessToken);
 
   const dispatch = useAppDispatch();
-  const { data, isLoading, isError, isSuccess } = useQuery<any, Error>(
+  const { data, isError, isSuccess } = useQuery<any, Error>(
     ["schedules", googleAccessToken],
     () => getSchedules(googleAccessToken),
     {
       enabled: !!googleAccessToken,
       retry: false,
+      refetchOnWindowFocus: false,
+      staleTime: 60 * 1000,
     },
   );
-  console.log(data);
-
-  if (isError) {
-    firebase.auth().signOut();
-  }
 
   useEffect(() => {
     const unregisterAuthObserver = firebase.auth().onAuthStateChanged((user) => {
@@ -64,8 +62,6 @@ export default function Login() {
     ],
     callbacks: {
       signInSuccessWithAuthResult: (authResult) => {
-        console.log("✅", authResult);
-
         const googleAccessToken = authResult.credential.accessToken;
 
         localStorage.setItem("googleAccessToken", googleAccessToken);
@@ -75,6 +71,14 @@ export default function Login() {
       },
     },
   };
+
+  if (isError) {
+    firebase.auth().signOut();
+  }
+
+  if (isSuccess) {
+    dispatch(addGoogleSchedules(data.items));
+  }
 
   return (
     <div>
