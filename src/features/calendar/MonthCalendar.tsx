@@ -4,13 +4,14 @@ import styled from "styled-components";
 import dayjs from "dayjs";
 
 import { useAppSelector, useAppDispatch } from "../../app/store";
-import { init, DateInfo } from "./calendarSlice";
+import { init, DateInfo, addEvent } from "./calendarSlice";
 import MonthCalendarDate from "./MonthCalendarDate";
 
 export const WEEKS = ["일", "월", "화", "수", "목", "금", "토"];
 
 function MonthCalendar() {
   const allDatesId = useAppSelector((state) => state.calendar.allDatesId, shallowEqual);
+  const schedulesData = useAppSelector((state) => state.schedules.data, shallowEqual);
 
   const dispatch = useAppDispatch();
 
@@ -25,6 +26,27 @@ function MonthCalendar() {
 
     dispatch(init(dateInfo));
   }, []);
+
+  useEffect(() => {
+    for (let i = 0; i < schedulesData.length; i++) {
+      if (schedulesData[i].start.date) {
+        const startDate = dayjs(schedulesData[i].start.date);
+        const endDate = dayjs(schedulesData[i].end.date);
+
+        const dateDiff =
+          endDate.diff(startDate.format("YYYY-MM-DD"), "date") / (1000 * 60 * 60 * 24);
+
+        for (let j = 0; j < dateDiff; j++) {
+          dispatch(
+            addEvent({
+              dateId: startDate.set({ date: startDate.date() + j }).format("YYYY-MM-DD"),
+              event: schedulesData[i],
+            }),
+          );
+        }
+      }
+    }
+  }, [schedulesData]);
 
   return (
     <div>

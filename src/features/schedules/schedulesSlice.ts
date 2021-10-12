@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface ScheduleInfo {
+export interface ScheduleInfo {
   id: string;
   created: string;
   updated: string;

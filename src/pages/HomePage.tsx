@@ -9,9 +9,7 @@ function HomePage() {
   return (
     <Layout>
       <Side>
-        <div>
-          <MonthCalendar />
-        </div>
+        <div>{/* <MonthCalendar /> */}</div>
       </Side>
       <ContentWrap>
         <MonthCalendar />
@@ -20,6 +18,8 @@ function HomePage() {
   );
 }
 
-const ContentWrap = styled.div``;
+const ContentWrap = styled.div`
+  width: 100%;
+`;
 
 export default HomePage;
