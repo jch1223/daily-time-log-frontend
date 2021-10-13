@@ -2,8 +2,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface LoginState {
   isLogIn: boolean;
-  name: string | null;
-  email: string | null;
+  name: string;
+  email: string;
   googleAccessToken: string;
   firebaseAccessToken: string;
 }

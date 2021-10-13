@@ -12,7 +12,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Switch>
-        <Route path="/">
+        <Route exact path="/">
           <HomePage />
         </Route>
         <Route path="/month-calendar">
