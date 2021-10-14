@@ -4,7 +4,7 @@ import firebase from "firebase";
 import { useQuery } from "react-query";
 
 import { useAppSelector, useAppDispatch } from "../../app/store";
-import { logIn, logOut, setGoogleAccessToken } from "./authSlice";
+import { logIn, logOut, setGoogleAccessToken, setUserId } from "./authSlice";
 import { addGoogleSchedules } from "../schedules/schedulesSlice";
 import { getSchedules } from "../../utils/api/schedules";
 import { createUser } from "../../utils/api/user";
@@ -66,7 +66,10 @@ export default function Login() {
 
   useEffect(() => {
     if (signUpIsSuccess) {
-      localStorage.setItem("userId", signUpData.data.userId);
+      const { userId } = signUpData.data;
+
+      localStorage.setItem("userId", userId);
+      dispatch(setUserId(userId));
     }
   }, [signUpIsSuccess]);
 
