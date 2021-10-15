@@ -3,17 +3,24 @@ import styled from "styled-components";
 import { MdAddCircle, MdPlayCircleFilled } from "react-icons/md";
 import { useMutation, useQuery } from "react-query";
 
-import { useAppSelector } from "../app/store";
+import dayjs from "dayjs";
+import { useAppDispatch, useAppSelector } from "../app/store";
 import { createMilestone, deleteMilestone, updateMilestone } from "../utils/api/milestones";
 
 import Layout from "../layout";
 import Side from "../layout/Side";
 import SideCalendar from "../features/calendar/SideCalendar";
 import DailyEvent from "../features/calendar/DailyEvent";
+import { init } from "../features/timeLog/timeLogSlice";
 
 function HomePage() {
+  const displayed = useAppSelector((state) => state.calendar.displayed);
+  const allHourIds = useAppSelector((state) => state.timeLog.allHourIds);
+  const byHourId = useAppSelector((state) => state.timeLog.byHourId);
   const userId = useAppSelector((state) => state.auth.userId);
   const googleAccessToken = useAppSelector((state) => state.auth.googleAccessToken);
+
+  const dispatch = useAppDispatch();
 
   const { isLoading, isError, data, error } = useQuery(
     ["getMilestone", userId],
@@ -33,6 +40,10 @@ function HomePage() {
   const createMilestoneMutation = useMutation(createMilestone);
   const updateMilestoneMutation = useMutation(updateMilestone);
   const deleteMilestoneMutation = useMutation(deleteMilestone);
+
+  useEffect(() => {
+    if (displayed) dispatch(init(displayed));
+  }, [displayed]);
 
   if (isError) {
     alert("error!!");
@@ -74,13 +85,43 @@ function HomePage() {
                 );
               })}
             </div>
-            <div className="width-50">2</div>
+
+            <div className="width-50">
+              {allHourIds?.map((hourId) => {
+                return (
+                  <HourWrap key={hourId}>
+                    <div>{dayjs(hourId).hour()}</div>
+                    <MinuteWrap>
+                      {Object.keys(byHourId[hourId])?.map((minuteId) => {
+                        return (
+                          <div key={minuteId} className={minuteId}>
+                            {" "}
+                          </div>
+                        );
+                      })}
+                    </MinuteWrap>
+                  </HourWrap>
+                );
+              })}
+            </div>
           </>
         )}
       </ContentWrap>
     </Layout>
   );
 }
+
+const MinuteWrap = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  .minute:nth-child(4n) {
+    color: lime;
+  }
+`;
+
+const HourWrap = styled.div`
+  display: flex;
+`;
 
 const ContentWrap = styled.div`
   width: 100%;
