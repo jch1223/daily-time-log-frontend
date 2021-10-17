@@ -1,45 +1,36 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { v4 as uuid } from "uuid";
 
-export interface ScheduleInfo {
+interface Milestone {
   id: string;
-  created: string;
-  updated: string;
   summary: string;
-  description: string;
-  creator: {
-    email: string;
-    self: true;
-  };
-  start: {
-    date?: string;
-    dateTime?: string;
-    timeZone?: string;
-  };
-  end: {
-    date?: string;
-    dateTime?: string;
-    timeZone?: string;
-  };
 }
 
-interface SchedulesState {
-  data: ScheduleInfo[];
-}
+const initialState: Milestone[] = [];
 
-const initialState: SchedulesState = {
-  data: [],
-};
-
-const schedulesSlice = createSlice({
-  name: "schedules",
+const milestonesSlice = createSlice({
+  name: "milestones",
   initialState,
   reducers: {
-    addGoogleSchedules: (state, action: PayloadAction<ScheduleInfo[]>) => {
-      state.data = action.payload;
+    init: (state) => {
+      const milestones = localStorage.getItem("milestones");
+
+      if (!milestones) {
+        localStorage.setItem("milestones", JSON.stringify(state));
+        return state;
+      }
+
+      return JSON.parse(milestones);
+    },
+    createMilestone: (state) => {
+      state.push({ id: uuid(), summary: "" });
+    },
+    deleteMilestone: (state, action: PayloadAction<number>) => {
+      state.splice(action.payload, 1);
     },
   },
 });
 
-export const { addGoogleSchedules } = schedulesSlice.actions;
+export const { init, createMilestone, deleteMilestone } = milestonesSlice.actions;
 
-export default schedulesSlice.reducer;
+export default milestonesSlice.reducer;
