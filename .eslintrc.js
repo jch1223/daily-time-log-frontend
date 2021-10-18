@@ -21,7 +21,7 @@ module.exports = {
     "react/jsx-filename-extension": [2, { extensions: [".js", ".jsx", ".ts", ".tsx"] }],
     "jsx-a11y/no-noninteractive-element-interactions": 0,
     "@typescript-eslint/explicit-module-boundary-types": "off",
-    "no-param-reassign": ["error", { props: true, ignorePropertyModificationsFor: ["state"] }],
+    "no-param-reassign": 0,
     "no-plusplus": ["error", { allowForLoopAfterthoughts: true }],
     "jsx-a11y/no-static-element-interactions": 0,
     "consistent-return": 0,

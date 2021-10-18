@@ -4,6 +4,7 @@ import { v4 as uuid } from "uuid";
 interface Milestone {
   id: string;
   summary: string;
+  isDeleted?: boolean;
 }
 
 const initialState: Milestone[] = [];
@@ -23,14 +24,69 @@ const milestonesSlice = createSlice({
       return JSON.parse(milestones);
     },
     createMilestone: (state) => {
-      state.push({ id: uuid(), summary: "" });
+      const milestones = localStorage.getItem("milestones");
+
+      if (!milestones) {
+        localStorage.setItem("milestones", JSON.stringify(state));
+        return state;
+      }
+
+      const milestonesData = JSON.parse(milestones);
+      const newMilestone = { id: uuid(), summary: "", isDeleted: false };
+
+      milestonesData.push(newMilestone);
+
+      localStorage.setItem("milestones", JSON.stringify(milestonesData));
+      return milestonesData;
     },
-    deleteMilestone: (state, action: PayloadAction<number>) => {
-      state.splice(action.payload, 1);
+    updateMilestone: (state, action: PayloadAction<Milestone>) => {
+      const milestones = localStorage.getItem("milestones");
+
+      if (!milestones) {
+        localStorage.setItem("milestones", JSON.stringify(state));
+        return state;
+      }
+
+      const milestonesData = JSON.parse(milestones);
+
+      const newMilestonesData = milestonesData
+        .map((item: Milestone) => {
+          if (item.id === action.payload.id) {
+            return action.payload;
+          }
+
+          return item;
+        })
+        .filter((item: Milestone) => item.summary);
+
+      localStorage.setItem("milestones", JSON.stringify(newMilestonesData));
+      return newMilestonesData;
+    },
+    deleteMilestone: (state, action: PayloadAction<string>) => {
+      const milestones = localStorage.getItem("milestones");
+
+      if (!milestones) {
+        localStorage.setItem("milestones", JSON.stringify(state));
+        return state;
+      }
+
+      const milestonesData = JSON.parse(milestones);
+      const newMilestonesData = milestonesData
+        .map((item: Milestone) => {
+          if (item.id === action.payload) {
+            item.isDeleted = true;
+          }
+
+          return item;
+        })
+        .filter((item: Milestone) => item.summary);
+
+      localStorage.setItem("milestones", JSON.stringify(newMilestonesData));
+      return newMilestonesData;
     },
   },
 });
 
-export const { init, createMilestone, deleteMilestone } = milestonesSlice.actions;
+export const { init, createMilestone, updateMilestone, deleteMilestone } = milestonesSlice.actions;
 
 export default milestonesSlice.reducer;

@@ -5,11 +5,12 @@ import { useMutation, useQuery } from "react-query";
 import { v4 as uuid } from "uuid";
 
 import { useAppDispatch, useAppSelector } from "../../app/store";
-import { createMilestone, deleteMilestone, init } from "./milestonesSlice";
+import { createMilestone, updateMilestone, deleteMilestone, init } from "./milestonesSlice";
 
 function Milestone() {
   const milestones = useAppSelector((state) => state.milestones);
-  const [newMilestone, setNewMilestone] = useState(null);
+  const filteredMilestones = milestones.filter((item) => !item.isDeleted);
+  const [isFocus, setIsFocus] = useState(false);
 
   const ref = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
@@ -19,11 +20,12 @@ function Milestone() {
   }, []);
 
   useEffect(() => {
-    if (ref) ref.current?.focus();
-  });
+    if (isFocus) ref.current?.focus();
+  }, [isFocus]);
 
   const createMilestoneHandler = () => {
     dispatch(createMilestone());
+    setIsFocus(true);
   };
 
   return (
@@ -36,9 +38,9 @@ function Milestone() {
       </Title>
 
       <div>
-        {milestones.map((item, index) => {
+        {filteredMilestones.map((item, index) => {
           return (
-            <MilestoneContent>
+            <MilestoneContent key={item.id}>
               <MdPlayCircleFilled
                 cursor="pointer"
                 color="#1a73e8"
@@ -60,10 +62,14 @@ function Milestone() {
                 contentEditable="true"
                 suppressContentEditableWarning
                 onBlur={(e) => {
-                  console.log(e.target.textContent);
-                  if (e.target.textContent === "") {
-                    dispatch(deleteMilestone(index));
+                  const { textContent } = e.target;
+
+                  if (textContent === "") {
+                    dispatch(deleteMilestone(item.id));
                   }
+
+                  dispatch(updateMilestone({ id: item.id, summary: textContent }));
+                  setIsFocus(false);
                 }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
@@ -71,7 +77,9 @@ function Milestone() {
                     e.currentTarget.blur();
                   }
                 }}
-              />
+              >
+                {item.summary}
+              </EditableBlock>
             </MilestoneContent>
           );
         })}
