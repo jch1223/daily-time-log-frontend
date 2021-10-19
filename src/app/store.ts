@@ -7,6 +7,7 @@ import calendarReducer from "../features/calendar/calendarSlice";
 import schedulesReducer from "../features/schedules/schedulesSlice";
 import milestonesReducer from "../features/milestones/milestonesSlice";
 import timeLogReducer from "../features/timeLog/timeLogSlice";
+import goalsReducer from "../features/goals/goalsSlice";
 
 const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ const store = configureStore({
     schedules: schedulesReducer,
     milestones: milestonesReducer,
     timeLog: timeLogReducer,
+    goals: goalsReducer,
   },
   middleware: (getDefaultMiddleware) => {
     return process.env.REACT_APP_NODE_ENV !== "production"

@@ -1,15 +1,14 @@
 import React from "react";
-import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import Portal from "./Portal";
 
-export default function CommonModal({ id, style = {}, isShowModal, onClick, children }) {
+export default function CommonModal({ id, style = {}, isShowModal, onBackgroundClick, children }) {
   return (
     isShowModal && (
       <Portal id={id} style={style}>
         <>
-          <Background className="modal-background" onClick={onClick} />
+          <Background className="modal-background" onClick={onBackgroundClick} />
 
           <ModalContent>{children}</ModalContent>
         </>

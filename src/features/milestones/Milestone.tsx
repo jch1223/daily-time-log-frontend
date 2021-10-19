@@ -2,12 +2,18 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { MdAddCircle, MdPlayCircleFilled } from "react-icons/md";
 import { useMutation, useQuery } from "react-query";
-import { v4 as uuid } from "uuid";
 
 import { useAppDispatch, useAppSelector } from "../../app/store";
 import { createMilestone, updateMilestone, deleteMilestone, init } from "./milestonesSlice";
 
-function Milestone() {
+interface Props {
+  openModal: (
+    modalType: string,
+    milestoneId: string,
+  ) => (e: React.MouseEvent<SVGElement, MouseEvent>) => void;
+}
+
+function Milestone({ openModal }: Props) {
   const milestones = useAppSelector((state) => state.milestones);
   const filteredMilestones = milestones.filter((item) => !item.isDeleted);
   const [isFocus, setIsFocus] = useState(false);
@@ -38,22 +44,14 @@ function Milestone() {
       </Title>
 
       <div>
-        {filteredMilestones.map((item, index) => {
+        {filteredMilestones.map((item) => {
           return (
             <MilestoneContent key={item.id}>
               <MdPlayCircleFilled
                 cursor="pointer"
-                color="#1a73e8"
+                color={item.color}
                 size="35px"
-                onClick={() => {
-                  // createMilestoneMutation.mutate({
-                  //   userId,
-                  //   done: false,
-                  //   summary: "title",
-                  //   googleAccessToken,
-                  // });
-                  console.log("adf");
-                }}
+                onClick={openModal("runningGoal", item.id)}
               />
               <EditableBlock
                 ref={ref}
@@ -68,7 +66,9 @@ function Milestone() {
                     dispatch(deleteMilestone(item.id));
                   }
 
-                  dispatch(updateMilestone({ id: item.id, summary: textContent }));
+                  dispatch(
+                    updateMilestone({ id: item.id, summary: textContent, color: item.color }),
+                  );
                   setIsFocus(false);
                 }}
                 onKeyDown={(e) => {
@@ -146,7 +146,7 @@ const MilestoneContent = styled.div`
 `;
 
 const MilestoneWrap = styled.div`
-  width: 50%;
+  width: 20%;
   padding: 20px;
   border-right: 1px solid #e4e4e4;
 

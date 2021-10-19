@@ -48,6 +48,8 @@ const MonthCalendarDateWrap = styled.div<MonthCalendarDateWrapProps>`
   overflow: hidden;
   border: 1px solid black;
   padding: 0.5rem;
+  font-size: 15px;
+
   ${({ isSaturday }) => isSaturday && "color: blue"};
   ${({ isSunday }) => isSunday && "color: red"};
   ${({ isCurrentMonth }) => !isCurrentMonth && "opacity: 0.4"};

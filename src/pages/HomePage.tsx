@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import dayjs from "dayjs";
 import { MdAddCircle, MdPlayCircleFilled } from "react-icons/md";
 import { useMutation, useQuery } from "react-query";
 
-import dayjs from "dayjs";
 import { useAppDispatch, useAppSelector } from "../app/store";
 import { createMilestone, deleteMilestone, updateMilestone } from "../utils/api/milestones";
+import { init } from "../features/timeLog/timeLogSlice";
+import { setMilestoneId } from "../features/goals/goalsSlice";
 
 import Layout from "../layout";
 import Side from "../layout/Side";
-import SideCalendar from "../features/calendar/SideCalendar";
 import DailyEvent from "../features/calendar/DailyEvent";
-import { init } from "../features/timeLog/timeLogSlice";
 import CommonModal from "../components/CommonModal";
 import Milestone from "../features/milestones/Milestone";
+import MonthCalendar from "../features/calendar/MonthCalendar";
+import RunningTime from "../features/goals/RunningTime";
 
 function HomePage() {
   const displayed = useAppSelector((state) => state.calendar.displayed);
@@ -22,9 +24,8 @@ function HomePage() {
   const userId = useAppSelector((state) => state.auth.userId);
   const googleAccessToken = useAppSelector((state) => state.auth.googleAccessToken);
 
-  const [milestoneDiv, setMilestoneDiv] = useState<string[]>([]);
-
   const [isShowModal, setIsShowModal] = useState(false);
+  const [modalType, setModalType] = useState("");
 
   const dispatch = useAppDispatch();
 
@@ -52,104 +53,29 @@ function HomePage() {
   }, [displayed]);
 
   if (isError) {
-    alert("error!!");
+    alert("error가 발생했습니다.");
   }
+
+  const onClickModalHandler = (modalType: string, milestoneId: string) => () => {
+    setIsShowModal(true);
+    setModalType(modalType);
+    dispatch(setMilestoneId(milestoneId));
+  };
 
   return (
     <Layout>
-      <Side>
-        <SideCalendar />
-        <DailyEvent />
-      </Side>
       <ContentWrap>
+        <Side>
+          <MonthCalendar />
+          <DailyEvent />
+        </Side>
         {isLoading && <>loading...</>}
 
         {!isLoading && (
           <>
-            <Milestone />
-            {/* <div className="width-50 border-right">
-              <div>
-                <div>목표</div>
-                <div>
-                  <MdAddCircle
-                    onClick={() => {
-                      // createMilestoneMutation.mutate({
-                      //   userId,
-                      //   done: false,
-                      //   summary: "title",
-                      //   googleAccessToken,
-                      // });
-                      console.log("adf");
-                      setMilestoneDiv((state) => {
-                        return [...state, "div"];
-                      });
-                    }}
-                  />
-                </div>
-              </div>
+            <Milestone openModal={onClickModalHandler} />
 
-              {milestoneDiv.map((item, index) => {
-                return (
-                  <div
-                    contentEditable="true"
-                    suppressContentEditableWarning
-                    onBlur={(e) => {
-                      console.log(e.target.innerText);
-                      const div = [...milestoneDiv];
-                      div[index] = e.target.innerText;
-
-                      setMilestoneDiv(div);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        e.currentTarget.blur();
-                      }
-                    }}
-                  >
-                    {item}
-                  </div>
-                );
-              })}
-
-              {data?.data.map((milestone: any) => {
-                return (
-                  <div>
-                    <MdPlayCircleFilled />
-                    {milestone.summary}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsShowModal(true);
-                        // createMilestoneMutation.mutate({
-                        //   userId,
-                        //   done: false,
-                        //   summary: "title",
-                        //   googleAccessToken,
-                        // });
-                      }}
-                    >
-                      수정
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        createMilestoneMutation.mutate({
-                          userId,
-                          done: false,
-                          summary: "title",
-                          googleAccessToken,
-                        });
-                      }}
-                    >
-                      삭제
-                    </button>
-                  </div>
-                );
-              })}
-            </div> */}
-
-            <div className="width-50">
+            <div className="width-20">
               {allHourIds?.map((hourId) => {
                 return (
                   <HourWrap key={hourId}>
@@ -172,11 +98,11 @@ function HomePage() {
       </ContentWrap>
 
       <CommonModal
-        id="complete-modal"
+        id="modal"
         isShowModal={isShowModal}
-        onClick={() => setIsShowModal(false)}
+        onBackgroundClick={() => setIsShowModal(false)}
       >
-        modal
+        {modalType === "runningGoal" && <RunningTime />}
       </CommonModal>
     </Layout>
   );
@@ -197,11 +123,17 @@ const MinuteWrap = styled.div`
 
 const HourWrap = styled.div`
   display: flex;
+  height: 100%;
+  border-bottom: 1px solid #e4e4e4;
 
   .hour {
+    display: flex;
     width: 10%;
-    border-right: 1px solid #e4e4e4;
+    padding: 0px 7px;
+    align-items: center;
+    justify-content: center;
     text-align: center;
+    border-right: 1px solid #e4e4e4;
   }
 `;
 
@@ -209,9 +141,11 @@ const ContentWrap = styled.div`
   width: 100%;
   display: flex;
 
-  .width-50 {
-    width: 50%;
-    padding: 20px;
+  .width-20 {
+    display: flex;
+    width: 20%;
+    flex-direction: column;
+    justify-content: space-evenly;
   }
   .border-right {
     border-right: 1px solid #e4e4e4;

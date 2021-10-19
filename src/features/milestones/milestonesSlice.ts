@@ -1,9 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { v4 as uuid } from "uuid";
+import getRandomColor from "../../utils/getRandomColor";
 
 interface Milestone {
   id: string;
   summary: string;
+  color?: string;
   isDeleted?: boolean;
 }
 
@@ -25,6 +27,7 @@ const milestonesSlice = createSlice({
     },
     createMilestone: (state) => {
       const milestones = localStorage.getItem("milestones");
+      const color = getRandomColor();
 
       if (!milestones) {
         localStorage.setItem("milestones", JSON.stringify(state));
@@ -32,7 +35,7 @@ const milestonesSlice = createSlice({
       }
 
       const milestonesData = JSON.parse(milestones);
-      const newMilestone = { id: uuid(), summary: "", isDeleted: false };
+      const newMilestone = { id: uuid(), summary: "", isDeleted: false, color };
 
       milestonesData.push(newMilestone);
 

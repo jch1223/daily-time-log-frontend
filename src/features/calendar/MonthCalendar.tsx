@@ -49,7 +49,7 @@ function MonthCalendar() {
   }, [schedulesData]);
 
   return (
-    <div>
+    <MonthCalenderWrap>
       <WeeksStyled>
         {WEEKS.map((week) => (
           <div key={week}>
@@ -62,7 +62,7 @@ function MonthCalendar() {
           return <MonthCalendarDate key={dateId} dateId={dateId} />;
         })}
       </MonthCalenderViewWrap>
-    </div>
+    </MonthCalenderWrap>
   );
 }
 
@@ -73,12 +73,16 @@ const WeeksStyled = styled.div`
 
 const MonthCalenderViewWrap = styled.div`
   display: grid;
+  height: 100%;
   grid-template-columns: repeat(7, 1fr);
-  grid-auto-rows: 8rem;
-
+  grid-template-rows: repeat(6, 1fr);
   border: 1px solid black;
-  margin-left: auto;
-  margin-right: auto;
+`;
+
+const MonthCalenderWrap = styled.div`
+  display: flex;
+  height: 100%;
+  flex-direction: column;
 `;
 
 export default MonthCalendar;
