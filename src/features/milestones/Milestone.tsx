@@ -99,6 +99,7 @@ function Milestone({ openModal }: Props) {
         <Title>일정</Title>
         <DailyEvent />
       </div> */}
+
       {/* 
       {milestones.map((milestone: any) => {
         return (
