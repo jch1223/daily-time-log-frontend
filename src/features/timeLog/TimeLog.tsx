@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import dayjs from "dayjs";
 import styled from "styled-components";
 
+import { shallowEqual } from "react-redux";
 import { useAppDispatch, useAppSelector } from "../../app/store";
 import { init as timeLogInit } from "./timeLogSlice";
 import { init as goalsInit } from "../goals/goalsSlice";
@@ -11,7 +12,7 @@ function TimeLog() {
   const dateId = dayjs().set(displayed).format("YYYY-MM-DD");
   const allHourIds = useAppSelector((state) => state.timeLog.allHourIds);
   const byHourId = useAppSelector((state) => state.timeLog.byHourId);
-  const goals = useAppSelector((state) => state.goals.byDateId[dateId]);
+  const goals = useAppSelector((state) => state.goals.byDateId[dateId], shallowEqual);
 
   const dispatch = useAppDispatch();
 

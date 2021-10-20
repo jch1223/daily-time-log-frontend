@@ -57,7 +57,11 @@ export const createCalendarData = ({ year, month: currentMonth, date, timezone }
     };
   }
 
-  const nextMonthDaysLength = DAYS_IN_WEEK - (calendarAllDatesId.length % 7);
+  let nextMonthDaysLength = DAYS_IN_WEEK - (calendarAllDatesId.length % 7);
+
+  if (calendarAllDatesId.length + nextMonthDaysLength < 42) {
+    nextMonthDaysLength += 7;
+  }
 
   for (let i = 0; i < nextMonthDaysLength; i++) {
     const year = nextMonthFirstDate.year();

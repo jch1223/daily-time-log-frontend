@@ -59,8 +59,6 @@ const timeLogSlice = createSlice({
             color: goals[i].color,
             summary: goals[i].summary,
           };
-
-          console.log(byHourId[hourId]);
         }
       }
 

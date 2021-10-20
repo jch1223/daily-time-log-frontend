@@ -1,12 +1,21 @@
 import React from "react";
 import dayjs from "dayjs";
 
-import { useAppSelector, useAppDispatch } from "../../app/store";
+import { useAppSelector } from "../../app/store";
 
 function DailyEvent() {
   const displayedInfo = useAppSelector((state) => state.calendar.displayed);
   const dailyEvents = useAppSelector(
-    (state) => state.calendar.byDateId[dayjs().set({ displayedInfo }).format("YYYY-MM-DD")],
+    (state) =>
+      state.calendar.byDateId[
+        dayjs()
+          .set({
+            year: displayedInfo?.year,
+            month: displayedInfo?.month,
+            date: displayedInfo?.date,
+          })
+          .format("YYYY-MM-DD")
+      ],
   );
 
   return (

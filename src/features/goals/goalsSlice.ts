@@ -30,7 +30,7 @@ const initialState: { runningMilestone: Milestone; byDateId: ByDateId } = {
   byDateId: {},
 };
 
-const milestonesSlice = createSlice({
+const goalsSlice = createSlice({
   name: "goals",
   initialState,
   reducers: {
@@ -79,6 +79,6 @@ const milestonesSlice = createSlice({
   },
 });
 
-export const { setMilestoneData, updateGoals, init } = milestonesSlice.actions;
+export const { setMilestoneData, updateGoals, init } = goalsSlice.actions;
 
-export default milestonesSlice.reducer;
+export default goalsSlice.reducer;
