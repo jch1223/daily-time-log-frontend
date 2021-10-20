@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 
-export default function usePortal(id) {
+export default function usePortal(id: string) {
   const elementRef = useRef(null);
 
   useEffect(() => {
@@ -20,14 +20,14 @@ export default function usePortal(id) {
     };
   }, [id]);
 
-  const createPortalRootElement = (id) => {
+  const createPortalRootElement = (id: string) => {
     const portalRoot = document.createElement("div");
     portalRoot.setAttribute("id", id);
 
     return portalRoot;
   };
 
-  const addPortalRootElement = (portalRoot) => {
+  const addPortalRootElement = (portalRoot: Element) => {
     document.body.insertBefore(portalRoot, null);
   };
 
