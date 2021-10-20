@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from "react";
+import styled from "styled-components";
 import dayjs from "dayjs";
 
 import { MdPauseCircle } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../../app/store";
 import { updateGoals } from "./goalsSlice";
 
-function RunningTime() {
-  const milestoneId = useAppSelector((state) => state.goals.runningMilestoneId);
+interface Props {
+  onPauseClick: (e: React.MouseEvent<SVGElement, MouseEvent>) => void;
+}
+
+function RunningTime({ onPauseClick }: Props) {
+  const milestone = useAppSelector((state) => state.goals.runningMilestone);
   const [runningTime, setRunningTime] = useState("00:00:00");
+  const dateId = dayjs().format("YYYY-MM-DD");
 
   const dispatch = useAppDispatch();
 
@@ -22,10 +28,20 @@ function RunningTime() {
     const eventListener = () => {
       dispatch(
         updateGoals({
-          milestoneId,
-          start: start.format("YYYY-MM-DDTHH:mm"),
-          end: dayjs().format("YYYY-MM-DDTHH:mm"),
-          timezone,
+          dateId,
+          goal: {
+            milestoneId: milestone.id,
+            color: milestone.color,
+            summary: milestone.summary,
+            start: {
+              dateTime: start.format("YYYY-MM-DDTHH:mm"),
+              timezone,
+            },
+            end: {
+              dateTime: dayjs().format("YYYY-MM-DDTHH:mm"),
+              timezone,
+            },
+          },
         }),
       );
     };
@@ -37,23 +53,55 @@ function RunningTime() {
       clearInterval(setIntervalId);
       dispatch(
         updateGoals({
-          start: start.format("YYYY-MM-DDTHH:mm"),
-          end: dayjs().format("YYYY-MM-DDTHH:mm"),
-          timezone,
+          dateId,
+          goal: {
+            milestoneId: milestone.id,
+            color: milestone.color,
+            summary: milestone.summary,
+            start: {
+              dateTime: start.format("YYYY-MM-DDTHH:mm"),
+              timezone,
+            },
+            end: {
+              dateTime: dayjs().format("YYYY-MM-DDTHH:mm"),
+              timezone,
+            },
+          },
         }),
       );
     };
   }, []);
 
   return (
-    <div>
-      <div>
-        <div>현재 진행 시간</div>
-        <div>{runningTime}</div>
-        <MdPauseCircle />
+    <RunningTimeWrap>
+      <div className="title">현재 진행 시간</div>
+      <div className="running-time">
+        <div className="timer">{runningTime}</div>
+        <MdPauseCircle cursor="pointer" onClick={onPauseClick} color="#7e7e7e" />
       </div>
-    </div>
+    </RunningTimeWrap>
   );
 }
+
+const RunningTimeWrap = styled.div`
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .title {
+    font-size: 30px;
+    font-weight: 600;
+  }
+  .running-time {
+    display: flex;
+    align-items: center;
+    font-size: 60px;
+  }
+  .timer {
+    padding-right: 10px;
+  }
+`;
 
 export default RunningTime;

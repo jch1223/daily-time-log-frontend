@@ -1,15 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { MdAddCircle, MdPlayCircleFilled } from "react-icons/md";
-import { useMutation, useQuery } from "react-query";
 
 import { useAppDispatch, useAppSelector } from "../../app/store";
-import { createMilestone, updateMilestone, deleteMilestone, init } from "./milestonesSlice";
+import {
+  createMilestone,
+  updateMilestone,
+  deleteMilestone,
+  init,
+  Milestone as MilestoneType,
+} from "./milestonesSlice";
+import DailyEvent from "../calendar/DailyEvent";
 
 interface Props {
   openModal: (
     modalType: string,
-    milestoneId: string,
+    milestoneData: MilestoneType,
   ) => (e: React.MouseEvent<SVGElement, MouseEvent>) => void;
 }
 
@@ -35,7 +41,7 @@ function Milestone({ openModal }: Props) {
   };
 
   return (
-    <MilestoneWrap className="width-50 border-right">
+    <MilestoneWrap>
       <Title>
         <div>목표</div>
         <div className="add-circle">
@@ -51,7 +57,7 @@ function Milestone({ openModal }: Props) {
                 cursor="pointer"
                 color={item.color}
                 size="35px"
-                onClick={openModal("runningGoal", item.id)}
+                onClick={openModal("runningGoal", item)}
               />
               <EditableBlock
                 ref={ref}
@@ -84,6 +90,8 @@ function Milestone({ openModal }: Props) {
           );
         })}
       </div>
+
+      <DailyEvent />
 
       {/* 
       {milestones.map((milestone: any) => {

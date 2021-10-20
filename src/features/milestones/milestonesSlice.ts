@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { v4 as uuid } from "uuid";
 import getRandomColor from "../../utils/getRandomColor";
 
-interface Milestone {
+export interface Milestone {
   id: string;
   summary: string;
   color?: string;

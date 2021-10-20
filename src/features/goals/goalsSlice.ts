@@ -1,49 +1,84 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { v4 as uuid } from "uuid";
+import { Milestone } from "../milestones/milestonesSlice";
 
-interface Goal {
+export interface Goal {
   id?: string;
   milestoneId?: string;
+  color: string;
+  summary: string;
   start?: {
     dateTime?: string;
-    timeZone?: string;
+    timezone?: string;
   };
   end?: {
     dateTime?: string;
-    timeZone?: string;
+    timezone?: string;
   };
 }
 
-const initialState: { runningMilestoneId: string; goals: Goal[] } = {
-  runningMilestoneId: null,
-  goals: [],
+interface ByDateId {
+  [dateId: string]: Goal[];
+}
+
+interface GoalInfo {
+  dateId: string;
+  goal: Goal;
+}
+
+const initialState: { runningMilestone: Milestone; byDateId: ByDateId } = {
+  runningMilestone: null,
+  byDateId: {},
 };
 
 const milestonesSlice = createSlice({
   name: "goals",
   initialState,
   reducers: {
-    setMilestoneId: (state, action: PayloadAction<string>) => {
-      state.runningMilestoneId = action.payload;
+    init: (state, action: PayloadAction<string>) => {
+      const goals = localStorage.getItem("goals");
+
+      if (!goals) {
+        localStorage.setItem("goals", JSON.stringify({ ...state.byDateId }));
+        return state;
+      }
+
+      const goalsData = JSON.parse(goals);
+
+      if (!goalsData[action.payload]) {
+        goalsData[action.payload] = [];
+      }
+
+      localStorage.setItem("goals", JSON.stringify(goalsData));
+
+      state.byDateId = goalsData;
     },
-    updateGoals: (state, action: PayloadAction<Goal>) => {
+    setMilestoneData: (state, action: PayloadAction<Milestone>) => {
+      state.runningMilestone = action.payload;
+    },
+    updateGoals: (state, action: PayloadAction<GoalInfo>) => {
+      const { dateId, goal } = action.payload;
+
       let goals = localStorage.getItem("goals");
 
       if (!goals) {
-        localStorage.setItem("goals", JSON.stringify([...state.goals]));
+        localStorage.setItem("goals", JSON.stringify({ ...state.byDateId }));
         goals = localStorage.getItem("goals");
       }
 
       const goalsData = JSON.parse(goals);
-      goalsData.push(action.payload);
 
+      if (!goalsData[dateId]) {
+        goalsData[dateId] = [];
+      }
+
+      goalsData[dateId].push(goal);
       localStorage.setItem("goals", JSON.stringify(goalsData));
 
-      state.goals = goalsData;
+      state.byDateId = goalsData;
     },
   },
 });
 
-export const { setMilestoneId, updateGoals } = milestonesSlice.actions;
+export const { setMilestoneData, updateGoals, init } = milestonesSlice.actions;
 
 export default milestonesSlice.reducer;
