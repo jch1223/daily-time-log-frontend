@@ -1,15 +1,17 @@
 import React, { useEffect } from "react";
+import styled from "styled-components";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import firebase from "firebase";
 import { useQuery } from "react-query";
 
+import { CgLogOff } from "react-icons/cg";
 import { useAppSelector, useAppDispatch } from "../../app/store";
 import { logIn, logOut, setGoogleAccessToken, setUserId } from "./authSlice";
 import { addGoogleSchedules } from "../schedules/schedulesSlice";
 import { getSchedules } from "../../utils/api/schedules";
 import { createUser } from "../../utils/api/user";
 
-export default function Login() {
+function Login() {
   const isLogIn = useAppSelector((state) => state.auth.isLogIn);
   const email = useAppSelector((state) => state.auth.email);
   const googleAccessToken = useAppSelector((state) => state.auth.googleAccessToken);
@@ -20,7 +22,7 @@ export default function Login() {
     ["user", googleAccessToken, email],
     () => createUser(googleAccessToken, email),
     {
-      enabled: isLogIn && !!googleAccessToken,
+      enabled: !!googleAccessToken,
       retry: false,
       refetchOnWindowFocus: false,
       staleTime: 60 * 1000,
@@ -106,15 +108,31 @@ export default function Login() {
   if (googleSchedulesIsSuccess) {
     dispatch(addGoogleSchedules(googleSchedulesData.items));
   }
+  if (isLogIn === null) {
+    return <></>;
+  }
 
   return (
     <div>
       {!isLogIn && <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />}
       {isLogIn && (
-        <button type="button" onClick={() => firebase.auth().signOut()}>
-          Sign-out
-        </button>
+        <LogOutButton type="button" onClick={() => firebase.auth().signOut()}>
+          <CgLogOff />
+        </LogOutButton>
       )}
     </div>
   );
 }
+
+const LogOutButton = styled.button`
+  font-size: 30px;
+  background-color: #ffffff;
+  border: none;
+  color: #f44336;
+
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+export default Login;

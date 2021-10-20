@@ -1,4 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import dayjs from "dayjs";
+
 import type { RootState } from "../../app/store";
 import { createCalendarData } from "../../utils/createCalendar";
 import { ScheduleInfo } from "../schedules/schedulesSlice";
@@ -60,10 +62,27 @@ const calendarSlice = createSlice({
         state.byDateId[dateId].events = [...state.byDateId[dateId].events, event];
       }
     },
+    nextMonth: (state) => {
+      state.displayed.month += 1;
+      const { calendarAllDatesId, calendarByDateId } = createCalendarData(state.displayed);
+
+      state.allDatesId = calendarAllDatesId;
+      state.byDateId = calendarByDateId;
+    },
+    prevMonth: (state) => {
+      state.displayed.month -= 1;
+      const { calendarAllDatesId, calendarByDateId } = createCalendarData(state.displayed);
+
+      state.allDatesId = calendarAllDatesId;
+      state.byDateId = calendarByDateId;
+    },
+    setDisplayedDate: (state, action: PayloadAction<number>) => {
+      state.displayed.date = action.payload;
+    },
   },
 });
 
-export const { init, addEvent } = calendarSlice.actions;
+export const { init, addEvent, nextMonth, prevMonth, setDisplayedDate } = calendarSlice.actions;
 
 export const selectCalendar = (state: RootState) => state.calendar;
 

@@ -16,6 +16,7 @@ import TimeLog from "../features/timeLog/TimeLog";
 import { Milestone as MilestoneType } from "../features/milestones/milestonesSlice";
 
 function HomePage() {
+  const isLogIn = useAppSelector((state) => state.auth.isLogIn);
   const userId = useAppSelector((state) => state.auth.userId);
   const googleAccessToken = useAppSelector((state) => state.auth.googleAccessToken);
 
@@ -59,14 +60,9 @@ function HomePage() {
         <Side>
           <MonthCalendar />
         </Side>
-        {isLoading && <>loading...</>}
 
-        {!isLoading && (
-          <>
-            <Milestone openModal={onClickModalHandler} />
-            <TimeLog />
-          </>
-        )}
+        <Milestone openModal={onClickModalHandler} />
+        <TimeLog />
       </ContentWrap>
 
       <CommonModal
