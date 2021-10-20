@@ -4,7 +4,7 @@ import { createCalendarData } from "../../utils/createCalendar";
 import { ScheduleInfo } from "../schedules/schedulesSlice";
 
 export interface CalendarState {
-  displayed: DateInfo;
+  displayed: DateInfo | null;
   allDatesId?: string[];
   byDateId: {
     [dateId: string]: DateDetailInfo;
@@ -12,7 +12,7 @@ export interface CalendarState {
 }
 
 export interface DateInfo {
-  year?: number;
+  year: number;
   month: number;
   date: number;
   timezone?: string;
@@ -34,11 +34,7 @@ export interface ByDateId {
 const initialState: CalendarState = {
   allDatesId: [],
   byDateId: {},
-  displayed: {
-    year: 0,
-    month: 0,
-    date: 0,
-  },
+  displayed: null,
 };
 
 interface EventPayLoad {
