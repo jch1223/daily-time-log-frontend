@@ -1,16 +1,19 @@
 import React from "react";
 import styled from "styled-components";
 
-import { useAppSelector } from "../../app/store";
+import { useAppDispatch, useAppSelector } from "../../app/store";
+import { setDisplayedDate } from "./calendarSlice";
 
 interface MonthCalendarDateProps {
   dateId: string;
 }
 
 export default function MonthCalendarDate({ dateId }: MonthCalendarDateProps) {
+  const displayedDate = useAppSelector((state) => state.calendar.displayed.date);
   const calendarByDateId = useAppSelector((state) => state.calendar.byDateId[dateId]);
-
   const { date, isSaturday, isSunday, isToday, isCurrentMonth, events } = calendarByDateId;
+
+  const dispatch = useAppDispatch();
 
   return (
     <MonthCalendarDateWrap
@@ -18,8 +21,15 @@ export default function MonthCalendarDate({ dateId }: MonthCalendarDateProps) {
       isSunday={isSunday}
       isCurrentMonth={isCurrentMonth}
     >
-      <span>{date}</span>
-      <span style={{ color: "red", fontWeight: "bold" }}>{isToday && " TODAY"}</span>
+      <Date
+        idDisplayed={displayedDate === date}
+        onClick={() => {
+          dispatch(setDisplayedDate(date));
+        }}
+      >
+        {date}
+      </Date>
+      <span style={{ color: "#185abc", fontWeight: "bold" }}>{isToday && " TODAY"}</span>
 
       <div>
         {events.map((event) => {
@@ -44,6 +54,18 @@ interface EventProps {
   backGroundColor: string;
 }
 
+const Date = styled.div<{ idDisplayed: boolean }>`
+  display: inline-block;
+  padding: 2px;
+  margin-bottom: 2px;
+  border-radius: 50%;
+  ${({ idDisplayed }) => idDisplayed && "background-color: #d2e3fc"};
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
 const MonthCalendarDateWrap = styled.div<MonthCalendarDateWrapProps>`
   overflow: hidden;
   border: 1px solid black;
@@ -56,6 +78,7 @@ const MonthCalendarDateWrap = styled.div<MonthCalendarDateWrapProps>`
 `;
 
 const Event = styled.div<EventProps>`
+  color: black;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

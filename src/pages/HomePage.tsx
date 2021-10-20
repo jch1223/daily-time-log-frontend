@@ -59,14 +59,9 @@ function HomePage() {
         <Side>
           <MonthCalendar />
         </Side>
-        {isLoading && <>loading...</>}
 
-        {!isLoading && (
-          <>
-            <Milestone openModal={onClickModalHandler} />
-            <TimeLog />
-          </>
-        )}
+        <Milestone openModal={onClickModalHandler} />
+        <TimeLog />
       </ContentWrap>
 
       <CommonModal

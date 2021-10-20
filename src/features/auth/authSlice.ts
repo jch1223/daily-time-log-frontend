@@ -11,7 +11,7 @@ interface LoginState {
 
 const initialState: LoginState = {
   userId: "",
-  isLogIn: false,
+  isLogIn: null,
   name: "",
   email: "",
   googleAccessToken: "",
