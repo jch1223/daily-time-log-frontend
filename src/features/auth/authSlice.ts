@@ -1,14 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface LoginState {
+  userId?: string;
   isLogIn: boolean;
-  name: string | null;
-  email: string | null;
+  name: string;
+  email: string;
   googleAccessToken: string;
   firebaseAccessToken: string;
 }
 
 const initialState: LoginState = {
+  userId: "",
   isLogIn: false,
   name: "",
   email: "",
@@ -31,6 +33,7 @@ const authSlice = createSlice({
     },
     logOut: (state) => {
       state.isLogIn = false;
+      state.userId = "";
       state.name = "";
       state.email = "";
       state.googleAccessToken = "";
@@ -39,9 +42,12 @@ const authSlice = createSlice({
     setGoogleAccessToken: (state, action: PayloadAction<string>) => {
       state.googleAccessToken = action.payload;
     },
+    setUserId: (state, action: PayloadAction<string>) => {
+      state.userId = action.payload;
+    },
   },
 });
 
-export const { logIn, logOut, setGoogleAccessToken } = authSlice.actions;
+export const { logIn, logOut, setGoogleAccessToken, setUserId } = authSlice.actions;
 
 export default authSlice.reducer;

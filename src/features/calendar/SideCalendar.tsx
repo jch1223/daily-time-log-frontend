@@ -9,7 +9,7 @@ import MonthCalendarDate from "./MonthCalendarDate";
 
 export const WEEKS = ["일", "월", "화", "수", "목", "금", "토"];
 
-function MonthCalendar() {
+function SideCalendar() {
   const allDatesId = useAppSelector((state) => state.calendar.allDatesId, shallowEqual);
   const schedulesData = useAppSelector((state) => state.schedules.data, shallowEqual);
 
@@ -49,7 +49,7 @@ function MonthCalendar() {
   }, [schedulesData]);
 
   return (
-    <MonthCalenderWrap>
+    <div>
       <WeeksStyled>
         {WEEKS.map((week) => (
           <div key={week}>
@@ -57,12 +57,14 @@ function MonthCalendar() {
           </div>
         ))}
       </WeeksStyled>
-      <MonthCalenderViewWrap>
-        {allDatesId?.map((dateId) => {
-          return <MonthCalendarDate key={dateId} dateId={dateId} />;
-        })}
-      </MonthCalenderViewWrap>
-    </MonthCalenderWrap>
+      <div>
+        <SideCalenderViewWrap>
+          {allDatesId?.map((dateId) => {
+            return <MonthCalendarDate key={dateId} dateId={dateId} />;
+          })}
+        </SideCalenderViewWrap>
+      </div>
+    </div>
   );
 }
 
@@ -71,18 +73,15 @@ const WeeksStyled = styled.div`
   justify-content: space-around;
 `;
 
-const MonthCalenderViewWrap = styled.div`
+const SideCalenderViewWrap = styled.div`
   display: grid;
-  height: 100%;
   grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(6, 1fr);
+  grid-auto-columns: 2rem;
+  grid-auto-rows: 2rem;
+
   border: 1px solid black;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
-const MonthCalenderWrap = styled.div`
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-`;
-
-export default MonthCalendar;
+export default SideCalendar;
