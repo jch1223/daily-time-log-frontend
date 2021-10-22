@@ -19,6 +19,7 @@ function index({ children }: Props) {
 const Main = styled.main`
   display: flex;
   border-top: 1px solid #e4e4e4;
+  height: calc(100vh - 92px);
 `;
 
 export default index;

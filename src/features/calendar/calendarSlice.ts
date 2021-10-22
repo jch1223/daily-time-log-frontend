@@ -55,11 +55,26 @@ const calendarSlice = createSlice({
       state.allDatesId = calendarAllDatesId;
       state.byDateId = calendarByDateId;
     },
-    addEvent: (state, action: PayloadAction<EventPayLoad>) => {
-      const { dateId, event } = action.payload;
+    setEvent: (state, action: PayloadAction<ScheduleInfo[]>) => {
+      const schedulesData = action.payload;
 
-      if (state.byDateId[dateId]) {
-        state.byDateId[dateId].events = [...state.byDateId[dateId].events, event];
+      for (let i = 0; i < schedulesData.length; i++) {
+        if (schedulesData[i].start.date) {
+          const startDate = dayjs(schedulesData[i].start.date);
+          const endDate = dayjs(schedulesData[i].end.date);
+
+          const dateDiff =
+            endDate.diff(startDate.format("YYYY-MM-DD"), "date") / (1000 * 60 * 60 * 24);
+
+          for (let j = 0; j < dateDiff; j++) {
+            const dateId = startDate.set({ date: startDate.date() + j }).format("YYYY-MM-DD");
+            const event = schedulesData[i];
+
+            if (state.byDateId[dateId]) {
+              state.byDateId[dateId].events = [...state.byDateId[dateId].events, event];
+            }
+          }
+        }
       }
     },
     nextMonth: (state) => {
@@ -82,7 +97,7 @@ const calendarSlice = createSlice({
   },
 });
 
-export const { init, addEvent, nextMonth, prevMonth, setDisplayedDate } = calendarSlice.actions;
+export const { init, setEvent, nextMonth, prevMonth, setDisplayedDate } = calendarSlice.actions;
 
 export const selectCalendar = (state: RootState) => state.calendar;
 

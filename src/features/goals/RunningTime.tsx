@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import { MdPauseCircle } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../../app/store";
 import { updateGoals } from "./goalsSlice";
+import { setDisplayedDate } from "../calendar/calendarSlice";
 
 interface Props {
   onPauseClick: (e: React.MouseEvent<SVGElement, MouseEvent>) => void;
@@ -69,6 +70,7 @@ function RunningTime({ onPauseClick }: Props) {
           },
         }),
       );
+      dispatch(setDisplayedDate(dayjs().date()));
     };
   }, []);
 
@@ -89,6 +91,7 @@ const RunningTimeWrap = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  color: #c5c5c5;
 
   .title {
     font-size: 30px;

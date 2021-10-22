@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import dayjs from "dayjs";
 import { MdAddCircle, MdPlayCircleFilled } from "react-icons/md";
 
 import { useAppDispatch, useAppSelector } from "../../app/store";
@@ -21,7 +20,6 @@ interface Props {
 }
 
 function Milestone({ openModal }: Props) {
-  const displayedInfo = useAppSelector((state) => state.calendar.displayed);
   const milestones = useAppSelector((state) => state.milestones);
   const filteredMilestones = milestones.filter((item) => !item.isDeleted);
   const [isFocus, setIsFocus] = useState(false);
@@ -45,7 +43,6 @@ function Milestone({ openModal }: Props) {
   return (
     <MilestoneWrap>
       <div className="goal">
-        <div className="date">{displayedInfo?.date} 일</div>
         <Title>
           <div>목표</div>
           <div className="add-circle">
@@ -53,6 +50,8 @@ function Milestone({ openModal }: Props) {
           </div>
         </Title>
         <div>
+          {!filteredMilestones.length && <EditableBlock>등록된 목표가 없습니다</EditableBlock>}
+
           {filteredMilestones.map((item) => {
             return (
               <MilestoneContent key={item.id}>
@@ -162,7 +161,7 @@ const MilestoneContent = styled.div`
 
 const MilestoneWrap = styled.div`
   width: 20%;
-  padding: 10px;
+  padding: 20px;
   border-right: 1px solid #e4e4e4;
   [contenteditable="true"]:empty:before {
     content: attr(placeholder);
@@ -171,10 +170,6 @@ const MilestoneWrap = styled.div`
 
   .goal {
     margin-bottom: 20px;
-  }
-  .date {
-    font-size: 26px;
-    padding-bottom: 10px;
   }
 `;
 

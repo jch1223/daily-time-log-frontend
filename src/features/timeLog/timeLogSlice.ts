@@ -55,6 +55,10 @@ const timeLogSlice = createSlice({
             .set({ minute: startMinute.minute() + j })
             .format("YYYY-MM-DDTHH:mm");
 
+          if (!byHourId[hourId]) {
+            byHourId[hourId] = {};
+          }
+
           byHourId[hourId][minuteId] = {
             color: goals[i].color,
             summary: goals[i].summary,

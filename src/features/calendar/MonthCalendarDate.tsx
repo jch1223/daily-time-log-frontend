@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import React from "react";
 import styled from "styled-components";
 
@@ -17,25 +18,32 @@ export default function MonthCalendarDate({ dateId }: MonthCalendarDateProps) {
 
   return (
     <MonthCalendarDateWrap
+      className="date"
       isSaturday={isSaturday}
       isSunday={isSunday}
       isCurrentMonth={isCurrentMonth}
     >
-      <Date
-        idDisplayed={displayedDate === date}
-        onClick={() => {
-          dispatch(setDisplayedDate(date));
-        }}
-      >
-        {date}
-      </Date>
-      <span style={{ color: "#185abc", fontWeight: "bold" }}>{isToday && " TODAY"}</span>
+      <DateWrap>
+        <Date
+          idDisplayed={displayedDate === date}
+          isToday={isToday}
+          onClick={() => {
+            dispatch(setDisplayedDate(date));
+          }}
+        >
+          {date}
+        </Date>
+      </DateWrap>
 
       <div>
         {events.map((event) => {
           return (
-            <Event key={event.id} backGroundColor="#e4e4e4">
-              {event.summary}
+            <Event
+              key={event.id}
+              isStart={dateId === event.start.date}
+              isEnd={dateId === dayjs(event.end.date).add(-1, "day").format("YYYY-MM-DD")}
+            >
+              {dateId === event.start.date && event.summary}
             </Event>
           );
         })}
@@ -51,15 +59,26 @@ interface MonthCalendarDateWrapProps {
 }
 
 interface EventProps {
-  backGroundColor: string;
+  isStart: boolean;
+  isEnd: boolean;
 }
 
-const Date = styled.div<{ idDisplayed: boolean }>`
-  display: inline-block;
+const DateWrap = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const Date = styled.div<{ idDisplayed: boolean; isToday: boolean }>`
+  display: flex;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
   padding: 2px;
   margin-bottom: 2px;
   border-radius: 50%;
   ${({ idDisplayed }) => idDisplayed && "background-color: #d2e3fc"};
+  ${({ isToday }) => isToday && "background-color: #1a73e8"};
+  ${({ isToday }) => isToday && "color: #ffffff"};
 
   &:hover {
     cursor: pointer;
@@ -68,13 +87,10 @@ const Date = styled.div<{ idDisplayed: boolean }>`
 
 const MonthCalendarDateWrap = styled.div<MonthCalendarDateWrapProps>`
   overflow: hidden;
-  border: 1px solid black;
-  padding: 0.5rem;
   font-size: 15px;
 
   ${({ isSaturday }) => isSaturday && "color: blue"};
   ${({ isSunday }) => isSunday && "color: red"};
-  ${({ isCurrentMonth }) => !isCurrentMonth && "opacity: 0.4"};
 `;
 
 const Event = styled.div<EventProps>`
@@ -83,9 +99,27 @@ const Event = styled.div<EventProps>`
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
+  height: 20px;
 
   border-radius: 3px;
   margin-bottom: 1px;
   padding: 0 4px;
-  background-color: ${({ backGroundColor }) => backGroundColor && backGroundColor};
+  margin: 3px 0;
+  background-color: rgb(204, 115, 225);
+
+  ${({ isStart, isEnd }) => {
+    if (isStart && isEnd) {
+      return "border-radius: 5px";
+    }
+
+    if (isStart) {
+      return "border-radius: 5px 0 0 5px";
+    }
+
+    if (isEnd) {
+      return "border-radius: 0 5px 5px 0";
+    }
+
+    return "border-radius: 0";
+  }};
 `;
