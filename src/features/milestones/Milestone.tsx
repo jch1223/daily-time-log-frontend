@@ -81,8 +81,8 @@ function Milestone({ openModal }: Props) {
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      e.preventDefault();
                       e.currentTarget.blur();
+                      window.getSelection().removeAllRanges();
                     }
                   }}
                 >
