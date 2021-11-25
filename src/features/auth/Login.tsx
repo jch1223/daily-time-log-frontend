@@ -22,7 +22,7 @@ function Login() {
     ["user", googleAccessToken, email],
     () => createUser(googleAccessToken, email),
     {
-      enabled: !!googleAccessToken,
+      enabled: !!googleAccessToken && !!email,
       retry: false,
       refetchOnWindowFocus: false,
       staleTime: 60 * 1000,
