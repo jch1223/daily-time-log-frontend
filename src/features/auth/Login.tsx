@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
-import firebase from "firebase";
+import firebase from "firebase/compat/app";
 import { useQuery } from "react-query";
 
 import { CgLogOff } from "react-icons/cg";
