@@ -18,7 +18,7 @@ function Login() {
 
   const dispatch = useAppDispatch();
 
-  const { data: signUpData, isSuccess: signUpIsSuccess } = useQuery<any, Error>(
+  const { data: signUpData, isSuccess: signUpIsSuccess } = useQuery(
     ["user", googleAccessToken, email],
     () => createUser(googleAccessToken, email),
     {
@@ -33,16 +33,12 @@ function Login() {
     data: googleSchedulesData,
     isError: googleSchedulesIsError,
     isSuccess: googleSchedulesIsSuccess,
-  } = useQuery<any, Error>(
-    ["schedules", googleAccessToken],
-    () => getSchedules(googleAccessToken),
-    {
-      enabled: !!googleAccessToken,
-      retry: false,
-      refetchOnWindowFocus: false,
-      staleTime: 60 * 1000,
-    },
-  );
+  } = useQuery(["schedules", googleAccessToken], () => getSchedules(googleAccessToken), {
+    enabled: !!googleAccessToken,
+    retry: false,
+    refetchOnWindowFocus: false,
+    staleTime: 60 * 1000,
+  });
 
   useEffect(() => {
     const unregisterAuthObserver = firebase.auth().onAuthStateChanged(async (user) => {
@@ -92,7 +88,6 @@ function Login() {
     callbacks: {
       signInSuccessWithAuthResult: (authResult) => {
         const googleAccessToken = authResult.credential.accessToken;
-
         localStorage.setItem("googleAccessToken", googleAccessToken);
         dispatch(setGoogleAccessToken(googleAccessToken));
 
