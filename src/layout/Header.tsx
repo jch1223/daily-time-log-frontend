@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import dayjs from "dayjs";
-import { AiOutlineMenu } from "react-icons/ai";
 
 import { useAppSelector, useAppDispatch } from "../app/store";
 
@@ -26,9 +25,6 @@ function Header() {
     <HeaderStyled>
       <HeaderWrapper>
         <div className="left">
-          {/* <div className="outline-menu">
-            <AiOutlineMenu style={{ fontSize: "18px" }} />
-          </div> */}
           <div className="align-items-center logo">DAILY TIME LOG</div>
         </div>
 

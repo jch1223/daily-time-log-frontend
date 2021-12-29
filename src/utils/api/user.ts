@@ -1,4 +1,6 @@
 export async function createUser(googleAccessToken: string, email: string) {
+  const mileStones = JSON.parse(localStorage.getItem("milestones"));
+
   const requestOptions = {
     method: "POST",
     headers: {
@@ -7,6 +9,7 @@ export async function createUser(googleAccessToken: string, email: string) {
     },
     body: JSON.stringify({
       email,
+      mileStones,
     }),
   };
 
