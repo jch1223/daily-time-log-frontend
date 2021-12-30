@@ -3,12 +3,20 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import logger from "redux-logger";
 
 import authReducer from "../features/auth/authSlice";
-import settingReducer from "../features/setting/settingSlice";
+import calendarReducer from "../features/calendar/calendarSlice";
+import schedulesReducer from "../features/schedules/schedulesSlice";
+import milestonesReducer from "../features/milestones/milestonesSlice";
+import timeLogReducer from "../features/timeLog/timeLogSlice";
+import goalsReducer from "../features/goals/goalsSlice";
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
-    setting: settingReducer,
+    calendar: calendarReducer,
+    schedules: schedulesReducer,
+    milestones: milestonesReducer,
+    timeLog: timeLogReducer,
+    goals: goalsReducer,
   },
   middleware: (getDefaultMiddleware) => {
     return process.env.REACT_APP_NODE_ENV !== "production"
