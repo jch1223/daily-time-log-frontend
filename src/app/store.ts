@@ -3,12 +3,14 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import logger from "redux-logger";
 
 import authReducer from "../features/auth/authSlice";
+import calendarReducer from "../features/calendar/calendarSlice";
 import settingReducer from "../features/setting/settingSlice";
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
     setting: settingReducer,
+    calendar: calendarReducer,
   },
   middleware: (getDefaultMiddleware) => {
     return process.env.REACT_APP_NODE_ENV !== "production"

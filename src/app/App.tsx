@@ -6,6 +6,7 @@ import { ThemeProvider } from "styled-components";
 
 import { darkTheme, lightTheme } from "../assets/styles/theme";
 import { useAppSelector } from "./store";
+
 import HomePage from "../pages/HomePage";
 
 const queryClient = new QueryClient();

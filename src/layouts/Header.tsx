@@ -1,74 +1,50 @@
 import React from "react";
 import styled from "styled-components";
-import dayjs from "dayjs";
+import { useAppSelector } from "../app/store";
 
-import Login from "../features/auth/Login";
+import GoogleAuth from "../features/auth/GoogleAuth";
 
 function Header() {
+  const name = useAppSelector((state) => state.auth.name);
+
   return (
-    <HeaderStyled>
-      <HeaderWrapper>
-        <div className="left">
-          <div className="align-items-center logo">DAILY TIME LOG</div>
-        </div>
+    <HeaderWrap>
+      <div className="left">
+        <HeaderTitle>DAILY TIME LOG</HeaderTitle>
+      </div>
 
-        <div className="middle" />
+      <div className="middle" />
 
-        <div className="right">
-          <Login />
-        </div>
-      </HeaderWrapper>
-    </HeaderStyled>
+      <div className="right">
+        <div>{name}</div>
+        <GoogleAuth />
+      </div>
+    </HeaderWrap>
   );
 }
 
-const HeaderStyled = styled.header`
-  display: flex;
-  align-items: center;
-  min-height: 92px;
+const HeaderTitle = styled.div`
+  font-size: 1.5rem;
+  color: ${({ theme }) => theme.color.title};
 `;
 
-const HeaderWrapper = styled.div`
+const HeaderWrap = styled.header`
   display: flex;
-  padding: 10px;
   align-items: center;
-  width: 100%;
+  min-height: ${({ theme }) => theme.size.headerHeight};
+  padding: 10px;
 
   .left {
-    display: flex;
-    align-items: center;
     flex: 1 0 auto;
     padding-left: 30px;
     padding-right: 30px;
-    height: 48px;
-
-    .outline-menu {
-      border-radius: 50%;
-      margin: 0 4px;
-      padding: 12px;
-      overflow: hidden;
-      cursor: pointer;
-      height: 18px;
-      width: 18px;
-
-      :hover {
-        background-color: #3c404314;
-      }
-    }
-    .logo {
-      color: #5f6368;
-      font-size: 24px;
-      padding: 10px 0;
-    }
   }
   .middle {
-    display: flex;
     flex: 1 1 100%;
     font-size: 24px;
     align-items: center;
   }
   .right {
-    display: flex;
     flex: 0 0 auto;
   }
 `;
