@@ -12,7 +12,7 @@ interface MonthCalendarDateProps {
 export default function MonthCalendarDate({ dateId }: MonthCalendarDateProps) {
   const displayedDate = useAppSelector((state) => state.calendar.displayed.date);
   const calendarByDateId = useAppSelector((state) => state.calendar.byDateId[dateId]);
-  const { date, isSaturday, isSunday, isToday, isCurrentMonth } = calendarByDateId;
+  const { date, isSaturday, isSunday, isToday, isCurrentMonth, events } = calendarByDateId;
 
   const dispatch = useAppDispatch();
 
@@ -34,6 +34,20 @@ export default function MonthCalendarDate({ dateId }: MonthCalendarDateProps) {
           {date}
         </Date>
       </DateWrap>
+
+      <div>
+        {events.map((event) => {
+          return (
+            <Event
+              key={event.id}
+              isStart={dateId === event.start.date}
+              isEnd={dateId === dayjs(event.end.date).add(-1, "day").format("YYYY-MM-DD")}
+            >
+              {dateId === event.start.date && event.summary}
+            </Event>
+          );
+        })}
+      </div>
     </MonthCalendarDateWrap>
   );
 }

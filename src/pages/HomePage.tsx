@@ -1,83 +1,53 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import { useMutation, useQuery } from "react-query";
+import React, { useEffect } from "react";
+import { useQuery } from "react-query";
 
-import { useAppDispatch, useAppSelector } from "../app/store";
-import { createMilestone, deleteMilestone, updateMilestone } from "../utils/api/milestones";
-import { setMilestoneData } from "../features/goals/goalsSlice";
+import { useAppSelector, useAppDispatch } from "../app/store";
+import { changeMode } from "../features/setting/settingSlice";
+import { logIn } from "../utils/api/user";
 
-import Layout from "../layout";
-import Side from "../layout/Side";
-import CommonModal from "../components/CommonModal";
-import Milestone from "../features/milestones/Milestone";
-import MonthCalendar from "../features/calendar/MonthCalendar";
-import RunningTime from "../features/goals/RunningTime";
-import TimeLog from "../features/timeLog/TimeLog";
-import { Milestone as MilestoneType } from "../features/milestones/milestonesSlice";
+import Layout from "../layouts";
+import Side from "../layouts/Side";
+import Error from "../components/Error";
+import Loading from "../components/Loading";
 
 function HomePage() {
-  const userId = useAppSelector((state) => state.auth.userId);
-  const googleAccessToken = useAppSelector((state) => state.auth.googleAccessToken);
-
-  const [isShowModal, setIsShowModal] = useState(false);
-  const [modalType, setModalType] = useState("");
+  const isLogIn = useAppSelector((state) => state.auth.isLogIn);
+  const { email, name } = useAppSelector((state) => state.auth);
+  const { themeMode } = useAppSelector((state) => state.setting);
 
   const dispatch = useAppDispatch();
 
-  const { isLoading, isError, data, error } = useQuery(
-    ["getMilestone", userId],
-    async () => {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_SERVER}/users/${userId}/milestones`,
-      );
-      return response.json();
-    },
-    {
-      enabled: !!userId,
-      retry: false,
-      refetchOnWindowFocus: false,
-    },
-  );
+  const {
+    isError,
+    isLoading,
+    data: userData,
+  } = useQuery("user", () => logIn({ email, name, themeMode, mileStones: [] }), {
+    enabled: isLogIn,
+    retry: false,
+    refetchOnWindowFocus: false,
+    staleTime: 60 * 1000,
+  });
 
-  const createMilestoneMutation = useMutation(createMilestone);
-  const updateMilestoneMutation = useMutation(updateMilestone);
-  const deleteMilestoneMutation = useMutation(deleteMilestone);
+  useEffect(() => {
+    if (userData) {
+      dispatch(changeMode({ themeMode: userData.data.themeMode }));
+    }
+  }, [userData]);
 
   if (isError) {
-    alert("error가 발생했습니다.");
+    return <Error />;
   }
 
-  const onClickModalHandler = (modalType: string, milestoneData: MilestoneType) => () => {
-    setIsShowModal(true);
-    setModalType(modalType);
-    dispatch(setMilestoneData(milestoneData));
-  };
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <Layout>
-      <ContentWrap>
-        <Side>
-          <MonthCalendar />
-        </Side>
-
-        <Milestone openModal={onClickModalHandler} />
-        <TimeLog />
-      </ContentWrap>
-
-      <CommonModal
-        id="modal"
-        isShowModal={isShowModal}
-        onBackgroundClick={() => setIsShowModal(false)}
-      >
-        {modalType === "runningGoal" && <RunningTime onPauseClick={() => setIsShowModal(false)} />}
-      </CommonModal>
+      <Side>side layout</Side>
+      content
     </Layout>
   );
 }
-
-const ContentWrap = styled.div`
-  width: 100%;
-  display: flex;
-`;
 
 export default HomePage;

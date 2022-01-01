@@ -1,7 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import dayjs from "dayjs";
 
+import type { RootState } from "../../app/store";
 import { createCalendarData } from "../../utils/createCalendar";
+import { ScheduleInfo } from "../schedules/schedulesSlice";
 
 export interface CalendarState {
   displayed: DateInfo | null;
@@ -18,16 +20,17 @@ export interface DateInfo {
   timezone?: string;
 }
 
-export interface ByDateId {
-  [key: string]: DateDetailInfo;
-}
-
 interface DateDetailInfo extends DateInfo {
   id: string;
   isCurrentMonth: boolean;
   isToday: boolean;
   isSunday: boolean;
   isSaturday: boolean;
+  events: ScheduleInfo[];
+}
+
+export interface ByDateId {
+  [key: string]: DateDetailInfo;
 }
 
 const initialState: CalendarState = {
@@ -35,6 +38,11 @@ const initialState: CalendarState = {
   byDateId: {},
   displayed: null,
 };
+
+interface EventPayLoad {
+  dateId: string;
+  event: ScheduleInfo;
+}
 
 const calendarSlice = createSlice({
   name: "calendar",
@@ -46,6 +54,28 @@ const calendarSlice = createSlice({
       state.displayed = action.payload;
       state.allDatesId = calendarAllDatesId;
       state.byDateId = calendarByDateId;
+    },
+    setEvent: (state, action: PayloadAction<ScheduleInfo[]>) => {
+      const schedulesData = action.payload;
+
+      for (let i = 0; i < schedulesData.length; i++) {
+        if (schedulesData[i].start.date) {
+          const startDate = dayjs(schedulesData[i].start.date);
+          const endDate = dayjs(schedulesData[i].end.date);
+
+          const dateDiff =
+            endDate.diff(startDate.format("YYYY-MM-DD"), "date") / (1000 * 60 * 60 * 24);
+
+          for (let j = 0; j < dateDiff; j++) {
+            const dateId = startDate.set({ date: startDate.date() + j }).format("YYYY-MM-DD");
+            const event = schedulesData[i];
+
+            if (state.byDateId[dateId]) {
+              state.byDateId[dateId].events = [...state.byDateId[dateId].events, event];
+            }
+          }
+        }
+      }
     },
     nextMonth: (state) => {
       state.displayed.month += 1;
@@ -67,6 +97,8 @@ const calendarSlice = createSlice({
   },
 });
 
-export const { init, nextMonth, prevMonth, setDisplayedDate } = calendarSlice.actions;
+export const { init, setEvent, nextMonth, prevMonth, setDisplayedDate } = calendarSlice.actions;
+
+export const selectCalendar = (state: RootState) => state.calendar;
 
 export default calendarSlice.reducer;

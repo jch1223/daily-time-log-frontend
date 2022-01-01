@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 
-import usePortal from "../utils/hooks/usePortal";
+import usePortal from "../hooks/usePortal";
 
 export default function Portal({ id, children }) {
   const target = usePortal(id);
