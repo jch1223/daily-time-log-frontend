@@ -2,13 +2,12 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import dayjs from "dayjs";
 
 import { createCalendarData } from "../../utils/createCalendar";
+import { ScheduleInfo } from "../schedules/schedulesSlice";
 
 export interface CalendarState {
   displayed: DateInfo | null;
   allDatesId?: string[];
-  byDateId: {
-    [dateId: string]: DateDetailInfo;
-  };
+  byDateId: ByDateId;
 }
 
 export interface DateInfo {
@@ -28,6 +27,7 @@ interface DateDetailInfo extends DateInfo {
   isToday: boolean;
   isSunday: boolean;
   isSaturday: boolean;
+  schedules: string[];
 }
 
 const initialState: CalendarState = {
@@ -65,9 +65,31 @@ const calendarSlice = createSlice({
       state.displayed.date = action.payload.date;
       state.displayed.month = action.payload.month;
     },
+    addEvents: (state, action: PayloadAction<ScheduleInfo[]>) => {
+      const schedulesData = action.payload;
+
+      for (let i = 0; i < schedulesData.length; i++) {
+        if (schedulesData[i].start.date) {
+          const startDate = dayjs(schedulesData[i].start.date);
+          const endDate = dayjs(schedulesData[i].end.date);
+
+          const dateDiff =
+            endDate.diff(startDate.format("YYYY-MM-DD"), "date") / (1000 * 60 * 60 * 24);
+
+          for (let j = 0; j < dateDiff; j++) {
+            const dateId = startDate.set({ date: startDate.date() + j }).format("YYYY-MM-DD");
+            const event = schedulesData[i];
+
+            if (state.byDateId[dateId]) {
+              state.byDateId[dateId].schedules = [...state.byDateId[dateId].schedules, event.id];
+            }
+          }
+        }
+      }
+    },
   },
 });
 
-export const { init, nextMonth, prevMonth, setDisplayedDate } = calendarSlice.actions;
+export const { init, nextMonth, prevMonth, setDisplayedDate, addEvents } = calendarSlice.actions;
 
 export default calendarSlice.reducer;

@@ -21,7 +21,8 @@ export const lightTheme: DefaultTheme = {
   color: {
     border: palette.lightGray,
     title: palette.gray,
-    font: palette.white,
+    buttonFont: palette.white,
+    font: palette.black,
   },
   size,
 };
@@ -31,6 +32,7 @@ export const darkTheme: DefaultTheme = {
   color: {
     border: palette.lightGray,
     title: palette.gray,
+    buttonFont: palette.black,
     font: palette.black,
   },
   size,

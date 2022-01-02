@@ -10,18 +10,21 @@ import Side from "../layouts/Side";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
 import MonthCalendar from "../features/calendar/MonthCalendar";
+import { getSchedules } from "../utils/api/schedules";
+import { addGoogleSchedules } from "../features/schedules/schedulesSlice";
+import { addEvents } from "../features/calendar/calendarSlice";
 
 function HomePage() {
   const isLogIn = useAppSelector((state) => state.auth.isLogIn);
-  const { email, name } = useAppSelector((state) => state.auth);
+  const { email, name, googleAccessToken } = useAppSelector((state) => state.auth);
   const { themeMode } = useAppSelector((state) => state.setting);
 
   const dispatch = useAppDispatch();
 
   const {
-    isError,
-    isLoading,
     data: userData,
+    isError: isErrorForLogin,
+    isLoading: isLoadingForLogin,
   } = useQuery("user", () => logIn({ email, name, themeMode, mileStones: [] }), {
     enabled: isLogIn,
     retry: false,
@@ -29,17 +32,35 @@ function HomePage() {
     staleTime: 60 * 1000,
   });
 
+  const { data: googleSchedulesData, isError: IsErrorForGoogleSchedules } = useQuery(
+    "schedules",
+    () => getSchedules(googleAccessToken),
+    {
+      enabled: !!googleAccessToken,
+      retry: false,
+      refetchOnWindowFocus: false,
+      staleTime: 60 * 1000,
+    },
+  );
+
   useEffect(() => {
     if (userData) {
       dispatch(changeMode({ themeMode: userData.data.themeMode }));
     }
   }, [userData]);
 
-  if (isError) {
+  useEffect(() => {
+    if (googleSchedulesData) {
+      dispatch(addGoogleSchedules(googleSchedulesData.items));
+      dispatch(addEvents(googleSchedulesData.items));
+    }
+  }, [googleSchedulesData]);
+
+  if (isErrorForLogin && IsErrorForGoogleSchedules) {
     return <Error />;
   }
 
-  if (isLoading) {
+  if (isLoadingForLogin) {
     return <Loading />;
   }
 

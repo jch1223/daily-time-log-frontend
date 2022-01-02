@@ -16,6 +16,7 @@ declare module "styled-components" {
     color: {
       border: string;
       title: string;
+      buttonFont: string;
       font: string;
     };
     size: {
