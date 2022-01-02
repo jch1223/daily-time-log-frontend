@@ -1,6 +1,6 @@
+import React, { memo, useEffect } from "react";
 import dayjs from "dayjs";
-import React from "react";
-import styled from "styled-components";
+import styled, { DefaultTheme } from "styled-components";
 
 import { useAppDispatch, useAppSelector } from "../../app/store";
 import { setDisplayedDate } from "./calendarSlice";
@@ -9,44 +9,34 @@ interface MonthCalendarDateProps {
   dateId: string;
 }
 
-export default function MonthCalendarDate({ dateId }: MonthCalendarDateProps) {
+interface Date {
+  backgroundColor: keyof DefaultTheme["palette"];
+  color: keyof DefaultTheme["palette"];
+}
+
+function MonthCalendarDate({ dateId }: MonthCalendarDateProps) {
   const displayedDate = useAppSelector((state) => state.calendar.displayed.date);
+  const displayedMonth = useAppSelector((state) => state.calendar.displayed.month);
   const calendarByDateId = useAppSelector((state) => state.calendar.byDateId[dateId]);
-  const { date, isSaturday, isSunday, isToday, isCurrentMonth } = calendarByDateId;
+
+  const { date, month, isSaturday, isSunday, isToday } = calendarByDateId;
+  const isDisplayed = displayedDate === date && displayedMonth === month;
 
   const dispatch = useAppDispatch();
 
   return (
-    <MonthCalendarDateWrap
-      className="date"
-      isSaturday={isSaturday}
-      isSunday={isSunday}
-      isCurrentMonth={isCurrentMonth}
-    >
-      <DateWrap>
-        <Date
-          idDisplayed={displayedDate === date}
-          isToday={isToday}
-          onClick={() => {
-            dispatch(setDisplayedDate(date));
-          }}
-        >
-          {date}
-        </Date>
-      </DateWrap>
-    </MonthCalendarDateWrap>
+    <DateWrap>
+      <Date
+        color={(isToday && "white") || (isSaturday && "blue") || (isSunday && "pink") || "black"}
+        backgroundColor={(isToday && "blue") || (isDisplayed && "lightblue") || "white"}
+        onClick={() => {
+          dispatch(setDisplayedDate({ month, date }));
+        }}
+      >
+        {date}
+      </Date>
+    </DateWrap>
   );
-}
-
-interface MonthCalendarDateWrapProps {
-  isSaturday: boolean;
-  isSunday: boolean;
-  isCurrentMonth: boolean;
-}
-
-interface EventProps {
-  isStart: boolean;
-  isEnd: boolean;
 }
 
 const DateWrap = styled.div`
@@ -54,7 +44,7 @@ const DateWrap = styled.div`
   justify-content: center;
 `;
 
-const Date = styled.div<{ idDisplayed: boolean; isToday: boolean }>`
+const Date = styled.div<Date>`
   display: flex;
   justify-content: center;
   width: 20px;
@@ -62,22 +52,20 @@ const Date = styled.div<{ idDisplayed: boolean; isToday: boolean }>`
   padding: 2px;
   margin-bottom: 2px;
   border-radius: 50%;
-  ${({ idDisplayed }) => idDisplayed && "background-color: #d2e3fc"};
-  ${({ isToday }) => isToday && "background-color: #1a73e8"};
-  ${({ isToday }) => isToday && "color: #ffffff"};
+  font-size: 0.9rem;
+
+  color: ${({ theme, color }) => theme.palette[color]};
+  background-color: ${({ theme, backgroundColor }) => theme.palette[backgroundColor]};
 
   &:hover {
     cursor: pointer;
   }
 `;
 
-const MonthCalendarDateWrap = styled.div<MonthCalendarDateWrapProps>`
-  overflow: hidden;
-  font-size: 15px;
-
-  ${({ isSaturday }) => isSaturday && "color: blue"};
-  ${({ isSunday }) => isSunday && "color: red"};
-`;
+interface EventProps {
+  isStart: boolean;
+  isEnd: boolean;
+}
 
 const Event = styled.div<EventProps>`
   color: black;
@@ -109,3 +97,5 @@ const Event = styled.div<EventProps>`
     return "border-radius: 0";
   }};
 `;
+
+export default memo(MonthCalendarDate);

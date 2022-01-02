@@ -5,6 +5,7 @@ declare module "styled-components" {
     palette: {
       lightGray: string;
       gray: string;
+      lightblue: string;
       blue: string;
       darkblue: string;
       pink: string;

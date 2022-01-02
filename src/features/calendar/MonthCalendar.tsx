@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import { shallowEqual } from "react-redux";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import dayjs from "dayjs";
 
 import { useAppSelector, useAppDispatch } from "../../app/store";
@@ -10,8 +9,8 @@ import MonthCalendarDate from "./MonthCalendarDate";
 export const WEEKS = ["일", "월", "화", "수", "목", "금", "토"];
 
 function MonthCalendar() {
-  const displayed = useAppSelector((state) => state.calendar.displayed);
-  const allDatesId = useAppSelector((state) => state.calendar.allDatesId, shallowEqual);
+  // const displayed = useAppSelector((state) => state.calendar.displayed);
+  const allDatesId = useAppSelector((state) => state.calendar.allDatesId);
 
   const dispatch = useAppDispatch();
 
@@ -29,19 +28,34 @@ function MonthCalendar() {
 
   return (
     <MonthCalenderWrap>
-      <MonthCalenderViewWrap>
+      <MonthCalendarDays>
+        {WEEKS.map((day) => {
+          return <span key={day}>{day}</span>;
+        })}
+      </MonthCalendarDays>
+      <MonthCalenderDates>
         {allDatesId?.map((dateId) => {
           return <MonthCalendarDate key={dateId} dateId={dateId} />;
         })}
-      </MonthCalenderViewWrap>
+      </MonthCalenderDates>
     </MonthCalenderWrap>
   );
 }
 
-const MonthCalenderViewWrap = styled.div`
+const gridColumns = css`
   display: grid;
-  height: 100%;
   grid-template-columns: repeat(7, 1fr);
+`;
+
+const MonthCalendarDays = styled.div`
+  ${gridColumns}
+  justify-items: center;
+  font-size: 13px;
+`;
+
+const MonthCalenderDates = styled.div`
+  ${gridColumns}
+  height: 100%;
   grid-template-rows: repeat(6, 1fr);
 `;
 
