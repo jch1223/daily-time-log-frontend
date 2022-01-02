@@ -12,7 +12,7 @@ export interface CalendarState {
 }
 
 export interface DateInfo {
-  year: number;
+  year?: number;
   month: number;
   date: number;
   timezone?: string;
@@ -61,8 +61,9 @@ const calendarSlice = createSlice({
       state.allDatesId = calendarAllDatesId;
       state.byDateId = calendarByDateId;
     },
-    setDisplayedDate: (state, action: PayloadAction<number>) => {
-      state.displayed.date = action.payload;
+    setDisplayedDate: (state, action: PayloadAction<DateInfo>) => {
+      state.displayed.date = action.payload.date;
+      state.displayed.month = action.payload.month;
     },
   },
 });

@@ -9,6 +9,7 @@ import Layout from "../layouts";
 import Side from "../layouts/Side";
 import Error from "../components/Error";
 import Loading from "../components/Loading";
+import MonthCalendar from "../features/calendar/MonthCalendar";
 
 function HomePage() {
   const isLogIn = useAppSelector((state) => state.auth.isLogIn);
@@ -44,7 +45,9 @@ function HomePage() {
 
   return (
     <Layout>
-      <Side>side layout</Side>
+      <Side>
+        <MonthCalendar />
+      </Side>
       content
     </Layout>
   );
