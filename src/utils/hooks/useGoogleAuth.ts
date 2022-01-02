@@ -5,6 +5,7 @@ import { logIn, logOut } from "../../features/auth/authSlice";
 
 function useGoogleAuth() {
   const googleAuth = useRef(null);
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -26,7 +27,6 @@ function useGoogleAuth() {
         const userData = googleAuth.current.currentUser.get();
         const basicProfile = userData.getBasicProfile();
         const authResponse = userData.getAuthResponse(true);
-
         dispatch(
           logIn({
             isLogIn: true,
@@ -44,7 +44,15 @@ function useGoogleAuth() {
     window.gapi.load("client:auth2", initClient);
   }, []);
 
-  return { googleAuth };
+  const googleSignIn = () => {
+    googleAuth.current.signIn();
+  };
+
+  const googleSignOut = () => {
+    googleAuth.current.signOut();
+  };
+
+  return { googleSignIn, googleSignOut };
 }
 
 export default useGoogleAuth;
