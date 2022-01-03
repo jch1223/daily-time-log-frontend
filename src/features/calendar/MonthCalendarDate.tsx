@@ -1,10 +1,11 @@
-import dayjs from "dayjs";
 import React, { memo } from "react";
+import dayjs from "dayjs";
 import styled, { DefaultTheme } from "styled-components";
 
 import { useAppDispatch, useAppSelector } from "../../app/store";
 import Schedule from "../schedules/Schedule";
 import { setDisplayedDate } from "./calendarSlice";
+import { FlexDirectionColumn } from "../../assets/styles/utilsStyled";
 
 interface MonthCalendarDateProps {
   dateId: string;
@@ -27,7 +28,7 @@ function MonthCalendarDate({ dateId }: MonthCalendarDateProps) {
   const dispatch = useAppDispatch();
 
   return (
-    <div>
+    <FlexDirectionColumn>
       <DateWrap>
         <Date
           color={(isToday && "white") || (isSaturday && "blue") || (isSunday && "pink") || "black"}
@@ -40,28 +41,33 @@ function MonthCalendarDate({ dateId }: MonthCalendarDateProps) {
         </Date>
       </DateWrap>
 
-      {schedules.map((scheduleId) => {
-        const startDate = schedulesById[scheduleId].start.date;
-        const endDate = dayjs(schedulesById[scheduleId].end.date)
-          .add(-1, "day")
-          .format("YYYY-MM-DD");
+      <ScheduleWrap>
+        {schedules.map((scheduleId, index) => {
+          const startDate = schedulesById[scheduleId].start.date;
+          const endDate = dayjs(schedulesById[scheduleId].end.date)
+            .add(-1, "day")
+            .format("YYYY-MM-DD");
 
-        return (
-          <Schedule
-            key={scheduleId}
-            isStart={dateId === startDate}
-            isEnd={dateId === endDate}
-            summary={schedulesById[scheduleId].summary}
-          />
-        );
-      })}
-    </div>
+          return (
+            <Schedule
+              key={scheduleId}
+              isStart={dateId === startDate}
+              isEnd={dateId === endDate}
+              summary={dateId === startDate && schedulesById[scheduleId].summary}
+              position={index}
+            />
+          );
+        })}
+      </ScheduleWrap>
+    </FlexDirectionColumn>
   );
 }
 
-const DateWrap = styled.div`
-  display: flex;
-  justify-content: center;
+const ScheduleWrap = styled.div`
+  position: relative;
+  padding-top: 2px;
+  height: 100%;
+  overflow: hidden;
 `;
 
 const Date = styled.div<Date>`
@@ -80,6 +86,11 @@ const Date = styled.div<Date>`
   &:hover {
     cursor: pointer;
   }
+`;
+
+const DateWrap = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 
 export default memo(MonthCalendarDate);

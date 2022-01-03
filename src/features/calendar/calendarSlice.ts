@@ -65,7 +65,7 @@ const calendarSlice = createSlice({
       state.displayed.date = action.payload.date;
       state.displayed.month = action.payload.month;
     },
-    addEvents: (state, action: PayloadAction<ScheduleInfo[]>) => {
+    addSchedules: (state, action: PayloadAction<ScheduleInfo[]>) => {
       const schedulesData = action.payload;
 
       for (let i = 0; i < schedulesData.length; i++) {
@@ -76,12 +76,17 @@ const calendarSlice = createSlice({
           const dateDiff =
             endDate.diff(startDate.format("YYYY-MM-DD"), "date") / (1000 * 60 * 60 * 24);
 
+          let position = 0;
+
           for (let j = 0; j < dateDiff; j++) {
             const dateId = startDate.set({ date: startDate.date() + j }).format("YYYY-MM-DD");
-            const event = schedulesData[i];
+            const schedule = schedulesData[i];
 
             if (state.byDateId[dateId]) {
-              state.byDateId[dateId].schedules = [...state.byDateId[dateId].schedules, event.id];
+              while (state.byDateId[dateId].schedules[position]) {
+                position += 1;
+              }
+              state.byDateId[dateId].schedules[position] = schedule.id;
             }
           }
         }
@@ -90,6 +95,6 @@ const calendarSlice = createSlice({
   },
 });
 
-export const { init, nextMonth, prevMonth, setDisplayedDate, addEvents } = calendarSlice.actions;
+export const { init, nextMonth, prevMonth, setDisplayedDate, addSchedules } = calendarSlice.actions;
 
 export default calendarSlice.reducer;

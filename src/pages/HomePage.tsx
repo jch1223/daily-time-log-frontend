@@ -11,8 +11,8 @@ import Error from "../components/Error";
 import Loading from "../components/Loading";
 import MonthCalendar from "../features/calendar/MonthCalendar";
 import { getSchedules } from "../utils/api/schedules";
-import { addGoogleSchedules } from "../features/schedules/schedulesSlice";
-import { addEvents } from "../features/calendar/calendarSlice";
+import { addGoogleSchedules, ScheduleInfo } from "../features/schedules/schedulesSlice";
+import { addSchedules } from "../features/calendar/calendarSlice";
 
 function HomePage() {
   const isLogIn = useAppSelector((state) => state.auth.isLogIn);
@@ -51,8 +51,12 @@ function HomePage() {
 
   useEffect(() => {
     if (googleSchedulesData) {
+      googleSchedulesData.items.sort((a: ScheduleInfo, b: ScheduleInfo) => {
+        return new Date(a.start.date).getTime() - new Date(b.start.date).getTime();
+      });
+
       dispatch(addGoogleSchedules(googleSchedulesData.items));
-      dispatch(addEvents(googleSchedulesData.items));
+      dispatch(addSchedules(googleSchedulesData.items));
     }
   }, [googleSchedulesData]);
 

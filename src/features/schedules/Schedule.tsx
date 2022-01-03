@@ -1,16 +1,17 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 interface ScheduleProps {
   isStart: boolean;
   isEnd: boolean;
   summary: string;
+  position: number;
 }
 
-function Schedule({ isStart, isEnd, summary }: ScheduleProps) {
+function Schedule({ isStart, isEnd, summary, position }: ScheduleProps) {
   return (
-    <ScheduleStyled isStart={isStart} isEnd={isEnd}>
-      {summary}
+    <ScheduleStyled isStart={isStart} isEnd={isEnd} position={position}>
+      <Summary>{summary}</Summary>
     </ScheduleStyled>
   );
 }
@@ -18,36 +19,52 @@ function Schedule({ isStart, isEnd, summary }: ScheduleProps) {
 interface ScheduleStyledProps {
   isStart: boolean;
   isEnd: boolean;
+  position: number;
 }
 
-const ScheduleStyled = styled.div<ScheduleStyledProps>`
-  color: ${({ theme }) => theme.color.font};
+const Summary = styled.div`
+  padding-left: 8px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  cursor: pointer;
-  height: 20px;
+`;
 
+const ScheduleStyled = styled.div<ScheduleStyledProps>`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  margin-top: ${({ position }) => `${position * 22}px`};
+  width: 100%;
+  height: 20px;
+  color: ${({ theme }) => theme.color.font};
   border-radius: 3px;
-  margin-bottom: 1px;
-  padding: 0 4px;
-  margin: 3px 0;
-  background-color: rgb(204, 115, 225);
+  background-color: ${({ theme }) => theme.color.scheduleBackground};
+  cursor: pointer;
 
   ${({ isStart, isEnd }) => {
     if (isStart && isEnd) {
-      return "border-radius: 5px";
+      return css`
+        border-radius: 5px;
+        width: 90%;
+      `;
     }
 
     if (isStart) {
-      return "border-radius: 5px 0 0 5px";
+      return css`
+        border-radius: 5px 0 0 5px;
+      `;
     }
 
     if (isEnd) {
-      return "border-radius: 0 5px 5px 0";
+      return css`
+        border-radius: 0 5px 5px 0;
+        width: 90%;
+      `;
     }
 
-    return "border-radius: 0";
+    return css`
+      border-radius: 0;
+    `;
   }};
 `;
 
