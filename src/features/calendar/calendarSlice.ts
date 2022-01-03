@@ -2,13 +2,12 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import dayjs from "dayjs";
 
 import { createCalendarData } from "../../utils/createCalendar";
+import { ScheduleInfo } from "../schedules/schedulesSlice";
 
 export interface CalendarState {
   displayed: DateInfo | null;
   allDatesId?: string[];
-  byDateId: {
-    [dateId: string]: DateDetailInfo;
-  };
+  byDateId: ByDateId;
 }
 
 export interface DateInfo {
@@ -28,6 +27,8 @@ interface DateDetailInfo extends DateInfo {
   isToday: boolean;
   isSunday: boolean;
   isSaturday: boolean;
+  schedules: string[];
+  runningTimes: string[];
 }
 
 const initialState: CalendarState = {
@@ -65,9 +66,36 @@ const calendarSlice = createSlice({
       state.displayed.date = action.payload.date;
       state.displayed.month = action.payload.month;
     },
+    addSchedules: (state, action: PayloadAction<ScheduleInfo[]>) => {
+      const schedulesData = action.payload;
+
+      for (let i = 0; i < schedulesData.length; i++) {
+        if (schedulesData[i].start.date) {
+          const startDate = dayjs(schedulesData[i].start.date);
+          const endDate = dayjs(schedulesData[i].end.date);
+
+          const dateDiff =
+            endDate.diff(startDate.format("YYYY-MM-DD"), "date") / (1000 * 60 * 60 * 24);
+
+          let position = 0;
+
+          for (let j = 0; j < dateDiff; j++) {
+            const dateId = startDate.set({ date: startDate.date() + j }).format("YYYY-MM-DD");
+            const schedule = schedulesData[i];
+
+            if (state.byDateId[dateId]) {
+              while (state.byDateId[dateId].schedules[position]) {
+                position += 1;
+              }
+              state.byDateId[dateId].schedules[position] = schedule.id;
+            }
+          }
+        }
+      }
+    },
   },
 });
 
-export const { init, nextMonth, prevMonth, setDisplayedDate } = calendarSlice.actions;
+export const { init, nextMonth, prevMonth, setDisplayedDate, addSchedules } = calendarSlice.actions;
 
 export default calendarSlice.reducer;

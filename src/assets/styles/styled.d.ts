@@ -8,6 +8,7 @@ declare module "styled-components" {
       lightblue: string;
       blue: string;
       darkblue: string;
+      lightpink: string;
       pink: string;
       darkpink: string;
       black: string;
@@ -16,7 +17,9 @@ declare module "styled-components" {
     color: {
       border: string;
       title: string;
+      buttonFont: string;
       font: string;
+      scheduleBackground: string;
     };
     size: {
       headerHeight: string;

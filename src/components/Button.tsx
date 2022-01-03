@@ -64,7 +64,7 @@ const StyledButton = styled.button`
   outline: none;
   border: none;
   border-radius: 4px;
-  color: ${({ theme }) => theme.color.font};
+  color: ${({ theme }) => theme.color.buttonFont};
   cursor: pointer;
   padding-left: 1rem;
   padding-right: 1rem;

@@ -4,13 +4,17 @@ import logger from "redux-logger";
 
 import authReducer from "../features/auth/authSlice";
 import calendarReducer from "../features/calendar/calendarSlice";
+import schedulesReducer from "../features/schedules/schedulesSlice";
+import milestonesReducer from "../features/milestones/milestonesSlice";
 import settingReducer from "../features/setting/settingSlice";
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
-    setting: settingReducer,
     calendar: calendarReducer,
+    schedules: schedulesReducer,
+    milestones: milestonesReducer,
+    setting: settingReducer,
   },
   middleware: (getDefaultMiddleware) => {
     return process.env.REACT_APP_NODE_ENV !== "production"

@@ -9,28 +9,20 @@ function GoogleAuth() {
   const isLogIn = useAppSelector((state) => state.auth.isLogIn);
   const isLoading = useAppSelector((state) => state.auth.isLoading);
 
-  const { googleAuth } = useGoogleAuth();
-
-  const handleAuthClick = () => {
-    googleAuth.current.signIn();
-  };
-
-  const handleSignOutClick = () => {
-    googleAuth.current.signOut();
-  };
+  const { googleSignIn, googleSignOut } = useGoogleAuth();
 
   return (
-    <>
+    <div>
       {!isLoading && (
         <Button
           color={isLogIn ? "pink" : "blue"}
           size="medium"
-          onClick={isLogIn ? handleSignOutClick : handleAuthClick}
+          onClick={isLogIn ? googleSignOut : googleSignIn}
         >
           {isLogIn ? "Log Out" : "Log In"}
         </Button>
       )}
-    </>
+    </div>
   );
 }
 
