@@ -1,4 +1,5 @@
 import { useServer } from "../../config/api";
+import { MilestoneType } from "../../features/milestones/milestonesSlice";
 
 export async function logIn<T>(body: T) {
   if (useServer) {
@@ -25,11 +26,13 @@ export async function logIn<T>(body: T) {
     return response.json();
   }
 
-  const themeMode = localStorage.get("themeMode") || "light";
+  const themeMode = localStorage.getItem("themeMode") || "light";
+  const milestones: MilestoneType[] = JSON.parse(localStorage.getItem("milestones")) || [];
 
   return {
     data: {
       themeMode,
+      milestones,
     },
   };
 }

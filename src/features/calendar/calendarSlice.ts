@@ -28,6 +28,7 @@ interface DateDetailInfo extends DateInfo {
   isSunday: boolean;
   isSaturday: boolean;
   schedules: string[];
+  runningTimes: string[];
 }
 
 const initialState: CalendarState = {

@@ -36,6 +36,7 @@ export const createCalendarData = ({ year, month: currentMonth, date, timezone }
       isSunday: i % DAYS_IN_WEEK === 0,
       isSaturday: false,
       schedules: [],
+      runningTimes: [],
     };
   }
 
@@ -54,6 +55,7 @@ export const createCalendarData = ({ year, month: currentMonth, date, timezone }
       isSunday: (currentMonthFirstDay + i) % DAYS_IN_WEEK === 0,
       isSaturday: (currentMonthFirstDay + i) % DAYS_IN_WEEK === 6,
       schedules: [],
+      runningTimes: [],
     };
   }
 
@@ -82,6 +84,7 @@ export const createCalendarData = ({ year, month: currentMonth, date, timezone }
       isSunday: (firstDay + i) % DAYS_IN_WEEK === 0,
       isSaturday: (firstDay + i) % DAYS_IN_WEEK === 6,
       schedules: [],
+      runningTimes: [],
     };
   }
 
