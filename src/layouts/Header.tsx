@@ -31,8 +31,10 @@ const HeaderTitle = styled.div`
 const HeaderWrap = styled.header`
   display: flex;
   align-items: center;
+  box-sizing: border-box;
   min-height: ${({ theme }) => theme.size.headerHeight};
   padding: 10px;
+  border-bottom: 1px solid ${({ theme }) => theme.color.border};
 
   .left {
     flex: 1 0 auto;

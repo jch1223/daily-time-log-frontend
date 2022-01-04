@@ -6,6 +6,7 @@ import authReducer from "../features/auth/authSlice";
 import calendarReducer from "../features/calendar/calendarSlice";
 import schedulesReducer from "../features/schedules/schedulesSlice";
 import milestonesReducer from "../features/milestones/milestonesSlice";
+import timeLogReducer from "../features/timeLog/timeLogSlice";
 import settingReducer from "../features/setting/settingSlice";
 
 const store = configureStore({
@@ -14,6 +15,7 @@ const store = configureStore({
     calendar: calendarReducer,
     schedules: schedulesReducer,
     milestones: milestonesReducer,
+    timeLog: timeLogReducer,
     setting: settingReducer,
   },
   middleware: (getDefaultMiddleware) => {

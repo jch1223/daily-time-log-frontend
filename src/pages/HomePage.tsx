@@ -12,9 +12,9 @@ import { getSchedules } from "../utils/api/schedules";
 import Layout from "../layouts";
 import Side from "../layouts/Side";
 import Error from "../components/Error";
-import Loading from "../components/Loading";
 import MonthCalendar from "../features/calendar/MonthCalendar";
 import Milestone from "../features/milestones/Milestone";
+import TimeLog from "../features/timeLog/TimeLog";
 
 function HomePage() {
   const isLogIn = useAppSelector((state) => state.auth.isLogIn);
@@ -76,6 +76,7 @@ function HomePage() {
       </Side>
 
       <Milestone />
+      <TimeLog />
     </Layout>
   );
 }

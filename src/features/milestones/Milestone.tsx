@@ -139,13 +139,14 @@ function Milestone() {
 const Title = styled.div`
   display: flex;
   justify-content: space-between;
-  font-size: 24px;
+  font-size: 1.4rem;
 `;
 
 const MilestoneWrap = styled.div`
   width: 20%;
-  padding: 20px;
-  border-right: 1px solid #e4e4e4;
+  padding: 15px;
+  box-sizing: border-box;
+
   [contenteditable="true"]:empty:before {
     content: attr(placeholder);
     color: #c4c4c4;

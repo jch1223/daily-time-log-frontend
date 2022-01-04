@@ -63,6 +63,7 @@ const MonthCalenderWrap = styled.div`
   display: flex;
   height: 100%;
   flex-direction: column;
+  padding: 15px;
 `;
 
 export default MonthCalendar;

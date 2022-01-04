@@ -18,8 +18,7 @@ function index({ children }: Props) {
 
 const Main = styled.main`
   display: flex;
-  border-top: 1px solid ${({ theme }) => theme.color.border};
-  height: calc(100vh - 92px);
+  height: calc(100vh - 1px - ${({ theme }) => theme.size.headerHeight});
 `;
 
 export default index;

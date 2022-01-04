@@ -14,7 +14,7 @@ const palette = {
 };
 
 const size = {
-  headerHeight: "60px",
+  headerHeight: "75px",
 };
 
 export const lightTheme: DefaultTheme = {
