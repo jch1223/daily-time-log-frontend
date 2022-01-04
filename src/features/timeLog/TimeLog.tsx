@@ -13,9 +13,6 @@ function TimeLog() {
   const allHourIds = useAppSelector((state) => state.timeLog.allHourIds);
   const byHourId = useAppSelector((state) => state.timeLog.byHourId);
 
-  const month = dayjs().set(displayed).month() + 1;
-  const day = dayjs().set(displayed).day();
-
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -26,7 +23,7 @@ function TimeLog() {
     <TimeLogWrap>
       <Title>TIMETABLE</Title>
 
-      <div className="time-table">
+      <TimeTable>
         {allHourIds?.map((hourId) => {
           return (
             <HourWrap key={hourId}>
@@ -34,20 +31,19 @@ function TimeLog() {
               <MinuteWrap>
                 {Object.keys(byHourId[hourId])?.map((minuteId) => {
                   return (
-                    <div
+                    <Minute
                       style={{ backgroundColor: byHourId[hourId][minuteId].color }}
                       key={minuteId}
-                      className="flex-1"
                     >
                       {" "}
-                    </div>
+                    </Minute>
                   );
                 })}
               </MinuteWrap>
             </HourWrap>
           );
         })}
-      </div>
+      </TimeTable>
     </TimeLogWrap>
   );
 }
@@ -59,17 +55,21 @@ const Title = styled.div`
   padding-bottom: 10px;
 `;
 
+const Minute = styled.div`
+  flex: 1;
+
+  &:nth-child(10n) {
+    border-right: 1px solid rgb(228, 228, 228);
+  }
+
+  &:last-child {
+    border: none;
+  }
+`;
+
 const MinuteWrap = styled.div`
   display: flex;
   width: 100%;
-
-  .flex-1 {
-    flex: 1;
-
-    &:nth-child(10n) {
-      border-right: 1px solid #e4e4e4;
-    }
-  }
 `;
 
 const Hour = styled.div`
@@ -91,22 +91,15 @@ const HourWrap = styled.div`
   }
 `;
 
+const TimeTable = styled.div`
+  overflow: scroll;
+  padding-right: 16px;
+`;
+
 const TimeLogWrap = styled.div`
   width: 20%;
   display: flex;
   flex-direction: column;
-
-  .date {
-    font-size: 26px;
-    padding: 10px;
-    text-align: center;
-    border-bottom: 1px solid #e4e4e4;
-  }
-
-  .time-table {
-    height: calc(100% - 53px);
-    overflow: scroll;
-  }
 `;
 
 export default TimeLog;

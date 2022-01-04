@@ -4,7 +4,6 @@ import { useQuery } from "react-query";
 import { useAppSelector, useAppDispatch } from "../app/store";
 import { changeMode } from "../features/setting/settingSlice";
 import { addGoogleSchedules, ScheduleInfo } from "../features/schedules/schedulesSlice";
-import { addSchedules } from "../features/calendar/calendarSlice";
 import { loadMilestones } from "../features/milestones/milestonesSlice";
 import { logIn } from "../utils/api/user";
 import { getSchedules } from "../utils/api/schedules";
@@ -61,7 +60,6 @@ function HomePage() {
       });
 
       dispatch(addGoogleSchedules(googleSchedulesData.items));
-      dispatch(addSchedules(googleSchedulesData.items));
     }
   }, [googleSchedulesData]);
 

@@ -3,14 +3,15 @@ import styled, { css } from "styled-components";
 import dayjs from "dayjs";
 
 import { useAppSelector, useAppDispatch } from "../../app/store";
-import { init, DateInfo } from "./calendarSlice";
+import { init, DateInfo, addSchedules } from "./calendarSlice";
 import MonthCalendarDate from "./MonthCalendarDate";
 
 export const WEEKS = ["일", "월", "화", "수", "목", "금", "토"];
 
 function MonthCalendar() {
-  // const displayed = useAppSelector((state) => state.calendar.displayed);
   const allDatesId = useAppSelector((state) => state.calendar.allDatesId);
+  const displayed = useAppSelector((state) => state.calendar.displayed);
+  const schedulesData = useAppSelector((state) => state.schedules.schedulesData);
 
   const dispatch = useAppDispatch();
 
@@ -25,6 +26,10 @@ function MonthCalendar() {
 
     dispatch(init(dateInfo));
   }, []);
+
+  useEffect(() => {
+    dispatch(addSchedules(schedulesData));
+  }, [displayed, schedulesData]);
 
   return (
     <MonthCalenderWrap>
@@ -64,6 +69,7 @@ const MonthCalenderWrap = styled.div`
   height: 100%;
   flex-direction: column;
   padding: 15px;
+  box-sizing: border-box;
 `;
 
 export default MonthCalendar;

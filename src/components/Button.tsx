@@ -19,22 +19,30 @@ interface Sizes {
 
 interface Props {
   children: React.ReactNode;
-  color: "blue" | "pink";
+  color?: "blue" | "pink";
   size: keyof Sizes;
+  background?: boolean;
   onClick?(): void;
 }
 
-function Button({ children, color, size, onClick }: Props) {
+function Button({ children, color, size, background, onClick }: Props) {
   return (
-    <StyledButton color={color} size={size} onClick={onClick}>
+    <StyledButton color={color} size={size} background={background} onClick={onClick}>
       {children}
     </StyledButton>
   );
 }
 
 const colorStyles = css<Props>`
-  ${({ theme, color }) => {
+  ${({ theme, color, background }) => {
     const selected = theme.palette[color];
+
+    if (!background) {
+      return css`
+        border: none;
+        background: none;
+      `;
+    }
 
     return css`
       background: ${selected};
@@ -75,6 +83,8 @@ const StyledButton = styled.button`
 
 Button.defaultProps = {
   onClick: () => {},
+  color: "blue",
+  background: true,
 };
 
 export default Button;

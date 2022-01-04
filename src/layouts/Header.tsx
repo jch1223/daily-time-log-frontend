@@ -1,11 +1,28 @@
-import React from "react";
-import styled from "styled-components";
-import { useAppSelector } from "../app/store";
+import React, { useContext } from "react";
+import styled, { ThemeContext } from "styled-components";
+import dayjs from "dayjs";
+import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
+import { useAppDispatch, useAppSelector } from "../app/store";
+
+import { nextMonth, prevMonth } from "../features/calendar/calendarSlice";
 
 import GoogleAuth from "../features/auth/GoogleAuth";
+import Button from "../components/Button";
 
 function Header() {
+  const displayedInfo = useAppSelector((state) => state.calendar.displayed);
   const name = useAppSelector((state) => state.auth.name);
+
+  const dispatch = useAppDispatch();
+  const theme = useContext(ThemeContext);
+
+  const onNextButtonClick = () => {
+    dispatch(nextMonth());
+  };
+
+  const onPrevButtonClick = () => {
+    dispatch(prevMonth());
+  };
 
   return (
     <HeaderWrap>
@@ -13,7 +30,17 @@ function Header() {
         <HeaderTitle>DAILY TIME LOG</HeaderTitle>
       </div>
 
-      <div className="middle" />
+      <div className="middle">
+        <Button size="medium" background={false} onClick={onPrevButtonClick}>
+          <MdNavigateBefore color={theme.palette.black} size="2rem" />
+        </Button>
+
+        <div>{dayjs().set(displayedInfo).format("YYYY년 MM월")}</div>
+
+        <Button size="medium" background={false} onClick={onNextButtonClick}>
+          <MdNavigateNext color={theme.palette.black} size="2rem" />
+        </Button>
+      </div>
 
       <div className="right">
         <div>{name}</div>
@@ -42,6 +69,7 @@ const HeaderWrap = styled.header`
     padding-right: 30px;
   }
   .middle {
+    display: flex;
     flex: 1 1 100%;
     font-size: 24px;
     align-items: center;
