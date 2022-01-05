@@ -112,26 +112,27 @@ function Milestone() {
       </Title>
 
       {!filteredMilestonesId.length && <div>등록된 목표가 없습니다</div>}
+      <div>
+        {filteredMilestonesId.map((id) => {
+          return (
+            <MilestoneEditableBlock
+              key={id}
+              playCircleColor={byMilestonesId[id].color}
+              // onClickPlayCircle = {() => {}}
+              onBlurEditableBlock={onBlurUpdateMilestone(id)}
+              summary={byMilestonesId[id].summary}
+            />
+          );
+        })}
 
-      {filteredMilestonesId.map((id) => {
-        return (
+        {isCreatedMilestone && (
           <MilestoneEditableBlock
-            key={id}
-            playCircleColor={byMilestonesId[id].color}
-            // onClickPlayCircle = {() => {}}
-            onBlurEditableBlock={onBlurUpdateMilestone(id)}
-            summary={byMilestonesId[id].summary}
+            editableBlockRef={newMilestone}
+            playCircleColor={newColor}
+            onBlurEditableBlock={onBlurCreateMilestone}
           />
-        );
-      })}
-
-      {isCreatedMilestone && (
-        <MilestoneEditableBlock
-          editableBlockRef={newMilestone}
-          playCircleColor={newColor}
-          onBlurEditableBlock={onBlurCreateMilestone}
-        />
-      )}
+        )}
+      </div>
     </MilestoneWrap>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { memo, useEffect } from "react";
 import dayjs from "dayjs";
 import styled from "styled-components";
 
@@ -8,16 +8,14 @@ import { loadTimeLog } from "./timeLogSlice";
 export const WEEKS = ["일", "월", "화", "수", "목", "금", "토"];
 
 function TimeLog() {
-  const displayed = useAppSelector((state) => state.calendar.displayed);
-  const dateId = dayjs().set(displayed).format("YYYY-MM-DD");
   const allHourIds = useAppSelector((state) => state.timeLog.allHourIds);
   const byHourId = useAppSelector((state) => state.timeLog.byHourId);
 
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (displayed) dispatch(loadTimeLog({ date: displayed }));
-  }, [displayed]);
+    dispatch(loadTimeLog());
+  }, []);
 
   return (
     <TimeLogWrap>
@@ -27,7 +25,7 @@ function TimeLog() {
         {allHourIds?.map((hourId) => {
           return (
             <HourWrap key={hourId}>
-              <Hour>{dayjs(hourId).hour()}</Hour>
+              <Hour>{hourId}</Hour>
               <MinuteWrap>
                 {Object.keys(byHourId[hourId])?.map((minuteId) => {
                   return (
@@ -55,7 +53,7 @@ const Title = styled.div`
   padding-bottom: 10px;
 `;
 
-const Minute = styled.div`
+const Minute = memo(styled.div`
   flex: 1;
 
   &:nth-child(10n) {
@@ -65,7 +63,7 @@ const Minute = styled.div`
   &:last-child {
     border: none;
   }
-`;
+`);
 
 const MinuteWrap = styled.div`
   display: flex;

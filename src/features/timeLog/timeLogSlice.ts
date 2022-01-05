@@ -5,7 +5,7 @@ import { createTimeLog } from "../../utils/createTimeLog";
 import { DateInfo } from "../calendar/calendarSlice";
 
 export interface TimeLogState {
-  allHourIds: string[];
+  allHourIds: number[];
   byHourId: ByHourId;
 }
 
@@ -15,7 +15,7 @@ interface TimeLogInfoByMinuteId {
 }
 
 export interface ByHourId {
-  [hourId: string]: {
+  [hourId: number]: {
     [minuteId: string]: TimeLogInfoByMinuteId;
   };
 }
@@ -33,9 +33,8 @@ const timeLogSlice = createSlice({
   name: "timeLog",
   initialState,
   reducers: {
-    loadTimeLog: (state, action: PayloadAction<InitTimelogData>) => {
-      const { date } = action.payload;
-      const { allHourIds, byHourId } = createTimeLog(date);
+    loadTimeLog: (state) => {
+      const { allHourIds, byHourId } = createTimeLog();
 
       state.allHourIds = allHourIds;
       state.byHourId = byHourId;
