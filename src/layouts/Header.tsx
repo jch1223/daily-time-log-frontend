@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../app/store";
 
-import { nextMonth, prevMonth } from "../features/calendar/calendarSlice";
+import { loadCalendar } from "../features/calendar/calendarSlice";
 
 import GoogleAuth from "../features/auth/GoogleAuth";
 import Button from "../components/Button";
@@ -12,16 +12,27 @@ import Button from "../components/Button";
 function Header() {
   const displayedInfo = useAppSelector((state) => state.calendar.displayed);
   const name = useAppSelector((state) => state.auth.name);
+  const schedulesData = useAppSelector((state) => state.schedules.schedulesData);
 
   const dispatch = useAppDispatch();
   const theme = useContext(ThemeContext);
 
   const onNextButtonClick = () => {
-    dispatch(nextMonth());
+    dispatch(
+      loadCalendar({
+        dateInfo: { ...displayedInfo, month: displayedInfo.month + 1 },
+        schedules: schedulesData,
+      }),
+    );
   };
 
   const onPrevButtonClick = () => {
-    dispatch(prevMonth());
+    dispatch(
+      loadCalendar({
+        dateInfo: { ...displayedInfo, month: displayedInfo.month - 1 },
+        schedules: schedulesData,
+      }),
+    );
   };
 
   return (
@@ -35,7 +46,7 @@ function Header() {
           <MdNavigateBefore color={theme.palette.black} size="2rem" />
         </Button>
 
-        <div>{dayjs().set(displayedInfo).format("YYYY년 MM월")}</div>
+        <div>{dayjs().set(displayedInfo).format("YYYY년 MM월 DD일")}</div>
 
         <Button size="medium" background={false} onClick={onNextButtonClick}>
           <MdNavigateNext color={theme.palette.black} size="2rem" />

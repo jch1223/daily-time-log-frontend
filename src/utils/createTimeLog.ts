@@ -1,7 +1,5 @@
 import dayjs from "dayjs";
 
-import { DateInfo } from "../features/calendar/calendarSlice";
-
 const START_TIME = 6;
 
 export const createTimeLog = () => {

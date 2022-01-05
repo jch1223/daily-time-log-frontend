@@ -3,14 +3,13 @@ import styled, { css } from "styled-components";
 import dayjs from "dayjs";
 
 import { useAppSelector, useAppDispatch } from "../../app/store";
-import { init, DateInfo, addSchedules } from "./calendarSlice";
+import { loadCalendar, DateInfo } from "./calendarSlice";
 import MonthCalendarDate from "./MonthCalendarDate";
 
 export const WEEKS = ["일", "월", "화", "수", "목", "금", "토"];
 
 function MonthCalendar() {
   const allDatesId = useAppSelector((state) => state.calendar.allDatesId);
-  const displayed = useAppSelector((state) => state.calendar.displayed);
   const schedulesData = useAppSelector((state) => state.schedules.schedulesData);
 
   const dispatch = useAppDispatch();
@@ -24,12 +23,8 @@ function MonthCalendar() {
       timezone: dayjs.tz.guess(),
     };
 
-    dispatch(init(dateInfo));
-  }, []);
-
-  useEffect(() => {
-    dispatch(addSchedules(schedulesData));
-  }, [displayed, schedulesData]);
+    dispatch(loadCalendar({ dateInfo, schedules: schedulesData }));
+  }, [schedulesData]);
 
   return (
     <MonthCalenderWrap>
