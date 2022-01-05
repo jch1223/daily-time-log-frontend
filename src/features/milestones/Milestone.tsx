@@ -1,4 +1,11 @@
-import React, { FocusEventHandler, useContext, useEffect, useRef, useState } from "react";
+import React, {
+  FocusEventHandler,
+  MouseEventHandler,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import styled, { ThemeContext } from "styled-components";
 import { MdAddCircle } from "react-icons/md";
 import { useMutation } from "react-query";
@@ -15,13 +22,17 @@ import {
 import { addMilestone, removeMilestone, updateMilestone } from "./milestonesSlice";
 import Error from "../../components/Error";
 import MilestoneEditableBlock from "./MilestoneEditableBlock";
+import Modal from "../../components/Modal";
+import RunningTime from "../runningTimes/RunningTime";
 
 function Milestone() {
   const email = useAppSelector((state) => state.auth.email);
   const allMilestonesId = useAppSelector((state) => state.milestones.allMilestonesId);
   const byMilestonesId = useAppSelector((state) => state.milestones.byMilestonesId);
   const filteredMilestonesId = allMilestonesId.filter((id) => !byMilestonesId[id].isDeleted);
+
   const [isCreatedMilestone, setIsCreatedMilestone] = useState(false);
+  const [isShowRunningTime, setIsShowRunningTime] = useState(false);
   const [isError, setIsError] = useState(false);
 
   const newColor = getRandomColor();
@@ -66,7 +77,7 @@ function Milestone() {
     setIsCreatedMilestone(true);
   };
 
-  const onBlurUpdateMilestone = (id: string): FocusEventHandler<HTMLDivElement> => {
+  const onBlurUpdateMilestone = (id: string): FocusEventHandler => {
     return (e) => {
       const { textContent } = e.target;
 
@@ -80,7 +91,7 @@ function Milestone() {
     };
   };
 
-  const onBlurCreateMilestone: FocusEventHandler<HTMLDivElement> = (e) => {
+  const onBlurCreateMilestone: FocusEventHandler = (e) => {
     const { textContent } = e.target;
 
     if (textContent === "") {
@@ -96,6 +107,10 @@ function Milestone() {
       });
       setIsCreatedMilestone(false);
     }
+  };
+
+  const onClickRunningTime: MouseEventHandler = (e) => {
+    setIsShowRunningTime(true);
   };
 
   if (isError) {
@@ -118,7 +133,7 @@ function Milestone() {
             <MilestoneEditableBlock
               key={id}
               playCircleColor={byMilestonesId[id].color}
-              // onClickPlayCircle = {() => {}}
+              onClickPlayCircle={onClickRunningTime}
               onBlurEditableBlock={onBlurUpdateMilestone(id)}
               summary={byMilestonesId[id].summary}
             />
@@ -133,6 +148,14 @@ function Milestone() {
           />
         )}
       </div>
+
+      <Modal
+        rootId="running-time"
+        isShowModal={isShowRunningTime}
+        onBackgroundClick={() => setIsShowRunningTime(false)}
+      >
+        <RunningTime onPauseClick={() => setIsShowRunningTime(false)} />
+      </Modal>
     </MilestoneWrap>
   );
 }

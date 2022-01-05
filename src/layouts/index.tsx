@@ -1,10 +1,10 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import styled from "styled-components";
 
 import Header from "./Header";
 
 interface Props {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 function index({ children }: Props) {
