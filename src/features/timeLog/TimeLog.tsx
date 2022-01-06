@@ -22,7 +22,7 @@ function TimeLog() {
       <Title>TIMETABLE</Title>
 
       <TimeTable>
-        {/* {allHourIds?.map((hourId) => {
+        {allHourIds?.map((hourId) => {
           return (
             <HourWrap key={hourId}>
               <Hour>{hourId}</Hour>
@@ -40,7 +40,7 @@ function TimeLog() {
               </MinuteWrap>
             </HourWrap>
           );
-        })} */}
+        })}
       </TimeTable>
     </TimeLogWrap>
   );

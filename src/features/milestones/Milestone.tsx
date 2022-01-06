@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React, {
   FocusEventHandler,
   MouseEventHandler,
@@ -9,7 +10,6 @@ import React, {
 import styled, { ThemeContext } from "styled-components";
 import { MdAddCircle } from "react-icons/md";
 import { useMutation } from "react-query";
-import { v4 as uuid } from "uuid";
 
 import { useAppDispatch, useAppSelector } from "../../app/store";
 import getRandomColor from "../../utils/getRandomColor";
@@ -23,7 +23,7 @@ import { addMilestone, removeMilestone, updateMilestone } from "./milestonesSlic
 import Error from "../../components/Error";
 import MilestoneEditableBlock from "./MilestoneEditableBlock";
 import Modal from "../../components/Modal";
-import RunningTime from "../runningTimes/RunningTime";
+import RunningTime from "../runningTime/RunningTime";
 
 function Milestone() {
   const email = useAppSelector((state) => state.auth.email);
@@ -31,6 +31,7 @@ function Milestone() {
   const byMilestonesId = useAppSelector((state) => state.milestones.byMilestonesId);
   const filteredMilestonesId = allMilestonesId.filter((id) => !byMilestonesId[id].isDeleted);
 
+  const [currentId, setCurrentId] = useState(null);
   const [isCreatedMilestone, setIsCreatedMilestone] = useState(false);
   const [isShowRunningTime, setIsShowRunningTime] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -66,7 +67,7 @@ function Milestone() {
 
   const updateMilestoneSummaryMutation = useMutation(updateMilestoneSummary, {
     onSuccess: ({ data }) => {
-      dispatch(updateMilestone({ id: data.id, summary: data.summary }));
+      dispatch(updateMilestone({ _id: data._id, summary: data.summary }));
     },
     onError: () => {
       setIsError(true);
@@ -100,7 +101,6 @@ function Milestone() {
 
     if (email) {
       createMilestoneMutation.mutate({
-        id: uuid(),
         userId: email,
         color: newColor,
         summary: textContent,
@@ -109,8 +109,11 @@ function Milestone() {
     }
   };
 
-  const onClickRunningTime: MouseEventHandler = (e) => {
-    setIsShowRunningTime(true);
+  const onClickRunningTime = (milestoneId: string): MouseEventHandler => {
+    return () => {
+      setIsShowRunningTime(true);
+      setCurrentId(milestoneId);
+    };
   };
 
   if (isError) {
@@ -133,7 +136,7 @@ function Milestone() {
             <MilestoneEditableBlock
               key={id}
               playCircleColor={byMilestonesId[id].color}
-              onClickPlayCircle={onClickRunningTime}
+              onClickPlayCircle={onClickRunningTime(id)}
               onBlurEditableBlock={onBlurUpdateMilestone(id)}
               summary={byMilestonesId[id].summary}
             />
@@ -154,7 +157,7 @@ function Milestone() {
         isShowModal={isShowRunningTime}
         onBackgroundClick={() => setIsShowRunningTime(false)}
       >
-        <RunningTime onPauseClick={() => setIsShowRunningTime(false)} />
+        <RunningTime milestoneId={currentId} onPauseClick={() => setIsShowRunningTime(false)} />
       </Modal>
     </MilestoneWrap>
   );

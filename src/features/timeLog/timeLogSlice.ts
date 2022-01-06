@@ -1,8 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import dayjs from "dayjs";
+import { createSlice } from "@reduxjs/toolkit";
 
 import { createTimeLog } from "../../utils/createTimeLog";
-import { DateInfo } from "../calendar/calendarSlice";
 
 export interface TimeLogState {
   allHourIds: number[];
@@ -18,10 +16,6 @@ export interface ByHourId {
   [hourId: number]: {
     [minuteId: string]: TimeLogInfoByMinuteId;
   };
-}
-
-interface InitTimelogData {
-  date: DateInfo;
 }
 
 const initialState: TimeLogState = {

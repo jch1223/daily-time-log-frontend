@@ -48,8 +48,9 @@ function HomePage() {
 
   useEffect(() => {
     if (userData) {
+      console.log("🤩🤩🤩🤩🤩🤩🤩🤩🤩🤩🤩", userData);
       dispatch(changeMode({ themeMode: userData.data.themeMode }));
-      dispatch(loadMilestones(userData.data.mileStones));
+      dispatch(loadMilestones(userData.data.milestones));
     }
   }, [userData]);
 
