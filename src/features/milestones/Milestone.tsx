@@ -12,6 +12,7 @@ import { MdAddCircle } from "react-icons/md";
 import { useMutation } from "react-query";
 
 import { useAppDispatch, useAppSelector } from "../../app/store";
+import { addMilestone, removeMilestone, updateMilestone } from "./milestonesSlice";
 import getRandomColor from "../../utils/getRandomColor";
 import {
   createMilestone,
@@ -19,10 +20,9 @@ import {
   updateMilestoneSummary,
 } from "../../utils/api/milestones";
 
-import { addMilestone, removeMilestone, updateMilestone } from "./milestonesSlice";
 import Error from "../../components/Error";
-import MilestoneEditableBlock from "./MilestoneEditableBlock";
 import Modal from "../../components/Modal";
+import MilestoneEditableBlock from "./MilestoneEditableBlock";
 import RunningTime from "./RunningTime";
 
 function Milestone() {
@@ -117,7 +117,11 @@ function Milestone() {
   };
 
   if (isError) {
-    return <Error />;
+    return (
+      <MilestoneWrap>
+        <Error />
+      </MilestoneWrap>
+    );
   }
 
   return (
@@ -130,6 +134,7 @@ function Milestone() {
       </Title>
 
       {!filteredMilestonesId.length && <div>등록된 목표가 없습니다</div>}
+
       <div>
         {filteredMilestonesId.map((id) => {
           return (

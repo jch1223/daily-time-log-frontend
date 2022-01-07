@@ -42,6 +42,7 @@ function TimeLog() {
   useEffect(() => {
     if (data) {
       const { runningTimes } = data;
+      dispatch(loadTimeLog());
       dispatch(addRunningTimes(runningTimes));
     }
   }, [data]);

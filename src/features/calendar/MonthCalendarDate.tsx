@@ -43,8 +43,8 @@ function MonthCalendarDate({ dateId }: MonthCalendarDateProps) {
 
       <ScheduleWrap>
         {schedules.map((scheduleId, index) => {
-          const startDate = schedulesById[scheduleId].start.date;
-          const endDate = dayjs(schedulesById[scheduleId].end.date)
+          const startDate = schedulesById[scheduleId]?.start.date;
+          const endDate = dayjs(schedulesById[scheduleId]?.end.date)
             .add(-1, "day")
             .format("YYYY-MM-DD");
 

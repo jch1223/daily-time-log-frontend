@@ -17,6 +17,8 @@ function GoogleAuth() {
         <Button
           color={isLogIn ? "pink" : "blue"}
           size="medium"
+          fullWidth
+          boxShadow
           onClick={isLogIn ? googleSignOut : googleSignIn}
         >
           {isLogIn ? "Log Out" : "Log In"}

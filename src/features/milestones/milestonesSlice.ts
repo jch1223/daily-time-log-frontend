@@ -25,6 +25,10 @@ const milestonesSlice = createSlice({
   name: "milestones",
   initialState,
   reducers: {
+    initMilestones: (state) => {
+      state.allMilestonesId = [];
+      state.byMilestonesId = {};
+    },
     loadMilestones: (state, action: PayloadAction<MilestoneType[]>) => {
       const milestonesData = action.payload;
       milestonesData.forEach((milestone) => {
@@ -49,7 +53,7 @@ const milestonesSlice = createSlice({
   },
 });
 
-export const { loadMilestones, addMilestone, updateMilestone, removeMilestone } =
+export const { initMilestones, loadMilestones, addMilestone, updateMilestone, removeMilestone } =
   milestonesSlice.actions;
 
 export default milestonesSlice.reducer;

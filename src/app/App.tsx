@@ -7,7 +7,9 @@ import { ThemeProvider } from "styled-components";
 import { darkTheme, lightTheme } from "../assets/styles/theme";
 import { useAppSelector } from "./store";
 
-import HomePage from "../pages/HomePage";
+import CalendarPage from "../pages/CalendarPage";
+import IndexPage from "../pages/IndexPage";
+import AuthRoute from "../components/AuthRoute";
 
 const queryClient = new QueryClient();
 
@@ -19,8 +21,11 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <Switch>
           <Route exact path="/">
-            <HomePage />
+            <IndexPage />
           </Route>
+          <AuthRoute path="/calendar">
+            <CalendarPage />
+          </AuthRoute>
           <Route>404 NOT FOUND</Route>
         </Switch>
         <ReactQueryDevtools initialIsOpen={false} />

@@ -21,17 +21,50 @@ interface Props {
   children: React.ReactNode;
   color?: "blue" | "pink";
   size: keyof Sizes;
+  fullWidth?: boolean;
   background?: boolean;
+  boxShadow?: boolean;
   onClick?(): void;
 }
 
-function Button({ children, color, size, background, onClick }: Props) {
+function Button({ children, color, size, fullWidth, background, boxShadow, onClick }: Props) {
   return (
-    <StyledButton color={color} size={size} background={background} onClick={onClick}>
+    <StyledButton
+      color={color}
+      size={size}
+      fullWidth={fullWidth}
+      background={background}
+      boxShadow={boxShadow}
+      onClick={onClick}
+    >
       {children}
     </StyledButton>
   );
 }
+
+const boxShadowStyles = css<Props>`
+  ${({ boxShadow }) => {
+    return (
+      boxShadow &&
+      css`
+        box-shadow: 0px 5px 2px 0px rgb(0 0 0 / 20%), 2px 4px 4px 3px rgb(0 0 0 / 14%),
+          2px 3px 7px 2px rgb(0 0 0 / 12%);
+      `
+    );
+  }};
+`;
+
+const fullWidthStyles = css<Props>`
+  ${({ fullWidth }) => {
+    return (
+      fullWidth &&
+      css`
+        width: 100%;
+        justify-content: center;
+      `
+    );
+  }}
+`;
 
 const colorStyles = css<Props>`
   ${({ theme, color, background }) => {
@@ -79,12 +112,16 @@ const StyledButton = styled.button`
 
   ${colorStyles}
   ${sizeStyles}
+  ${fullWidthStyles}
+  ${boxShadowStyles}
 `;
 
 Button.defaultProps = {
   onClick: () => {},
   color: "blue",
   background: true,
+  fullWidth: false,
+  boxShadow: false,
 };
 
 export default Button;
