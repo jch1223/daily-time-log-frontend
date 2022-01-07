@@ -1,9 +1,14 @@
 import React, { MouseEventHandler, useEffect, useState } from "react";
 import styled from "styled-components";
+import { useMutation } from "react-query";
 import dayjs from "dayjs";
-
 import { MdPauseCircle } from "react-icons/md";
+
 import { useAppDispatch, useAppSelector } from "../../app/store";
+import { createRunningTime } from "../../utils/api/runningTimes";
+
+import Error from "../../components/Error";
+import { addRunningTimes } from "../timeLog/timeLogSlice";
 
 interface Props {
   onPauseClick: MouseEventHandler;
@@ -11,36 +16,68 @@ interface Props {
 }
 
 function RunningTime({ milestoneId, onPauseClick }: Props) {
+  const [isError, setIsError] = useState(false);
   const [runningTime, setRunningTime] = useState("00:00:00");
   const dateId = dayjs().format("YYYY-MM-DD");
 
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const start = dayjs();
     const timezone = dayjs.tz.guess();
+    const start = dayjs().tz(timezone);
 
     const setIntervalId = setInterval(() => {
       setRunningTime(dayjs.duration(dayjs().diff(dayjs(start))).format("HH:mm:ss"));
     }, 1000);
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    const beforeunloadListener = () => {};
+    const runningTime = {
+      start: {
+        dateTime: start.format("YYYY-MM-DDTHH:mm"),
+        timezone,
+      },
+      end: {
+        dateTime: dayjs().tz(timezone).format("YYYY-MM-DDTHH:mm"),
+        timezone,
+      },
+    };
+    const beforeunloadListener = () => {
+      createRunningTimeMutation.mutate({ milestoneId, runningTime });
+    };
 
     window.addEventListener("beforeunload", beforeunloadListener);
 
     return () => {
+      createRunningTimeMutation.mutate({ milestoneId, runningTime });
       window.removeEventListener("beforeunload", beforeunloadListener);
       clearInterval(setIntervalId);
     };
   }, []);
+
+  const createRunningTimeMutation = useMutation(createRunningTime, {
+    onSuccess: (result) => {
+      dispatch(addRunningTimes([result.data]));
+    },
+    onError: () => {
+      setIsError(true);
+    },
+  });
+
+  if (isError) {
+    return <Error />;
+  }
 
   return (
     <RunningTimeWrap>
       <div className="title">현재 진행 시간</div>
       <div className="running-time">
         <div className="timer">{runningTime}</div>
-        <MdPauseCircle cursor="pointer" onClick={onPauseClick} color="#7e7e7e" />
+        <MdPauseCircle
+          cursor="pointer"
+          onClick={(e) => {
+            onPauseClick(e);
+          }}
+          color="#7e7e7e"
+        />
       </div>
     </RunningTimeWrap>
   );

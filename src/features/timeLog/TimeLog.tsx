@@ -1,21 +1,54 @@
 import React, { memo, useEffect } from "react";
-import dayjs from "dayjs";
 import styled from "styled-components";
+import { useQuery } from "react-query";
+import dayjs from "dayjs";
 
 import { useAppDispatch, useAppSelector } from "../../app/store";
-import { loadTimeLog } from "./timeLogSlice";
+import { addRunningTimes, loadTimeLog } from "./timeLogSlice";
+import { getRunningTimeByDate } from "../../utils/api/runningTimes";
+
+import Error from "../../components/Error";
 
 export const WEEKS = ["일", "월", "화", "수", "목", "금", "토"];
 
 function TimeLog() {
+  const isLogIn = useAppSelector((state) => state.auth.isLogIn);
   const allHourIds = useAppSelector((state) => state.timeLog.allHourIds);
   const byHourId = useAppSelector((state) => state.timeLog.byHourId);
+  const displayed = useAppSelector((state) => state.calendar.displayed);
+  const startDate = dayjs()
+    .set({ ...displayed, hour: 0, minute: 0, second: 0 })
+    .format("YYYY-MM-DDTHH:mm");
+  const endDate = dayjs()
+    .set({ ...displayed, hour: 24, minute: 0, second: 0 })
+    .format("YYYY-MM-DDTHH:mm");
 
   const dispatch = useAppDispatch();
+
+  const { data, isError } = useQuery(
+    ["runningTimes", startDate, endDate],
+    () => getRunningTimeByDate(startDate, endDate),
+    {
+      enabled: isLogIn && !!displayed,
+      retry: false,
+      refetchOnWindowFocus: false,
+    },
+  );
 
   useEffect(() => {
     dispatch(loadTimeLog());
   }, []);
+
+  useEffect(() => {
+    if (data) {
+      const { runningTimes } = data;
+      dispatch(addRunningTimes(runningTimes));
+    }
+  }, [data]);
+
+  if (isError) {
+    return <Error />;
+  }
 
   return (
     <TimeLogWrap>

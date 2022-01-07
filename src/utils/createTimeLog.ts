@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-const START_TIME = 6;
+const START_TIME = 0;
 
 export const createTimeLog = () => {
   const allHourIds = [];

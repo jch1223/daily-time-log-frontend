@@ -23,7 +23,7 @@ import { addMilestone, removeMilestone, updateMilestone } from "./milestonesSlic
 import Error from "../../components/Error";
 import MilestoneEditableBlock from "./MilestoneEditableBlock";
 import Modal from "../../components/Modal";
-import RunningTime from "../runningTime/RunningTime";
+import RunningTime from "./RunningTime";
 
 function Milestone() {
   const email = useAppSelector((state) => state.auth.email);

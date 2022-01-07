@@ -24,16 +24,16 @@ function HomePage() {
 
   const mileStones = JSON.parse(localStorage.getItem("milestones")) || [];
 
-  const { data: userData, isError: isErrorForLogin } = useQuery(
-    "user",
-    () => logIn({ email, name, themeMode, mileStones }),
-    {
-      enabled: isLogIn,
-      retry: false,
-      refetchOnWindowFocus: false,
-      staleTime: 60 * 1000,
-    },
-  );
+  const {
+    data: userData,
+    isError: isErrorForLogin,
+    isLoading,
+  } = useQuery("user", () => logIn({ email, name, themeMode, mileStones }), {
+    enabled: isLogIn,
+    retry: false,
+    refetchOnWindowFocus: false,
+    staleTime: 60 * 1000,
+  });
 
   const { data: googleSchedulesData, isError: IsErrorForGoogleSchedules } = useQuery(
     "schedules",
@@ -48,7 +48,6 @@ function HomePage() {
 
   useEffect(() => {
     if (userData) {
-      console.log("🤩🤩🤩🤩🤩🤩🤩🤩🤩🤩🤩", userData);
       dispatch(changeMode({ themeMode: userData.data.themeMode }));
       dispatch(loadMilestones(userData.data.milestones));
     }
