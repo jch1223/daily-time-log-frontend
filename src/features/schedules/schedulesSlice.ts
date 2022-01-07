@@ -27,11 +27,13 @@ interface SchedulesState {
   byScheduleId: {
     [index: string]: ScheduleInfo;
   };
+  schedulesData: ScheduleInfo[];
 }
 
 const initialState: SchedulesState = {
   allSchedulesId: [],
   byScheduleId: {},
+  schedulesData: [],
 };
 
 const schedulesSlice = createSlice({
@@ -43,6 +45,8 @@ const schedulesSlice = createSlice({
         state.allSchedulesId.push(item.id);
         state.byScheduleId[item.id] = item;
       });
+
+      state.schedulesData = action.payload;
     },
   },
 });

@@ -4,7 +4,6 @@ import { useQuery } from "react-query";
 import { useAppSelector, useAppDispatch } from "../app/store";
 import { changeMode } from "../features/setting/settingSlice";
 import { addGoogleSchedules, ScheduleInfo } from "../features/schedules/schedulesSlice";
-import { addSchedules } from "../features/calendar/calendarSlice";
 import { loadMilestones } from "../features/milestones/milestonesSlice";
 import { logIn } from "../utils/api/user";
 import { getSchedules } from "../utils/api/schedules";
@@ -12,9 +11,9 @@ import { getSchedules } from "../utils/api/schedules";
 import Layout from "../layouts";
 import Side from "../layouts/Side";
 import Error from "../components/Error";
-import Loading from "../components/Loading";
 import MonthCalendar from "../features/calendar/MonthCalendar";
 import Milestone from "../features/milestones/Milestone";
+import TimeLog from "../features/timeLog/TimeLog";
 
 function HomePage() {
   const isLogIn = useAppSelector((state) => state.auth.isLogIn);
@@ -25,16 +24,16 @@ function HomePage() {
 
   const mileStones = JSON.parse(localStorage.getItem("milestones")) || [];
 
-  const { data: userData, isError: isErrorForLogin } = useQuery(
-    "user",
-    () => logIn({ email, name, themeMode, mileStones }),
-    {
-      enabled: isLogIn,
-      retry: false,
-      refetchOnWindowFocus: false,
-      staleTime: 60 * 1000,
-    },
-  );
+  const {
+    data: userData,
+    isError: isErrorForLogin,
+    isLoading,
+  } = useQuery("user", () => logIn({ email, name, themeMode, mileStones }), {
+    enabled: isLogIn,
+    retry: false,
+    refetchOnWindowFocus: false,
+    staleTime: 60 * 1000,
+  });
 
   const { data: googleSchedulesData, isError: IsErrorForGoogleSchedules } = useQuery(
     "schedules",
@@ -50,7 +49,7 @@ function HomePage() {
   useEffect(() => {
     if (userData) {
       dispatch(changeMode({ themeMode: userData.data.themeMode }));
-      dispatch(loadMilestones(userData.data.mileStones));
+      dispatch(loadMilestones(userData.data.milestones));
     }
   }, [userData]);
 
@@ -61,7 +60,6 @@ function HomePage() {
       });
 
       dispatch(addGoogleSchedules(googleSchedulesData.items));
-      dispatch(addSchedules(googleSchedulesData.items));
     }
   }, [googleSchedulesData]);
 
@@ -76,6 +74,7 @@ function HomePage() {
       </Side>
 
       <Milestone />
+      <TimeLog />
     </Layout>
   );
 }

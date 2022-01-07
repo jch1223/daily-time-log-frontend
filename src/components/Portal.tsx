@@ -3,7 +3,12 @@ import { createPortal } from "react-dom";
 
 import usePortal from "../utils/hooks/usePortal";
 
-export default function Portal({ id, children }) {
+interface Props {
+  id: string;
+  children: React.ReactNode;
+}
+
+export default function Portal({ id, children }: Props) {
   const target = usePortal(id);
 
   useEffect(() => {
@@ -17,7 +22,6 @@ export default function Portal({ id, children }) {
 
     return () => {
       body.style.removeProperty("overflow");
-      body.style.removeProperty("position");
       body.style.removeProperty("top");
       body.style.removeProperty("left");
       body.style.removeProperty("right");

@@ -1,10 +1,10 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import styled from "styled-components";
 
 import Header from "./Header";
 
 interface Props {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 function index({ children }: Props) {
@@ -18,8 +18,7 @@ function index({ children }: Props) {
 
 const Main = styled.main`
   display: flex;
-  border-top: 1px solid ${({ theme }) => theme.color.border};
-  height: calc(100vh - 92px);
+  height: calc(100vh - 1px - ${({ theme }) => theme.size.headerHeight});
 `;
 
 export default index;

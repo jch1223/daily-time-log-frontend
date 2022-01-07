@@ -41,33 +41,17 @@ const calendarSlice = createSlice({
   name: "calendar",
   initialState,
   reducers: {
-    init: (state, action: PayloadAction<DateInfo>) => {
-      const { calendarAllDatesId, calendarByDateId } = createCalendarData(action.payload);
+    loadCalendar: (
+      state,
+      action: PayloadAction<{ dateInfo: DateInfo; schedules?: ScheduleInfo[] }>,
+    ) => {
+      const { calendarAllDatesId, calendarByDateId } = createCalendarData(action.payload.dateInfo);
 
-      state.displayed = action.payload;
+      state.displayed = action.payload.dateInfo;
       state.allDatesId = calendarAllDatesId;
       state.byDateId = calendarByDateId;
-    },
-    nextMonth: (state) => {
-      state.displayed.month += 1;
-      const { calendarAllDatesId, calendarByDateId } = createCalendarData(state.displayed);
 
-      state.allDatesId = calendarAllDatesId;
-      state.byDateId = calendarByDateId;
-    },
-    prevMonth: (state) => {
-      state.displayed.month -= 1;
-      const { calendarAllDatesId, calendarByDateId } = createCalendarData(state.displayed);
-
-      state.allDatesId = calendarAllDatesId;
-      state.byDateId = calendarByDateId;
-    },
-    setDisplayedDate: (state, action: PayloadAction<DateInfo>) => {
-      state.displayed.date = action.payload.date;
-      state.displayed.month = action.payload.month;
-    },
-    addSchedules: (state, action: PayloadAction<ScheduleInfo[]>) => {
-      const schedulesData = action.payload;
+      const schedulesData = action.payload.schedules;
 
       for (let i = 0; i < schedulesData.length; i++) {
         if (schedulesData[i].start.date) {
@@ -93,9 +77,13 @@ const calendarSlice = createSlice({
         }
       }
     },
+    setDisplayedDate: (state, action: PayloadAction<DateInfo>) => {
+      state.displayed.date = action.payload.date;
+      state.displayed.month = action.payload.month;
+    },
   },
 });
 
-export const { init, nextMonth, prevMonth, setDisplayedDate, addSchedules } = calendarSlice.actions;
+export const { loadCalendar, setDisplayedDate } = calendarSlice.actions;
 
 export default calendarSlice.reducer;

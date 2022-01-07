@@ -1,12 +1,19 @@
-import { useServer } from "../../config/api";
+/* eslint-disable no-underscore-dangle */
+import { v4 as uuid } from "uuid";
 
-export interface Milestone {
+import { useServer } from "../../config/api";
+import { MilestoneType } from "../../features/milestones/milestonesSlice";
+
+export interface CreateMilestone {
+  userId: string;
+  summary: string;
+  color: string;
+  runningTimesIds?: string[];
+}
+
+export interface UpdateMilestone {
   id: string;
-  userId?: string;
-  summary?: string;
-  color?: string;
-  isDeleted?: boolean;
-  runningTimes?: string[];
+  summary: string;
 }
 
 // export async function getMilestones(userId: string, googleAccessToken?: string) {
@@ -30,19 +37,18 @@ export interface Milestone {
 // }
 
 export async function createMilestone({
-  id,
   userId,
   summary,
   color,
-  runningTimes = [],
-}: Milestone) {
+  runningTimesIds = [],
+}: CreateMilestone) {
   if (useServer) {
     const requestOptions = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ id, summary, color, runningTimes }),
+      body: JSON.stringify({ summary, color, runningTimesIds }),
     };
 
     const response = await fetch(
@@ -58,10 +64,10 @@ export async function createMilestone({
   }
 
   const newMilestone = {
-    id,
+    _id: uuid(),
     summary,
     color,
-    runningTimes,
+    runningTimesIds,
     isDeleted: false,
   };
   const milestones = JSON.parse(localStorage.getItem("milestones"));
@@ -71,7 +77,7 @@ export async function createMilestone({
   return newMilestone;
 }
 
-export async function updateMilestoneSummary({ id, summary }: Milestone) {
+export async function updateMilestoneSummary({ id, summary }: UpdateMilestone) {
   if (useServer) {
     const requestOptions = {
       method: "PUT",
@@ -94,8 +100,8 @@ export async function updateMilestoneSummary({ id, summary }: Milestone) {
   }
 
   const milestones = JSON.parse(localStorage.getItem("milestones"));
-  const newMilestones = milestones.map((milestone: Milestone) => {
-    if (milestones.id === id) {
+  const newMilestones = milestones.map((milestone: CreateMilestone) => {
+    if (milestones._id === id) {
       milestone.summary = summary;
     }
 
@@ -128,7 +134,7 @@ export async function updateMilestoneSummary({ id, summary }: Milestone) {
 //   return response.json();
 // }
 
-export async function deleteMilestone(id: Milestone["id"]) {
+export async function deleteMilestone(id: string) {
   if (useServer) {
     const requestOptions = {
       method: "DELETE",
@@ -150,8 +156,8 @@ export async function deleteMilestone(id: Milestone["id"]) {
   }
 
   const milestones = JSON.parse(localStorage.getItem("milestones"));
-  const newMilestones = milestones.map((milestone: Milestone) => {
-    if (milestones.id === id) {
+  const newMilestones = milestones.map((milestone: MilestoneType) => {
+    if (milestones._id === id) {
       milestone.isDeleted = true;
     }
 

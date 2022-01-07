@@ -1,8 +1,15 @@
-import React, { FocusEventHandler, useContext, useEffect, useRef, useState } from "react";
+/* eslint-disable no-underscore-dangle */
+import React, {
+  FocusEventHandler,
+  MouseEventHandler,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import styled, { ThemeContext } from "styled-components";
 import { MdAddCircle } from "react-icons/md";
 import { useMutation } from "react-query";
-import { v4 as uuid } from "uuid";
 
 import { useAppDispatch, useAppSelector } from "../../app/store";
 import getRandomColor from "../../utils/getRandomColor";
@@ -15,13 +22,18 @@ import {
 import { addMilestone, removeMilestone, updateMilestone } from "./milestonesSlice";
 import Error from "../../components/Error";
 import MilestoneEditableBlock from "./MilestoneEditableBlock";
+import Modal from "../../components/Modal";
+import RunningTime from "./RunningTime";
 
 function Milestone() {
   const email = useAppSelector((state) => state.auth.email);
   const allMilestonesId = useAppSelector((state) => state.milestones.allMilestonesId);
   const byMilestonesId = useAppSelector((state) => state.milestones.byMilestonesId);
   const filteredMilestonesId = allMilestonesId.filter((id) => !byMilestonesId[id].isDeleted);
+
+  const [currentId, setCurrentId] = useState(null);
   const [isCreatedMilestone, setIsCreatedMilestone] = useState(false);
+  const [isShowRunningTime, setIsShowRunningTime] = useState(false);
   const [isError, setIsError] = useState(false);
 
   const newColor = getRandomColor();
@@ -55,7 +67,7 @@ function Milestone() {
 
   const updateMilestoneSummaryMutation = useMutation(updateMilestoneSummary, {
     onSuccess: ({ data }) => {
-      dispatch(updateMilestone({ id: data.id, summary: data.summary }));
+      dispatch(updateMilestone({ _id: data._id, summary: data.summary }));
     },
     onError: () => {
       setIsError(true);
@@ -66,7 +78,7 @@ function Milestone() {
     setIsCreatedMilestone(true);
   };
 
-  const onBlurUpdateMilestone = (id: string): FocusEventHandler<HTMLDivElement> => {
+  const onBlurUpdateMilestone = (id: string): FocusEventHandler => {
     return (e) => {
       const { textContent } = e.target;
 
@@ -80,7 +92,7 @@ function Milestone() {
     };
   };
 
-  const onBlurCreateMilestone: FocusEventHandler<HTMLDivElement> = (e) => {
+  const onBlurCreateMilestone: FocusEventHandler = (e) => {
     const { textContent } = e.target;
 
     if (textContent === "") {
@@ -89,13 +101,19 @@ function Milestone() {
 
     if (email) {
       createMilestoneMutation.mutate({
-        id: uuid(),
         userId: email,
         color: newColor,
         summary: textContent,
       });
       setIsCreatedMilestone(false);
     }
+  };
+
+  const onClickRunningTime = (milestoneId: string): MouseEventHandler => {
+    return () => {
+      setIsShowRunningTime(true);
+      setCurrentId(milestoneId);
+    };
   };
 
   if (isError) {
@@ -112,26 +130,35 @@ function Milestone() {
       </Title>
 
       {!filteredMilestonesId.length && <div>등록된 목표가 없습니다</div>}
+      <div>
+        {filteredMilestonesId.map((id) => {
+          return (
+            <MilestoneEditableBlock
+              key={id}
+              playCircleColor={byMilestonesId[id].color}
+              onClickPlayCircle={onClickRunningTime(id)}
+              onBlurEditableBlock={onBlurUpdateMilestone(id)}
+              summary={byMilestonesId[id].summary}
+            />
+          );
+        })}
 
-      {filteredMilestonesId.map((id) => {
-        return (
+        {isCreatedMilestone && (
           <MilestoneEditableBlock
-            key={id}
-            playCircleColor={byMilestonesId[id].color}
-            // onClickPlayCircle = {() => {}}
-            onBlurEditableBlock={onBlurUpdateMilestone(id)}
-            summary={byMilestonesId[id].summary}
+            editableBlockRef={newMilestone}
+            playCircleColor={newColor}
+            onBlurEditableBlock={onBlurCreateMilestone}
           />
-        );
-      })}
+        )}
+      </div>
 
-      {isCreatedMilestone && (
-        <MilestoneEditableBlock
-          editableBlockRef={newMilestone}
-          playCircleColor={newColor}
-          onBlurEditableBlock={onBlurCreateMilestone}
-        />
-      )}
+      <Modal
+        rootId="running-time"
+        isShowModal={isShowRunningTime}
+        onBackgroundClick={() => setIsShowRunningTime(false)}
+      >
+        <RunningTime milestoneId={currentId} onPauseClick={() => setIsShowRunningTime(false)} />
+      </Modal>
     </MilestoneWrap>
   );
 }
@@ -139,13 +166,14 @@ function Milestone() {
 const Title = styled.div`
   display: flex;
   justify-content: space-between;
-  font-size: 24px;
+  font-size: 1.4rem;
 `;
 
 const MilestoneWrap = styled.div`
   width: 20%;
-  padding: 20px;
-  border-right: 1px solid #e4e4e4;
+  padding: 15px;
+  box-sizing: border-box;
+
   [contenteditable="true"]:empty:before {
     content: attr(placeholder);
     color: #c4c4c4;
