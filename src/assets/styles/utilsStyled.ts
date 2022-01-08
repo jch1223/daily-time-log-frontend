@@ -1,8 +1,13 @@
-import styled, { keyframes } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 
 export const FlexDirectionColumn = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+export const boxShadow = css`
+  box-shadow: 0px 5px 2px 0px rgb(0 0 0 / 20%), 2px 4px 4px 3px rgb(0 0 0 / 14%),
+    2px 3px 7px 2px rgb(0 0 0 / 12%);
 `;
 
 export const fadeIn = keyframes`

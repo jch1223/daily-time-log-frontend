@@ -21,7 +21,7 @@ function GoogleAuth() {
           boxShadow
           onClick={isLogIn ? googleSignOut : googleSignIn}
         >
-          {isLogIn ? "Log Out" : "Log In"}
+          {isLogIn ? "Log Out" : "Log In With Google"}
         </Button>
       )}
     </div>

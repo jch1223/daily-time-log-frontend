@@ -34,12 +34,15 @@ function useGoogleAuth() {
         const basicProfile = userData.getBasicProfile();
         const authResponse = userData.getAuthResponse(true);
 
+        console.log(basicProfile.getImageUrl());
+
         dispatch(
           logIn({
             isLogIn: true,
             isLoading: false,
             email: basicProfile.getEmail(),
             name: basicProfile.getName(),
+            imageUrl: basicProfile.getImageUrl(),
             googleAccessToken: authResponse.access_token,
           }),
         );

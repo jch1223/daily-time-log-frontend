@@ -20,6 +20,7 @@ const size = {
 export const lightTheme: DefaultTheme = {
   palette,
   color: {
+    backgroundColor: palette.white,
     border: palette.lightGray,
     title: palette.gray,
     buttonFont: palette.white,
@@ -32,6 +33,7 @@ export const lightTheme: DefaultTheme = {
 export const darkTheme: DefaultTheme = {
   palette,
   color: {
+    backgroundColor: palette.white,
     border: palette.lightGray,
     title: palette.gray,
     buttonFont: palette.black,

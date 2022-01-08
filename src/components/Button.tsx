@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import React from "react";
 import styled, { css } from "styled-components";
+import { boxShadow as boxShadowCss } from "../assets/styles/utilsStyled";
 
 interface Sizes {
   large: {
@@ -44,13 +45,7 @@ function Button({ children, color, size, fullWidth, background, boxShadow, onCli
 
 const boxShadowStyles = css<Props>`
   ${({ boxShadow }) => {
-    return (
-      boxShadow &&
-      css`
-        box-shadow: 0px 5px 2px 0px rgb(0 0 0 / 20%), 2px 4px 4px 3px rgb(0 0 0 / 14%),
-          2px 3px 7px 2px rgb(0 0 0 / 12%);
-      `
-    );
+    return boxShadow && boxShadowCss;
   }};
 `;
 

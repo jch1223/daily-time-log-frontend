@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import background from "../assets/login-background.png";
+import { boxShadow } from "../assets/styles/utilsStyled";
 import GoogleAuth from "../features/auth/GoogleAuth";
 import MonthCalendar from "../features/calendar/MonthCalendar";
 
@@ -55,8 +56,7 @@ const CalendarWrap = styled.div`
   height: 70%;
   background: white;
   border-radius: 5px;
-  box-shadow: 0px 5px 2px 0px rgb(0 0 0 / 20%), 2px 4px 4px 3px rgb(0 0 0 / 14%),
-    2px 3px 7px 2px rgb(0 0 0 / 12%);
+  ${boxShadow}
 `;
 
 const IndexPageWrap = styled.div`
