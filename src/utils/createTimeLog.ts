@@ -1,10 +1,11 @@
 import dayjs from "dayjs";
+import { TimeLogState } from "../features/timeLog/timeLogSlice";
 
 const START_TIME = 0;
 
 export const createTimeLog = () => {
   const allHourIds = [];
-  const byHourId: { [hourId: string]: any } = {};
+  const byHourId: TimeLogState["byHourId"] = {};
 
   for (let hour = START_TIME; hour < START_TIME + 24; hour++) {
     allHourIds.push(hour);

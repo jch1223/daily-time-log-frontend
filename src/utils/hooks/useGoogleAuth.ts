@@ -34,8 +34,6 @@ function useGoogleAuth() {
         const basicProfile = userData.getBasicProfile();
         const authResponse = userData.getAuthResponse(true);
 
-        console.log(basicProfile.getImageUrl());
-
         dispatch(
           logIn({
             isLogIn: true,
@@ -46,12 +44,14 @@ function useGoogleAuth() {
             googleAccessToken: authResponse.access_token,
           }),
         );
+
         history.push("/calendar");
       } else {
         dispatch(logOut());
         dispatch(initCalendar());
         dispatch(initMilestones());
         dispatch(initGoogleSchedules());
+
         history.push("/");
       }
     };

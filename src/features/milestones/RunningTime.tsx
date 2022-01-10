@@ -4,7 +4,7 @@ import { useMutation } from "react-query";
 import dayjs from "dayjs";
 import { MdPauseCircle } from "react-icons/md";
 
-import { useAppDispatch, useAppSelector } from "../../app/store";
+import { useAppDispatch } from "../../app/store";
 import { createRunningTime } from "../../utils/api/runningTimes";
 
 import Error from "../../components/Error";
@@ -18,7 +18,6 @@ interface Props {
 function RunningTime({ milestoneId, onPauseClick }: Props) {
   const [isError, setIsError] = useState(false);
   const [runningTime, setRunningTime] = useState("00:00:00");
-  const dateId = dayjs().format("YYYY-MM-DD");
 
   const dispatch = useAppDispatch();
 

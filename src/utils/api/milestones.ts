@@ -16,26 +16,6 @@ export interface UpdateMilestone {
   summary: string;
 }
 
-// export async function getMilestones(userId: string, googleAccessToken?: string) {
-//   const requestOptions = {
-//     method: "GET",
-//     headers: {
-//       Authorization: `Bearer ${googleAccessToken}`,
-//     },
-//   };
-
-//   const response = await fetch(
-//     `${process.env.REACT_APP_API_SERVER}/users/${userId}/milestones`,
-//     requestOptions,
-//   );
-
-//   if (!response.ok) {
-//     throw new Error("Problem fetching data");
-//   }
-
-//   return response.json();
-// }
-
 export async function createMilestone({
   userId,
   summary,
@@ -111,28 +91,6 @@ export async function updateMilestoneSummary({ id, summary }: UpdateMilestone) {
 
   return null;
 }
-
-// export async function createMilestonesInLocalStorage(
-//   milestones: Milestone[],
-//   googleAccessToken: string,
-// ) {
-//   const requestOptions = {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: `Bearer ${googleAccessToken}`,
-//     },
-//     body: JSON.stringify(milestones),
-//   };
-
-//   const response = await fetch(`${process.env.REACT_APP_API_SERVER}/milestones`, requestOptions);
-
-//   if (!response.ok) {
-//     throw new Error("Problem fetching data");
-//   }
-
-//   return response.json();
-// }
 
 export async function deleteMilestone(id: string) {
   if (useServer) {
