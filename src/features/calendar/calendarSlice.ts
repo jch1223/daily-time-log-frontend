@@ -41,6 +41,21 @@ const calendarSlice = createSlice({
   name: "calendar",
   initialState,
   reducers: {
+    initCalendar: (state) => {
+      const now = dayjs();
+      const dateInfo: DateInfo = {
+        year: now.year(),
+        month: now.month(),
+        date: now.date(),
+        timezone: dayjs.tz.guess(),
+      };
+
+      const { calendarAllDatesId, calendarByDateId } = createCalendarData(dateInfo);
+
+      state.displayed = dateInfo;
+      state.allDatesId = calendarAllDatesId;
+      state.byDateId = calendarByDateId;
+    },
     loadCalendar: (
       state,
       action: PayloadAction<{ dateInfo: DateInfo; schedules?: ScheduleInfo[] }>,
@@ -84,6 +99,6 @@ const calendarSlice = createSlice({
   },
 });
 
-export const { loadCalendar, setDisplayedDate } = calendarSlice.actions;
+export const { initCalendar, loadCalendar, setDisplayedDate } = calendarSlice.actions;
 
 export default calendarSlice.reducer;

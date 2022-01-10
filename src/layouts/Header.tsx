@@ -2,16 +2,15 @@ import React, { useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import dayjs from "dayjs";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
-import { useAppDispatch, useAppSelector } from "../app/store";
 
+import { useAppDispatch, useAppSelector } from "../app/store";
 import { loadCalendar } from "../features/calendar/calendarSlice";
 
-import GoogleAuth from "../features/auth/GoogleAuth";
 import Button from "../components/Button";
+import Profile from "../features/auth/ProfileInfo";
 
 function Header() {
   const displayedInfo = useAppSelector((state) => state.calendar.displayed);
-  const name = useAppSelector((state) => state.auth.name);
   const schedulesData = useAppSelector((state) => state.schedules.schedulesData);
 
   const dispatch = useAppDispatch();
@@ -54,8 +53,7 @@ function Header() {
       </div>
 
       <div className="right">
-        <div>{name}</div>
-        <GoogleAuth />
+        <Profile />
       </div>
     </HeaderWrap>
   );

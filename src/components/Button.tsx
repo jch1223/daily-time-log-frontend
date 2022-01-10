@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import React from "react";
 import styled, { css } from "styled-components";
+import { boxShadow as boxShadowCss } from "../assets/styles/utilsStyled";
 
 interface Sizes {
   large: {
@@ -21,17 +22,44 @@ interface Props {
   children: React.ReactNode;
   color?: "blue" | "pink";
   size: keyof Sizes;
+  fullWidth?: boolean;
   background?: boolean;
+  boxShadow?: boolean;
   onClick?(): void;
 }
 
-function Button({ children, color, size, background, onClick }: Props) {
+function Button({ children, color, size, fullWidth, background, boxShadow, onClick }: Props) {
   return (
-    <StyledButton color={color} size={size} background={background} onClick={onClick}>
+    <StyledButton
+      color={color}
+      size={size}
+      fullWidth={fullWidth}
+      background={background}
+      boxShadow={boxShadow}
+      onClick={onClick}
+    >
       {children}
     </StyledButton>
   );
 }
+
+const boxShadowStyles = css<Props>`
+  ${({ boxShadow }) => {
+    return boxShadow && boxShadowCss;
+  }};
+`;
+
+const fullWidthStyles = css<Props>`
+  ${({ fullWidth }) => {
+    return (
+      fullWidth &&
+      css`
+        width: 100%;
+        justify-content: center;
+      `
+    );
+  }}
+`;
 
 const colorStyles = css<Props>`
   ${({ theme, color, background }) => {
@@ -79,12 +107,16 @@ const StyledButton = styled.button`
 
   ${colorStyles}
   ${sizeStyles}
+  ${fullWidthStyles}
+  ${boxShadowStyles}
 `;
 
 Button.defaultProps = {
   onClick: () => {},
   color: "blue",
   background: true,
+  fullWidth: false,
+  boxShadow: false,
 };
 
 export default Button;

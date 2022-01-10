@@ -1,6 +1,13 @@
 import { useServer } from "../../config/api";
 import { MilestoneType } from "../../features/milestones/milestonesSlice";
 
+interface UpdateSettingBody {
+  id: string;
+  setting: {
+    themeMode: string;
+  };
+}
+
 export async function logIn<T>(body: T) {
   if (useServer) {
     const requestOptions = {
@@ -35,4 +42,27 @@ export async function logIn<T>(body: T) {
       milestones,
     },
   };
+}
+
+export async function updateSetting({ id, setting }: UpdateSettingBody) {
+  if (useServer) {
+    const requestOptions = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cors: "cors",
+      body: JSON.stringify({
+        ...setting,
+      }),
+    };
+
+    const response = await fetch(`${process.env.REACT_APP_API_SERVER}/users/${id}`, requestOptions);
+
+    if (!response.ok) {
+      throw new Error("Problem fetching data");
+    }
+
+    return response.json();
+  }
 }

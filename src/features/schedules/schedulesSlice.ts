@@ -40,6 +40,10 @@ const schedulesSlice = createSlice({
   name: "schedules",
   initialState,
   reducers: {
+    initGoogleSchedules: (state) => {
+      state.allSchedulesId = [];
+      state.byScheduleId = {};
+    },
     addGoogleSchedules: (state, action: PayloadAction<ScheduleInfo[]>) => {
       action.payload.forEach((item) => {
         state.allSchedulesId.push(item.id);
@@ -51,6 +55,6 @@ const schedulesSlice = createSlice({
   },
 });
 
-export const { addGoogleSchedules } = schedulesSlice.actions;
+export const { initGoogleSchedules, addGoogleSchedules } = schedulesSlice.actions;
 
 export default schedulesSlice.reducer;
