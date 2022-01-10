@@ -23,23 +23,38 @@ export interface ScheduleInfo {
 }
 
 interface SchedulesState {
-  data: ScheduleInfo[];
+  allSchedulesId: string[];
+  byScheduleId: {
+    [index: string]: ScheduleInfo;
+  };
+  schedulesData: ScheduleInfo[];
 }
 
 const initialState: SchedulesState = {
-  data: [],
+  allSchedulesId: [],
+  byScheduleId: {},
+  schedulesData: [],
 };
 
 const schedulesSlice = createSlice({
   name: "schedules",
   initialState,
   reducers: {
+    initGoogleSchedules: (state) => {
+      state.allSchedulesId = [];
+      state.byScheduleId = {};
+    },
     addGoogleSchedules: (state, action: PayloadAction<ScheduleInfo[]>) => {
-      state.data = action.payload;
+      action.payload.forEach((item) => {
+        state.allSchedulesId.push(item.id);
+        state.byScheduleId[item.id] = item;
+      });
+
+      state.schedulesData = action.payload;
     },
   },
 });
 
-export const { addGoogleSchedules } = schedulesSlice.actions;
+export const { initGoogleSchedules, addGoogleSchedules } = schedulesSlice.actions;
 
 export default schedulesSlice.reducer;

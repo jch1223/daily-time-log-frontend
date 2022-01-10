@@ -1,23 +1,68 @@
-export async function createUser(googleAccessToken: string, email: string) {
-  const mileStones = JSON.parse(localStorage.getItem("milestones"));
+import { useServer } from "../../config/api";
+import { MilestoneType } from "../../features/milestones/milestonesSlice";
 
-  const requestOptions = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${googleAccessToken}`,
-    },
-    body: JSON.stringify({
-      email,
-      mileStones,
-    }),
+interface UpdateSettingBody {
+  id: string;
+  setting: {
+    themeMode: string;
   };
+}
 
-  const response = await fetch(`${process.env.REACT_APP_API_SERVER}/users/sign-up`, requestOptions);
+export async function logIn<T>(body: T) {
+  if (useServer) {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cors: "cors",
+      body: JSON.stringify({
+        ...body,
+      }),
+    };
 
-  if (!response.ok) {
-    throw new Error("Problem fetching data");
+    const response = await fetch(
+      `${process.env.REACT_APP_API_SERVER}/users/sign-in`,
+      requestOptions,
+    );
+
+    if (!response.ok) {
+      throw new Error("Problem fetching data");
+    }
+
+    return response.json();
   }
 
-  return response.json();
+  const themeMode = localStorage.getItem("themeMode") || "light";
+  const milestones: MilestoneType[] = JSON.parse(localStorage.getItem("milestones")) || [];
+
+  return {
+    data: {
+      themeMode,
+      milestones,
+    },
+  };
+}
+
+export async function updateSetting({ id, setting }: UpdateSettingBody) {
+  if (useServer) {
+    const requestOptions = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cors: "cors",
+      body: JSON.stringify({
+        ...setting,
+      }),
+    };
+
+    const response = await fetch(`${process.env.REACT_APP_API_SERVER}/users/${id}`, requestOptions);
+
+    if (!response.ok) {
+      throw new Error("Problem fetching data");
+    }
+
+    return response.json();
+  }
 }

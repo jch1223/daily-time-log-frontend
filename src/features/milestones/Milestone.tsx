@@ -1,175 +1,191 @@
-import React, { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
-import { MdAddCircle, MdPlayCircleFilled } from "react-icons/md";
+/* eslint-disable no-underscore-dangle */
+import React, {
+  FocusEventHandler,
+  MouseEventHandler,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import styled, { ThemeContext } from "styled-components";
+import { MdAddCircle } from "react-icons/md";
+import { useMutation } from "react-query";
 
 import { useAppDispatch, useAppSelector } from "../../app/store";
+import { addMilestone, removeMilestone, updateMilestone } from "./milestonesSlice";
+import getRandomColor from "../../utils/getRandomColor";
 import {
   createMilestone,
-  updateMilestone,
   deleteMilestone,
-  init,
-  Milestone as MilestoneType,
-} from "./milestonesSlice";
-import DailyEvent from "../calendar/DailyEvent";
+  updateMilestoneSummary,
+} from "../../utils/api/milestones";
 
-interface Props {
-  openModal: (
-    modalType: string,
-    milestoneData: MilestoneType,
-  ) => (e: React.MouseEvent<SVGElement, MouseEvent>) => void;
-}
+import Error from "../../components/Error";
+import Modal from "../../components/Modal";
+import MilestoneEditableBlock from "./MilestoneEditableBlock";
+import RunningTime from "./RunningTime";
 
-function Milestone({ openModal }: Props) {
-  const milestones = useAppSelector((state) => state.milestones);
-  const filteredMilestones = milestones.filter((item) => !item.isDeleted);
-  const [isFocus, setIsFocus] = useState(false);
+function Milestone() {
+  const email = useAppSelector((state) => state.auth.email);
+  const allMilestonesId = useAppSelector((state) => state.milestones.allMilestonesId);
+  const byMilestonesId = useAppSelector((state) => state.milestones.byMilestonesId);
+  const filteredMilestonesId = allMilestonesId.filter((id) => !byMilestonesId[id].isDeleted);
 
-  const ref = useRef<HTMLDivElement>(null);
+  const [currentId, setCurrentId] = useState(null);
+  const [isCreatedMilestone, setIsCreatedMilestone] = useState(false);
+  const [isShowRunningTime, setIsShowRunningTime] = useState(false);
+  const [isError, setIsError] = useState(false);
+
+  const newColor = getRandomColor();
+
+  const newMilestone = useRef<HTMLDivElement>(null);
+
+  const { palette } = useContext(ThemeContext);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(init());
-  }, []);
+    if (isCreatedMilestone) newMilestone.current.focus();
+  }, [isCreatedMilestone]);
 
-  useEffect(() => {
-    if (isFocus) ref.current?.focus();
-  }, [isFocus]);
+  const createMilestoneMutation = useMutation(createMilestone, {
+    onSuccess: (result) => {
+      dispatch(addMilestone(result.data));
+    },
+    onError: () => {
+      setIsError(true);
+    },
+  });
+
+  const deleteMilestoneMutation = useMutation(deleteMilestone, {
+    onSuccess: (_, id) => {
+      dispatch(removeMilestone(id));
+    },
+    onError: () => {
+      setIsError(true);
+    },
+  });
+
+  const updateMilestoneSummaryMutation = useMutation(updateMilestoneSummary, {
+    onSuccess: ({ data }) => {
+      dispatch(updateMilestone({ _id: data._id, summary: data.summary }));
+    },
+    onError: () => {
+      setIsError(true);
+    },
+  });
 
   const createMilestoneHandler = () => {
-    dispatch(createMilestone());
-    setIsFocus(true);
+    setIsCreatedMilestone(true);
   };
+
+  const onBlurUpdateMilestone = (id: string): FocusEventHandler => {
+    return (e) => {
+      const { textContent } = e.target;
+
+      if (textContent === "") {
+        return deleteMilestoneMutation.mutate(id);
+      }
+
+      if (byMilestonesId[id].summary !== textContent) {
+        updateMilestoneSummaryMutation.mutate({ id, summary: textContent });
+      }
+    };
+  };
+
+  const onBlurCreateMilestone: FocusEventHandler = (e) => {
+    const { textContent } = e.target;
+
+    if (textContent === "") {
+      return setIsCreatedMilestone(false);
+    }
+
+    if (email) {
+      createMilestoneMutation.mutate({
+        userId: email,
+        color: newColor,
+        summary: textContent,
+      });
+      setIsCreatedMilestone(false);
+    }
+  };
+
+  const onClickRunningTime = (milestoneId: string): MouseEventHandler => {
+    return () => {
+      setIsShowRunningTime(true);
+      setCurrentId(milestoneId);
+    };
+  };
+
+  if (isError) {
+    return (
+      <MilestoneWrap>
+        <Error />
+      </MilestoneWrap>
+    );
+  }
 
   return (
     <MilestoneWrap>
-      <div className="goal">
-        <Title>
-          <div>목표</div>
-          <div className="add-circle">
-            <MdAddCircle cursor="pointer" color="#1a73e8" onClick={createMilestoneHandler} />
-          </div>
-        </Title>
+      <Title>
+        <div>목표</div>
         <div>
-          {!filteredMilestones.length && <EditableBlock>등록된 목표가 없습니다</EditableBlock>}
-
-          {filteredMilestones.map((item) => {
-            return (
-              <MilestoneContent key={item.id}>
-                <MdPlayCircleFilled
-                  cursor="pointer"
-                  color={item.color}
-                  size="35px"
-                  onClick={openModal("runningGoal", item)}
-                />
-                <EditableBlock
-                  ref={ref}
-                  key={item.id}
-                  placeholder="목표를 입력해주세요"
-                  contentEditable="true"
-                  suppressContentEditableWarning
-                  onBlur={(e) => {
-                    const { textContent } = e.target;
-
-                    if (textContent === "") {
-                      dispatch(deleteMilestone(item.id));
-                    }
-
-                    dispatch(
-                      updateMilestone({ id: item.id, summary: textContent, color: item.color }),
-                    );
-                    setIsFocus(false);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.currentTarget.blur();
-                      window.getSelection().removeAllRanges();
-                    }
-                  }}
-                >
-                  {item.summary}
-                </EditableBlock>
-              </MilestoneContent>
-            );
-          })}
+          <MdAddCircle cursor="pointer" color={palette.blue} onClick={createMilestoneHandler} />
         </div>
+      </Title>
+
+      {!filteredMilestonesId.length && <div>등록된 목표가 없습니다</div>}
+
+      <div>
+        {filteredMilestonesId.map((id) => {
+          return (
+            <MilestoneEditableBlock
+              key={id}
+              playCircleColor={byMilestonesId[id].color}
+              onClickPlayCircle={onClickRunningTime(id)}
+              onBlurEditableBlock={onBlurUpdateMilestone(id)}
+              summary={byMilestonesId[id].summary}
+            />
+          );
+        })}
+
+        {isCreatedMilestone && (
+          <MilestoneEditableBlock
+            editableBlockRef={newMilestone}
+            playCircleColor={newColor}
+            onBlurEditableBlock={onBlurCreateMilestone}
+          />
+        )}
       </div>
 
-      {/* <div>
-        <Title>일정</Title>
-        <DailyEvent />
-      </div> */}
-
-      {/* 
-      {milestones.map((milestone: any) => {
-        return (
-          <div>
-            <MdPlayCircleFilled />
-            {milestone.summary}
-            <button
-              type="button"
-              onClick={() => {
-                // setIsShowModal(true);
-                // createMilestoneMutation.mutate({
-                //   userId,
-                //   done: false,
-                //   summary: "title",
-                //   googleAccessToken,
-                // });
-              }}
-            >
-              수정
-            </button>
-            <button
-              type="button"
-              // onClick={() => {
-              //   createMilestoneMutation.mutate({
-              //     userId,
-              //     done: false,
-              //     summary: "title",
-              //     googleAccessToken,
-              //   });
-              // }}
-            >
-              삭제
-            </button>
-          </div>
-        );
-      })} */}
+      <Modal
+        rootId="running-time"
+        isShowModal={isShowRunningTime}
+        onBackgroundClick={() => setIsShowRunningTime(false)}
+      >
+        <RunningTime milestoneId={currentId} onPauseClick={() => setIsShowRunningTime(false)} />
+      </Modal>
     </MilestoneWrap>
   );
 }
 
-const EditableBlock = styled.div`
-  width: 100%;
-  padding: 10px;
-`;
-
 const Title = styled.div`
   display: flex;
   justify-content: space-between;
-  font-size: 24px;
-`;
-
-const MilestoneContent = styled.div`
-  display: flex;
-  align-items: center;
-
-  svg {
-    padding: 0 5px;
-  }
+  font-size: 1.4rem;
 `;
 
 const MilestoneWrap = styled.div`
   width: 20%;
-  padding: 20px;
-  border-right: 1px solid #e4e4e4;
+  padding: 15px;
+  box-sizing: border-box;
+
   [contenteditable="true"]:empty:before {
     content: attr(placeholder);
     color: #c4c4c4;
   }
 
-  .goal {
-    margin-bottom: 20px;
+  @media only screen and (max-width: 768px) {
+    width: 80%;
   }
 `;
 

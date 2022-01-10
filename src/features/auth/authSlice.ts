@@ -1,53 +1,60 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface LoginState {
-  userId?: string;
   isLogIn: boolean;
+  isLoading: boolean;
+  userId?: string;
   name: string;
   email: string;
+  imageUrl: string;
   googleAccessToken: string;
-  firebaseAccessToken: string;
+}
+
+interface LoginPayload {
+  isLogIn?: boolean;
+  isLoading?: boolean;
+  userId?: string;
+  name?: string;
+  email?: string;
+  imageUrl: string;
+  googleAccessToken?: string;
 }
 
 const initialState: LoginState = {
+  isLogIn: false,
+  isLoading: true,
   userId: "",
-  isLogIn: null,
   name: "",
   email: "",
+  imageUrl: "",
   googleAccessToken: "",
-  firebaseAccessToken: "",
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logIn: (state, action: PayloadAction<LoginState>) => {
-      const { isLogIn, name, email, googleAccessToken, firebaseAccessToken } = action.payload;
+    logIn: (state, action: PayloadAction<LoginPayload>) => {
+      const { isLogIn, isLoading, email, googleAccessToken, name, imageUrl } = action.payload;
 
       state.isLogIn = isLogIn;
+      state.isLoading = isLoading;
       state.name = name;
       state.email = email;
+      state.imageUrl = imageUrl;
       state.googleAccessToken = googleAccessToken;
-      state.firebaseAccessToken = firebaseAccessToken;
     },
     logOut: (state) => {
       state.isLogIn = false;
+      state.isLoading = false;
       state.userId = "";
       state.name = "";
       state.email = "";
       state.googleAccessToken = "";
-      state.firebaseAccessToken = "";
-    },
-    setGoogleAccessToken: (state, action: PayloadAction<string>) => {
-      state.googleAccessToken = action.payload;
-    },
-    setUserId: (state, action: PayloadAction<string>) => {
-      state.userId = action.payload;
     },
   },
 });
 
-export const { logIn, logOut, setGoogleAccessToken, setUserId } = authSlice.actions;
+export const { logIn, logOut } = authSlice.actions;
 
 export default authSlice.reducer;

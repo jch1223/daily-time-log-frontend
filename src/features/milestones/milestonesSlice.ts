@@ -1,95 +1,59 @@
+/* eslint-disable no-underscore-dangle */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { v4 as uuid } from "uuid";
-import getRandomColor from "../../utils/getRandomColor";
 
-export interface Milestone {
-  id: string;
+export interface MilestoneType {
+  _id: string;
   summary: string;
   color?: string;
   isDeleted?: boolean;
+  runningTimesIds?: string[];
 }
 
-const initialState: Milestone[] = [];
+export interface MilestoneState {
+  allMilestonesId: string[];
+  byMilestonesId: {
+    [key: string]: MilestoneType;
+  };
+}
+
+const initialState: MilestoneState = {
+  allMilestonesId: [],
+  byMilestonesId: {},
+};
 
 const milestonesSlice = createSlice({
   name: "milestones",
   initialState,
   reducers: {
-    init: (state) => {
-      const milestones = localStorage.getItem("milestones");
-
-      if (!milestones) {
-        localStorage.setItem("milestones", JSON.stringify(state));
-        return state;
-      }
-
-      return JSON.parse(milestones);
+    initMilestones: (state) => {
+      state.allMilestonesId = [];
+      state.byMilestonesId = {};
     },
-    createMilestone: (state) => {
-      const milestones = localStorage.getItem("milestones");
-      const color = getRandomColor();
-
-      if (!milestones) {
-        localStorage.setItem("milestones", JSON.stringify(state));
-        return state;
-      }
-
-      const milestonesData = JSON.parse(milestones);
-      const newMilestone = { id: uuid(), summary: "", isDeleted: false, color };
-
-      milestonesData.push(newMilestone);
-
-      localStorage.setItem("milestones", JSON.stringify(milestonesData));
-      return milestonesData;
+    loadMilestones: (state, action: PayloadAction<MilestoneType[]>) => {
+      const milestonesData = action.payload;
+      milestonesData.forEach((milestone) => {
+        state.allMilestonesId.push(milestone._id);
+        state.byMilestonesId[milestone._id] = milestone;
+      });
     },
-    updateMilestone: (state, action: PayloadAction<Milestone>) => {
-      const milestones = localStorage.getItem("milestones");
+    addMilestone: (state, action: PayloadAction<MilestoneType>) => {
+      const milestoneData = action.payload;
 
-      if (!milestones) {
-        localStorage.setItem("milestones", JSON.stringify(state));
-        return state;
-      }
-
-      const milestonesData = JSON.parse(milestones);
-
-      const newMilestonesData = milestonesData
-        .map((item: Milestone) => {
-          if (item.id === action.payload.id) {
-            return action.payload;
-          }
-
-          return item;
-        })
-        .filter((item: Milestone) => item.summary);
-
-      localStorage.setItem("milestones", JSON.stringify(newMilestonesData));
-      return newMilestonesData;
+      state.allMilestonesId.push(milestoneData._id);
+      state.byMilestonesId[milestoneData._id] = milestoneData;
     },
-    deleteMilestone: (state, action: PayloadAction<string>) => {
-      const milestones = localStorage.getItem("milestones");
+    updateMilestone: (state, action: PayloadAction<MilestoneType>) => {
+      const milestoneData = action.payload;
 
-      if (!milestones) {
-        localStorage.setItem("milestones", JSON.stringify(state));
-        return state;
-      }
-
-      const milestonesData = JSON.parse(milestones);
-      const newMilestonesData = milestonesData
-        .map((item: Milestone) => {
-          if (item.id === action.payload) {
-            item.isDeleted = true;
-          }
-
-          return item;
-        })
-        .filter((item: Milestone) => item.summary);
-
-      localStorage.setItem("milestones", JSON.stringify(newMilestonesData));
-      return newMilestonesData;
+      state.byMilestonesId[milestoneData._id].summary = milestoneData.summary;
+    },
+    removeMilestone: (state, action: PayloadAction<string>) => {
+      state.byMilestonesId[action.payload].isDeleted = true;
     },
   },
 });
 
-export const { init, createMilestone, updateMilestone, deleteMilestone } = milestonesSlice.actions;
+export const { initMilestones, loadMilestones, addMilestone, updateMilestone, removeMilestone } =
+  milestonesSlice.actions;
 
 export default milestonesSlice.reducer;

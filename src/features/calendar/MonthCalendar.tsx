@@ -1,18 +1,16 @@
 import React, { useEffect } from "react";
-import { shallowEqual } from "react-redux";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import dayjs from "dayjs";
 
 import { useAppSelector, useAppDispatch } from "../../app/store";
-import { init, DateInfo, setEvent } from "./calendarSlice";
+import { loadCalendar, DateInfo } from "./calendarSlice";
 import MonthCalendarDate from "./MonthCalendarDate";
 
 export const WEEKS = ["일", "월", "화", "수", "목", "금", "토"];
 
 function MonthCalendar() {
-  const displayed = useAppSelector((state) => state.calendar.displayed);
-  const allDatesId = useAppSelector((state) => state.calendar.allDatesId, shallowEqual);
-  const schedulesData = useAppSelector((state) => state.schedules.data, shallowEqual);
+  const allDatesId = useAppSelector((state) => state.calendar.allDatesId);
+  const schedulesData = useAppSelector((state) => state.schedules.schedulesData);
 
   const dispatch = useAppDispatch();
 
@@ -25,28 +23,40 @@ function MonthCalendar() {
       timezone: dayjs.tz.guess(),
     };
 
-    dispatch(init(dateInfo));
-  }, []);
-
-  useEffect(() => {
-    dispatch(setEvent(schedulesData));
-  }, [displayed?.month, schedulesData]);
+    dispatch(loadCalendar({ dateInfo, schedules: schedulesData }));
+  }, [schedulesData]);
 
   return (
     <MonthCalenderWrap>
-      <MonthCalenderViewWrap>
+      <MonthCalendarDays>
+        {WEEKS.map((day) => {
+          return <span key={day}>{day}</span>;
+        })}
+      </MonthCalendarDays>
+      <MonthCalenderDates>
         {allDatesId?.map((dateId) => {
           return <MonthCalendarDate key={dateId} dateId={dateId} />;
         })}
-      </MonthCalenderViewWrap>
+      </MonthCalenderDates>
     </MonthCalenderWrap>
   );
 }
 
-const MonthCalenderViewWrap = styled.div`
+const gridColumns = css`
   display: grid;
-  height: 100%;
   grid-template-columns: repeat(7, 1fr);
+`;
+
+const MonthCalendarDays = styled.div`
+  ${gridColumns}
+  justify-items: center;
+  font-size: 13px;
+  color: ${({ theme }) => theme.color.font};
+`;
+
+const MonthCalenderDates = styled.div`
+  ${gridColumns}
+  height: 100%;
   grid-template-rows: repeat(6, 1fr);
 `;
 
@@ -54,6 +64,9 @@ const MonthCalenderWrap = styled.div`
   display: flex;
   height: 100%;
   flex-direction: column;
+  padding: 15px;
+  box-sizing: border-box;
+  background-color: ${({ theme }) => theme.color.mainBackgroundColor};
 `;
 
 export default MonthCalendar;

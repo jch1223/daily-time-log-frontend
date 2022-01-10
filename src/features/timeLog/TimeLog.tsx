@@ -1,111 +1,140 @@
-import React, { useEffect } from "react";
-import dayjs from "dayjs";
+import React, { memo, useEffect } from "react";
 import styled from "styled-components";
+import { useQuery } from "react-query";
+import dayjs from "dayjs";
 
-import { shallowEqual } from "react-redux";
 import { useAppDispatch, useAppSelector } from "../../app/store";
-import { init as timeLogInit } from "./timeLogSlice";
-import { init as goalsInit } from "../goals/goalsSlice";
+import { addRunningTimes, loadTimeLog } from "./timeLogSlice";
+import { getRunningTimeByDate } from "../../utils/api/runningTimes";
+
+import Error from "../../components/Error";
 
 export const WEEKS = ["일", "월", "화", "수", "목", "금", "토"];
 
 function TimeLog() {
-  const displayed = useAppSelector((state) => state.calendar.displayed);
-  const dateId = dayjs().set(displayed).format("YYYY-MM-DD");
+  const isLogIn = useAppSelector((state) => state.auth.isLogIn);
   const allHourIds = useAppSelector((state) => state.timeLog.allHourIds);
   const byHourId = useAppSelector((state) => state.timeLog.byHourId);
-  const goals = useAppSelector((state) => state.goals.byDateId[dateId], shallowEqual);
-
-  const month = dayjs().set(displayed).month() + 1;
-  const day = dayjs().set(displayed).day();
+  const displayed = useAppSelector((state) => state.calendar.displayed);
+  const startDate = dayjs()
+    .set({ ...displayed, hour: 0, minute: 0, second: 0 })
+    .format("YYYY-MM-DDTHH:mm");
+  const endDate = dayjs()
+    .set({ ...displayed, hour: 24, minute: 0, second: 0 })
+    .format("YYYY-MM-DDTHH:mm");
 
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    if (displayed) dispatch(goalsInit(dateId));
-  }, [displayed]);
+  const { data, isError } = useQuery(
+    ["runningTimes", startDate, endDate],
+    () => getRunningTimeByDate(startDate, endDate),
+    {
+      enabled: isLogIn && !!displayed,
+      retry: false,
+      refetchOnWindowFocus: false,
+    },
+  );
 
   useEffect(() => {
-    if (displayed) dispatch(timeLogInit({ date: displayed, goals: goals || [] }));
-  }, [displayed, goals]);
+    dispatch(loadTimeLog());
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      const { runningTimes } = data;
+      dispatch(loadTimeLog());
+      dispatch(addRunningTimes(runningTimes));
+    }
+  }, [data]);
+
+  if (isError) {
+    return <Error />;
+  }
 
   return (
     <TimeLogWrap>
-      <div className="date">
-        {month}월 {displayed?.date}일 ({WEEKS[day]})
-      </div>
+      <Title>TIMETABLE</Title>
 
-      <div className="time-table">
+      <TimeTable>
         {allHourIds?.map((hourId) => {
           return (
             <HourWrap key={hourId}>
-              <div className="hour">{dayjs(hourId).hour()}</div>
+              <Hour>{hourId}</Hour>
               <MinuteWrap>
                 {Object.keys(byHourId[hourId])?.map((minuteId) => {
                   return (
-                    <div
+                    <Minute
                       style={{ backgroundColor: byHourId[hourId][minuteId].color }}
                       key={minuteId}
-                      className={`${minuteId} flex-1`}
                     >
                       {" "}
-                    </div>
+                    </Minute>
                   );
                 })}
               </MinuteWrap>
             </HourWrap>
           );
         })}
-      </div>
+      </TimeTable>
     </TimeLogWrap>
   );
 }
 
+const Title = styled.div`
+  font-size: 1.4rem;
+  font-weight: 300;
+  padding-top: 15px;
+  padding-bottom: 10px;
+`;
+
+const Minute = memo(styled.div`
+  flex: 1;
+
+  &:nth-child(10n) {
+    border-right: 1px solid ${({ theme }) => theme.color.border};
+  }
+
+  &:last-child {
+    border: none;
+  }
+`);
+
 const MinuteWrap = styled.div`
   display: flex;
   width: 100%;
+`;
 
-  .flex-1 {
-    flex: 1;
-
-    &:nth-child(10n) {
-      border-right: 1px solid #e4e4e4;
-    }
-  }
+const Hour = styled.div`
+  display: flex;
+  width: 10%;
+  padding: 0px 7px;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid ${({ theme }) => theme.color.border};
+  font-size: 15px;
 `;
 
 const HourWrap = styled.div`
   display: flex;
-  border-bottom: 1px solid #e4e4e4;
   height: 25px;
 
-  .hour {
-    display: flex;
-    width: 10%;
-    padding: 0px 7px;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    border-right: 1px solid #e4e4e4;
+  :not(:first-child) {
+    border-top: 1px solid ${({ theme }) => theme.color.border};
   }
+`;
+
+const TimeTable = styled.div`
+  overflow: scroll;
+  padding-right: 16px;
 `;
 
 const TimeLogWrap = styled.div`
   width: 20%;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
 
-  .date {
-    font-size: 26px;
-    padding: 10px;
-    text-align: center;
-    border-bottom: 1px solid #e4e4e4;
-  }
-
-  .time-table {
-    height: calc(100% - 53px);
-    overflow: scroll;
+  @media only screen and (max-width: 768px) {
+    width: 80%;
   }
 `;
 

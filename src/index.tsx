@@ -7,7 +7,6 @@ import App from "./app/App";
 import store from "./app/store";
 
 import "./config/dayjsPlugin";
-import "./config/initFirebase";
 import "./index.css";
 
 import reportWebVitals from "./reportWebVitals";

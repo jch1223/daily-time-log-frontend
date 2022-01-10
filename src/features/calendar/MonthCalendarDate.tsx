@@ -1,125 +1,106 @@
+import React, { memo } from "react";
 import dayjs from "dayjs";
-import React from "react";
-import styled from "styled-components";
+import styled, { DefaultTheme } from "styled-components";
 
 import { useAppDispatch, useAppSelector } from "../../app/store";
+import Schedule from "../schedules/Schedule";
 import { setDisplayedDate } from "./calendarSlice";
+import { FlexDirectionColumn } from "../../assets/styles/utilsStyled";
 
 interface MonthCalendarDateProps {
   dateId: string;
 }
 
-export default function MonthCalendarDate({ dateId }: MonthCalendarDateProps) {
+interface Date {
+  backgroundColor: keyof DefaultTheme["palette"];
+  color: keyof DefaultTheme["palette"];
+}
+
+function MonthCalendarDate({ dateId }: MonthCalendarDateProps) {
+  const themeMode = useAppSelector((state) => state.setting.themeMode);
   const displayedDate = useAppSelector((state) => state.calendar.displayed.date);
+  const displayedMonth = useAppSelector((state) => state.calendar.displayed.month);
   const calendarByDateId = useAppSelector((state) => state.calendar.byDateId[dateId]);
-  const { date, isSaturday, isSunday, isToday, isCurrentMonth, events } = calendarByDateId;
+  const schedulesById = useAppSelector((state) => state.schedules.byScheduleId);
+
+  const { date, month, isSaturday, isSunday, isToday, schedules } = calendarByDateId;
+  const isDisplayed = displayedDate === date && displayedMonth === month;
 
   const dispatch = useAppDispatch();
 
   return (
-    <MonthCalendarDateWrap
-      className="date"
-      isSaturday={isSaturday}
-      isSunday={isSunday}
-      isCurrentMonth={isCurrentMonth}
-    >
+    <FlexDirectionColumn>
       <DateWrap>
         <Date
-          idDisplayed={displayedDate === date}
-          isToday={isToday}
+          color={
+            (isToday && "white") ||
+            (isSaturday && "blue") ||
+            (isSunday && "pink") ||
+            (themeMode === "light" ? "black" : "white")
+          }
+          backgroundColor={
+            (isToday && "blue") ||
+            (isDisplayed && "lightblue") ||
+            (themeMode === "light" ? "white" : "darkgray")
+          }
           onClick={() => {
-            dispatch(setDisplayedDate(date));
+            dispatch(setDisplayedDate({ month, date }));
           }}
         >
           {date}
         </Date>
       </DateWrap>
 
-      <div>
-        {events.map((event) => {
+      <ScheduleWrap>
+        {schedules.map((scheduleId, index) => {
+          const startDate = schedulesById[scheduleId]?.start.date;
+          const endDate = dayjs(schedulesById[scheduleId]?.end.date)
+            .add(-1, "day")
+            .format("YYYY-MM-DD");
+
           return (
-            <Event
-              key={event.id}
-              isStart={dateId === event.start.date}
-              isEnd={dateId === dayjs(event.end.date).add(-1, "day").format("YYYY-MM-DD")}
-            >
-              {dateId === event.start.date && event.summary}
-            </Event>
+            <Schedule
+              key={scheduleId}
+              isStart={dateId === startDate}
+              isEnd={dateId === endDate}
+              summary={dateId === startDate && schedulesById[scheduleId].summary}
+              position={index}
+            />
           );
         })}
-      </div>
-    </MonthCalendarDateWrap>
+      </ScheduleWrap>
+    </FlexDirectionColumn>
   );
 }
 
-interface MonthCalendarDateWrapProps {
-  isSaturday: boolean;
-  isSunday: boolean;
-  isCurrentMonth: boolean;
-}
-
-interface EventProps {
-  isStart: boolean;
-  isEnd: boolean;
-}
-
-const DateWrap = styled.div`
-  display: flex;
-  justify-content: center;
+const ScheduleWrap = styled.div`
+  position: relative;
+  padding-top: 2px;
+  height: 100%;
+  overflow: hidden;
 `;
 
-const Date = styled.div<{ idDisplayed: boolean; isToday: boolean }>`
+const Date = styled.div<Date>`
   display: flex;
   justify-content: center;
+  align-items: center;
   width: 20px;
   height: 20px;
   padding: 2px;
-  margin-bottom: 2px;
   border-radius: 50%;
-  ${({ idDisplayed }) => idDisplayed && "background-color: #d2e3fc"};
-  ${({ isToday }) => isToday && "background-color: #1a73e8"};
-  ${({ isToday }) => isToday && "color: #ffffff"};
+  font-size: 0.9rem;
+
+  color: ${({ theme, color }) => theme.palette[color]};
+  background-color: ${({ theme, backgroundColor }) => theme.palette[backgroundColor]};
 
   &:hover {
     cursor: pointer;
   }
 `;
 
-const MonthCalendarDateWrap = styled.div<MonthCalendarDateWrapProps>`
-  overflow: hidden;
-  font-size: 15px;
-
-  ${({ isSaturday }) => isSaturday && "color: blue"};
-  ${({ isSunday }) => isSunday && "color: red"};
+const DateWrap = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 
-const Event = styled.div<EventProps>`
-  color: black;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  cursor: pointer;
-  height: 20px;
-
-  border-radius: 3px;
-  margin-bottom: 1px;
-  padding: 0 4px;
-  margin: 3px 0;
-  background-color: rgb(204, 115, 225);
-
-  ${({ isStart, isEnd }) => {
-    if (isStart && isEnd) {
-      return "border-radius: 5px";
-    }
-
-    if (isStart) {
-      return "border-radius: 5px 0 0 5px";
-    }
-
-    if (isEnd) {
-      return "border-radius: 0 5px 5px 0";
-    }
-
-    return "border-radius: 0";
-  }};
-`;
+export default memo(MonthCalendarDate);
