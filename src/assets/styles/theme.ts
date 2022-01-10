@@ -2,7 +2,7 @@ import { DefaultTheme } from "styled-components";
 
 const palette = {
   lightGray: "#e4e4e4",
-  gray: "#5f6368",
+  gray: "#212121",
   lightblue: "#90CAF9",
   blue: "#3576A1",
   darkblue: "#005078",
@@ -33,7 +33,7 @@ export const lightTheme: DefaultTheme = {
 export const darkTheme: DefaultTheme = {
   palette,
   color: {
-    backgroundColor: palette.white,
+    backgroundColor: palette.gray,
     border: palette.lightGray,
     title: palette.gray,
     buttonFont: palette.black,
