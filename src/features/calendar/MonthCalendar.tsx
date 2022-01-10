@@ -66,7 +66,6 @@ const MonthCalenderWrap = styled.div`
   flex-direction: column;
   padding: 15px;
   box-sizing: border-box;
-
   background-color: ${({ theme }) => theme.color.mainBackgroundColor};
 `;
 

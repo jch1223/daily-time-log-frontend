@@ -132,6 +132,10 @@ const TimeLogWrap = styled.div`
   width: 20%;
   display: flex;
   flex-direction: column;
+
+  @media only screen and (max-width: 768px) {
+    width: 80%;
+  }
 `;
 
 export default TimeLog;

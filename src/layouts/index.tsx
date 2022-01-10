@@ -21,6 +21,12 @@ const Main = styled.main`
   height: calc(100vh - 1px - ${({ theme }) => theme.size.headerHeight});
   background-color: ${({ theme }) => theme.color.mainBackgroundColor};
   color: ${({ theme }) => theme.color.font};
+
+  @media only screen and (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+  }
 `;
 
 export default index;

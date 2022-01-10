@@ -78,6 +78,10 @@ const HeaderWrap = styled.header`
     flex: 1 0 auto;
     padding-left: 30px;
     padding-right: 30px;
+
+    @media only screen and (max-width: 768px) {
+      display: none;
+    }
   }
   .middle {
     display: flex;
