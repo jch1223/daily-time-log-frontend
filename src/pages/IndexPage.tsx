@@ -54,8 +54,8 @@ const ContentWrap = styled.div`
 
 const CalendarWrap = styled.div`
   height: 70%;
-  background: white;
   border-radius: 5px;
+  overflow: hidden;
   ${boxShadow}
 `;
 

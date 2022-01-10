@@ -11,7 +11,7 @@ function Side({ children }: Props) {
 
 const SideWrap = styled.aside`
   width: 60%;
-  border-right: 1px solid #e4e4e4;
+  border-right: 1px solid ${({ theme }) => theme.color.border};
 `;
 
 export default Side;

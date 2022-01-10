@@ -19,6 +19,8 @@ function index({ children }: Props) {
 const Main = styled.main`
   display: flex;
   height: calc(100vh - 1px - ${({ theme }) => theme.size.headerHeight});
+  background-color: ${({ theme }) => theme.color.mainBackgroundColor};
+  color: ${({ theme }) => theme.color.font};
 `;
 
 export default index;

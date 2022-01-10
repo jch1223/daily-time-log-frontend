@@ -51,6 +51,7 @@ const MonthCalendarDays = styled.div`
   ${gridColumns}
   justify-items: center;
   font-size: 13px;
+  color: ${({ theme }) => theme.color.font};
 `;
 
 const MonthCalenderDates = styled.div`
@@ -65,6 +66,8 @@ const MonthCalenderWrap = styled.div`
   flex-direction: column;
   padding: 15px;
   box-sizing: border-box;
+
+  background-color: ${({ theme }) => theme.color.mainBackgroundColor};
 `;
 
 export default MonthCalendar;

@@ -17,6 +17,7 @@ interface Date {
 }
 
 function MonthCalendarDate({ dateId }: MonthCalendarDateProps) {
+  const themeMode = useAppSelector((state) => state.setting.themeMode);
   const displayedDate = useAppSelector((state) => state.calendar.displayed.date);
   const displayedMonth = useAppSelector((state) => state.calendar.displayed.month);
   const calendarByDateId = useAppSelector((state) => state.calendar.byDateId[dateId]);
@@ -31,8 +32,17 @@ function MonthCalendarDate({ dateId }: MonthCalendarDateProps) {
     <FlexDirectionColumn>
       <DateWrap>
         <Date
-          color={(isToday && "white") || (isSaturday && "blue") || (isSunday && "pink") || "black"}
-          backgroundColor={(isToday && "blue") || (isDisplayed && "lightblue") || "white"}
+          color={
+            (isToday && "white") ||
+            (isSaturday && "blue") ||
+            (isSunday && "pink") ||
+            (themeMode === "light" ? "black" : "white")
+          }
+          backgroundColor={
+            (isToday && "blue") ||
+            (isDisplayed && "lightblue") ||
+            (themeMode === "light" ? "white" : "darkgray")
+          }
           onClick={() => {
             dispatch(setDisplayedDate({ month, date }));
           }}

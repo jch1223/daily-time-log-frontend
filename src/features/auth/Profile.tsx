@@ -77,6 +77,8 @@ function Profile() {
 const Content = styled.div`
   select {
     border: none;
+    color: ${({ theme }) => theme.color.font};
+    background-color: ${({ theme }) => theme.color.backgroundColor};
   }
 `;
 
