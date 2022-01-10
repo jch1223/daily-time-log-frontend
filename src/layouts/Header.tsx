@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "../app/store";
 import { loadCalendar } from "../features/calendar/calendarSlice";
 
 import Button from "../components/Button";
-import Profile from "../features/auth/ProfileInfo";
+import Profile from "../features/auth/Profile";
 
 function Header() {
   const displayedInfo = useAppSelector((state) => state.calendar.displayed);
@@ -42,13 +42,13 @@ function Header() {
 
       <div className="middle">
         <Button size="medium" background={false} onClick={onPrevButtonClick}>
-          <MdNavigateBefore color={theme.palette.black} size="2rem" />
+          <MdNavigateBefore color={theme.color.font} size="2rem" />
         </Button>
 
         <div>{dayjs().set(displayedInfo).format("YYYY년 MM월 DD일")}</div>
 
         <Button size="medium" background={false} onClick={onNextButtonClick}>
-          <MdNavigateNext color={theme.palette.black} size="2rem" />
+          <MdNavigateNext color={theme.color.font} size="2rem" />
         </Button>
       </div>
 
@@ -71,11 +71,17 @@ const HeaderWrap = styled.header`
   min-height: ${({ theme }) => theme.size.headerHeight};
   padding: 10px;
   border-bottom: 1px solid ${({ theme }) => theme.color.border};
+  background-color: ${({ theme }) => theme.color.backgroundColor};
+  color: ${({ theme }) => theme.color.font};
 
   .left {
     flex: 1 0 auto;
     padding-left: 30px;
     padding-right: 30px;
+
+    @media only screen and (max-width: 768px) {
+      display: none;
+    }
   }
   .middle {
     display: flex;

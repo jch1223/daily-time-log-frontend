@@ -91,7 +91,7 @@ const Minute = memo(styled.div`
   flex: 1;
 
   &:nth-child(10n) {
-    border-right: 1px solid rgb(228, 228, 228);
+    border-right: 1px solid ${({ theme }) => theme.color.border};
   }
 
   &:last-child {
@@ -110,7 +110,7 @@ const Hour = styled.div`
   padding: 0px 7px;
   align-items: center;
   justify-content: center;
-  border-right: 1px solid #e4e4e4;
+  border-right: 1px solid ${({ theme }) => theme.color.border};
   font-size: 15px;
 `;
 
@@ -118,8 +118,8 @@ const HourWrap = styled.div`
   display: flex;
   height: 25px;
 
-  & + & {
-    border-top: 1px solid #e4e4e4;
+  :not(:first-child) {
+    border-top: 1px solid ${({ theme }) => theme.color.border};
   }
 `;
 
@@ -132,6 +132,10 @@ const TimeLogWrap = styled.div`
   width: 20%;
   display: flex;
   flex-direction: column;
+
+  @media only screen and (max-width: 768px) {
+    width: 80%;
+  }
 `;
 
 export default TimeLog;

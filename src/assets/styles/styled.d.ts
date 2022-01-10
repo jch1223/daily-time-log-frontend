@@ -4,6 +4,7 @@ declare module "styled-components" {
   export interface DefaultTheme {
     palette: {
       lightGray: string;
+      darkgray: string;
       gray: string;
       lightblue: string;
       blue: string;
@@ -16,6 +17,7 @@ declare module "styled-components" {
     };
     color: {
       backgroundColor: string;
+      mainBackgroundColor: string;
       border: string;
       title: string;
       buttonFont: string;

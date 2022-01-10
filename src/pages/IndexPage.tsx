@@ -45,18 +45,30 @@ const TitleWrap = styled.div`
   text-align: center;
   width: 300px;
   color: ${({ theme }) => theme.palette.black};
+
+  @media only screen and (max-width: 768px) {
+    font-size: 4.5rem;
+  }
 `;
 
 const ContentWrap = styled.div`
   display: flex;
   align-items: stretch;
+
+  @media only screen and (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const CalendarWrap = styled.div`
   height: 70%;
-  background: white;
   border-radius: 5px;
+  overflow: hidden;
   ${boxShadow}
+
+  @media only screen and (max-width: 768px) {
+    margin-bottom: 2rem;
+  }
 `;
 
 const IndexPageWrap = styled.div`
