@@ -1,12 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import background from "../assets/login-background.png";
 import { boxShadow } from "../assets/styles/utilsStyled";
+
+import Loading from "../components/Loading";
 import GoogleAuth from "../features/auth/GoogleAuth";
 import MonthCalendar from "../features/calendar/MonthCalendar";
 
 function IndexPage() {
+  const [isImgLoading, setIsImgLoading] = useState(true);
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = background;
+
+    img.onload = () => {
+      setIsImgLoading(false);
+    };
+  }, []);
+
+  if (isImgLoading) {
+    return <Loading />;
+  }
+
   return (
     <IndexPageWrap>
       <ContentWrap>
