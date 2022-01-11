@@ -56,8 +56,12 @@ const MonthCalendarDays = styled.div`
 
 const MonthCalenderDates = styled.div`
   ${gridColumns}
-  height: 100%;
   grid-template-rows: repeat(6, 1fr);
+  height: 100%;
+
+  @media only screen and (max-width: 768px) {
+    height: auto;
+  }
 `;
 
 const MonthCalenderWrap = styled.div`
