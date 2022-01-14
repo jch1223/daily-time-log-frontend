@@ -30,7 +30,11 @@ export default function Modal({ rootId, isShowModal, onBackgroundClick, children
 
   return (
     <Portal id={rootId}>
-      <Background disappear={!isShowModal} onClick={onBackgroundClick} />
+      <Background
+        className="modal-background"
+        disappear={!isShowModal}
+        onClick={onBackgroundClick}
+      />
       <ModalContent disappear={!isShowModal}>{children}</ModalContent>
     </Portal>
   );

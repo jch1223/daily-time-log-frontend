@@ -1,46 +1,78 @@
-# Getting Started with Create React App
+# DAILY TIME LOG
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+  <img src="https://github.com/jch1223/daily-time-log-frontend/blob/master/readme.assets/home.png?raw=true" alt="demo" />
 
-## Available Scripts
+구글 캘린더를 연동하여 일정을 확인하고, 독서 등 목표를 정해서 해당 목표를 실행한 시간을 기록합니다.
 
-In the project directory, you can run:
+## Index
 
-### `npm start`
+- [Demo](#demo)
+- [Repository](#repository)
+- [Feature](#feature)
+- [Stack](#stack)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Demo
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+[https://www.daily-time-log.xyz](https://www.daily-time-log.xyz)
 
-### `npm test`
+## Repository
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+FRONT-END: [https://github.com/jch1223/daily-time-log-frontend](https://github.com/jch1223/daily-time-log-frontend)  
+BACK-END: [https://github.com/jch1223/daily-time-log-backend](https://github.com/jch1223/daily-time-log-backend)
 
-### `npm run build`
+## Feature
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+<div style="display: flex; text-align: center;">
+  <!-- 링크 수정 -->
+  <img style="width: 48%; margin: 1%;" src="https://github.com/jch1223/daily-time-log-frontend/blob/master/readme.assets/running-time.gif?raw=true" alt="running-time" />
+  <img style="width: 48%; margin: 1%;" src="https://github.com/jch1223/daily-time-log-frontend/blob/master/readme.assets/darkmode.gif?raw=true" alt="darkmode" />
+</div>
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Light & Dark Theme 모드
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+styled-component의 `ThemeProvider`를 사용하여 Light Theme과 Dark Theme을 구분하여 구현하였습니다.
 
-### `npm run eject`
+<br />
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### 캘린더 일정 rendering
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+하루에 여러가지 일정이 있고, 해당하는 일정이 이틀 이상 일 경우 달력에 일정별로 연결되어서 나타나게 하기 위해서 Redux에서 state를 관리 할 때 normalize 패턴을 사용했습니다.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+일정을 state에 넣을 때 index를 함께 지정하여 이를 기준으로 달력에서 일정의 위치를 정했습니다.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+<br />
 
-## Learn More
+### 목표 CRUD
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+목표를 생성 할 때 `input` 태그가 아닌 div 태그의 `contentEditable="true"`속성을 이용하여 구현하였습니다. 목표 생성시 ref를 사용하여 focusing 합니다. play버튼을 클릭 시 진행 시간이 표시되는 모달창이 노출됩니다.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+<br />
+
+### 진행 시간 표시
+
+TIMETABLE이 날짜에 대한 정보도 가지고 있어야 진행 시간에 대한 데이터 관리가 편할 것 같다고 생각을 하여, TIMETABLE의 key값을 `YYYY-MM-DDTHH:mm:ss`로 지정을 하였습니다. 이로 인해 날짜가 바뀔 경우 TIMETABLE 전체가 리렌더링되면서 날짜을 빠른 속도로 변경 할 경우 렌더링이 정상적으로 되지 않는 현상이 있었습니다.
+
+이를 해결하기 로직과 key값을 `HH:mm:ss`로 변경하여, html이 dom을 다시 그리를 일을 최소화하여 날짜를 빠른 속도롤 변경하여도 렌더링이 정상적으로 되도록 수정하였습니다.
+
+<br />
+
+### Date 관리
+
+Date를 처리하는 로직은 day.js를 사용하고, 날짜 데이터는 iso형식과 timezone을 저장하여 관리하였습니다.
+
+## Stack
+
+### Frontend
+
+- Typescript / React
+- Redux / React Query
+- Styled Component
+
+### Backend
+
+- Nodejs / Express
+- MongoDB, Mongoose
+
+### Common
+
+- Commitizen
