@@ -1,10 +1,19 @@
-# Getting Started with Create React App
+# DAILY TIME LOG
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+구글 캘린더를 연동하여 일정을 확인하고, 독서 등 목표를 정해서 해당 목표를 실행한 시간을 기록합니다.
 
-## Available Scripts
+## Index
 
-In the project directory, you can run:
+- [DEMO](#DEMO)
+- [Getting Started](#getting-started)
+- [Contributing](#contributing)
+- [Authors](#authors)
+- [License](#license)
+
+## DEMO
+
+FRONT: [https://www.daily-time-log.xyz](https://www.daily-time-log.xyz)  
+API: [https://api.daily-time-log.xyz](https://api.daily-time-log.xyz)
 
 ### `npm start`
 
