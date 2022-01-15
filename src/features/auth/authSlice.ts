@@ -8,6 +8,7 @@ interface LoginState {
   email: string;
   imageUrl: string;
   googleAccessToken: string;
+  googleCalendarId: string;
 }
 
 interface LoginPayload {
@@ -28,6 +29,7 @@ const initialState: LoginState = {
   email: "",
   imageUrl: "",
   googleAccessToken: "",
+  googleCalendarId: "",
 };
 
 const authSlice = createSlice({
@@ -51,10 +53,14 @@ const authSlice = createSlice({
       state.name = "";
       state.email = "";
       state.googleAccessToken = "";
+      state.googleCalendarId = "";
+    },
+    setGoogleCalendarId: (state, action) => {
+      state.googleCalendarId = action.payload;
     },
   },
 });
 
-export const { logIn, logOut } = authSlice.actions;
+export const { logIn, logOut, setGoogleCalendarId } = authSlice.actions;
 
 export default authSlice.reducer;
