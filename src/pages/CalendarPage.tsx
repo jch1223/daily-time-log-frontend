@@ -1,12 +1,17 @@
 import React, { useEffect } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
+import dayjs from "dayjs";
 
 import { useAppSelector, useAppDispatch } from "../app/store";
 import { changeMode } from "../features/setting/settingSlice";
 import { addGoogleSchedules, ScheduleInfo } from "../features/schedules/schedulesSlice";
 import { loadMilestones } from "../features/milestones/milestonesSlice";
 import { logIn } from "../utils/api/user";
-import { getSchedules } from "../utils/api/schedules";
+import {
+  createGoogleCalendar,
+  getGoogleCalendarList,
+  getSchedules,
+} from "../utils/api/googleCalendar";
 
 import Layout from "../layouts";
 import Side from "../layouts/Side";
@@ -14,10 +19,13 @@ import Error from "../components/Error";
 import MonthCalendar from "../features/calendar/MonthCalendar";
 import Milestone from "../features/milestones/Milestone";
 import TimeLog from "../features/timeLog/TimeLog";
+import { setGoogleCalendarId } from "../features/auth/authSlice";
 
 function CalendarPage() {
   const isLogIn = useAppSelector((state) => state.auth.isLogIn);
-  const { email, name, googleAccessToken } = useAppSelector((state) => state.auth);
+  const { email, name, googleAccessToken, googleCalendarId } = useAppSelector(
+    (state) => state.auth,
+  );
   const { themeMode } = useAppSelector((state) => state.setting);
 
   const dispatch = useAppDispatch();
@@ -37,7 +45,18 @@ function CalendarPage() {
 
   const { data: googleSchedulesData, isError: IsErrorForGoogleSchedules } = useQuery(
     "schedules",
-    () => getSchedules(googleAccessToken),
+    () => getSchedules(googleAccessToken, googleCalendarId),
+    {
+      enabled: !!googleAccessToken && !!googleCalendarId,
+      retry: false,
+      refetchOnWindowFocus: false,
+      staleTime: 60 * 1000,
+    },
+  );
+
+  const { data: googleCalendarList, isError: IsErrorForGetGoogleCalendarList } = useQuery(
+    "getGoogleCalendarList",
+    () => getGoogleCalendarList(googleAccessToken),
     {
       enabled: !!googleAccessToken,
       retry: false,
@@ -45,6 +64,26 @@ function CalendarPage() {
       staleTime: 60 * 1000,
     },
   );
+
+  const createGoogleCalendarMutation = useMutation(createGoogleCalendar, {
+    onSuccess: ({ id }) => {
+      dispatch(setGoogleCalendarId(id));
+    },
+  });
+
+  useEffect(() => {
+    if (googleCalendarList) {
+      const dailyTimeLogCalendar = googleCalendarList.items.find(
+        (item: any) => item.summary === "daily-time-log",
+      );
+
+      if (dailyTimeLogCalendar) {
+        dispatch(setGoogleCalendarId(dailyTimeLogCalendar.id));
+      } else {
+        createGoogleCalendarMutation.mutate({ googleAccessToken, timeZone: dayjs.tz.guess() });
+      }
+    }
+  }, [googleCalendarList]);
 
   useEffect(() => {
     if (userData) {
@@ -63,7 +102,7 @@ function CalendarPage() {
     }
   }, [googleSchedulesData]);
 
-  if (isErrorForLogin && IsErrorForGoogleSchedules) {
+  if (isErrorForLogin && IsErrorForGoogleSchedules && IsErrorForGetGoogleCalendarList) {
     return <Error />;
   }
 
