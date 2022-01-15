@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, MouseEventHandler } from "react";
 import dayjs from "dayjs";
 import styled, { DefaultTheme } from "styled-components";
 
@@ -61,6 +61,7 @@ function MonthCalendarDate({ dateId }: MonthCalendarDateProps) {
           return (
             <Schedule
               key={scheduleId}
+              id={scheduleId}
               isStart={dateId === startDate}
               isEnd={dateId === endDate}
               summary={dateId === startDate && schedulesById[scheduleId].summary}
