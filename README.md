@@ -6,6 +6,17 @@
 
 ## Index
 
+- [DEMO](#DEMO)
+- [Getting Started](#getting-started)
+- [Contributing](#contributing)
+- [Authors](#authors)
+- [License](#license)
+
+## DEMO
+
+FRONT: [https://www.daily-time-log.xyz](https://www.daily-time-log.xyz)  
+API: [https://api.daily-time-log.xyz](https://api.daily-time-log.xyz)
+
 - [Demo](#demo)
 - [Repository](#repository)
 - [Feature](#feature)
@@ -23,7 +34,6 @@ BACK-END: [https://github.com/jch1223/daily-time-log-backend](https://github.com
 ## Feature
 
 <div style="display: flex; text-align: center;">
-  <!-- 링크 수정 -->
   <img style="width: 48%; margin: 1%;" src="https://github.com/jch1223/daily-time-log-frontend/blob/master/readme.assets/running-time.gif?raw=true" alt="running-time" />
   <img style="width: 48%; margin: 1%;" src="https://github.com/jch1223/daily-time-log-frontend/blob/master/readme.assets/darkmode.gif?raw=true" alt="darkmode" />
 </div>
