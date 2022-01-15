@@ -13,6 +13,7 @@ export const WEEKS = ["일", "월", "화", "수", "목", "금", "토"];
 
 function TimeLog() {
   const isLogIn = useAppSelector((state) => state.auth.isLogIn);
+  const email = useAppSelector((state) => state.auth.email);
   const allHourIds = useAppSelector((state) => state.timeLog.allHourIds);
   const byHourId = useAppSelector((state) => state.timeLog.byHourId);
   const displayed = useAppSelector((state) => state.calendar.displayed);
@@ -26,8 +27,8 @@ function TimeLog() {
   const dispatch = useAppDispatch();
 
   const { data, isError } = useQuery(
-    ["runningTimes", startDate, endDate],
-    () => getRunningTimeByDate(startDate, endDate),
+    ["runningTimes", email, startDate, endDate],
+    () => getRunningTimeByDate(email, startDate, endDate),
     {
       enabled: isLogIn && !!displayed,
       retry: false,
