@@ -6,17 +6,6 @@
 
 ## Index
 
-- [DEMO](#DEMO)
-- [Getting Started](#getting-started)
-- [Contributing](#contributing)
-- [Authors](#authors)
-- [License](#license)
-
-## DEMO
-
-FRONT: [https://www.daily-time-log.xyz](https://www.daily-time-log.xyz)  
-API: [https://api.daily-time-log.xyz](https://api.daily-time-log.xyz)
-
 - [Demo](#demo)
 - [Repository](#repository)
 - [Feature](#feature)
