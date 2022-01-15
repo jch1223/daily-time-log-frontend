@@ -1,8 +1,10 @@
-import dayjs from "dayjs";
 import React, { MouseEventHandler, useState } from "react";
+import { useMutation } from "react-query";
 import styled, { css } from "styled-components";
 
-import { useAppSelector } from "../../app/store";
+import { useAppDispatch, useAppSelector } from "../../app/store";
+import { deleteScheduleById } from "./schedulesSlice";
+import { deleteSchedule } from "../../utils/api/googleCalendar";
 
 import Modal from "../../components/Modal";
 import ScheduleInfo from "./ScheduleInfo";
@@ -16,17 +18,20 @@ interface ScheduleProps {
 }
 
 function Schedule({ id, isStart, isEnd, summary, position }: ScheduleProps) {
+  const scheduleData = useAppSelector((state) => state.schedules.byScheduleId[id]);
+  const calendarId = useAppSelector((state) => state.auth.googleCalendarId);
+  const googleAccessToken = useAppSelector((state) => state.auth.googleAccessToken);
+
   const [isShowScheduleInfo, setIsShowScheduleInfo] = useState(false);
-  const scheduleInfo = useAppSelector((state) => state.schedules.byScheduleId[id]);
 
-  const startDate = dayjs(scheduleInfo.start.date)
-    .tz(scheduleInfo.start.timeZone)
-    .format("YYYY-MM-DD");
+  const dispatch = useAppDispatch();
 
-  const endDate = dayjs(scheduleInfo.end.date)
-    .tz(scheduleInfo.end.timeZone)
-    .subtract(1, "date")
-    .format("YYYY-MM-DD");
+  const deleteScheduleMutation = useMutation(deleteSchedule);
+
+  const onClickDeleteSchedule: MouseEventHandler = async () => {
+    deleteScheduleMutation.mutate({ googleAccessToken, calendarId, scheduleId: id });
+    dispatch(deleteScheduleById(id));
+  };
 
   return (
     <div>
@@ -41,20 +46,17 @@ function Schedule({ id, isStart, isEnd, summary, position }: ScheduleProps) {
         <Summary>{summary}</Summary>
       </ScheduleStyled>
 
-      <Modal
-        rootId="schedule-info"
-        isShowModal={isShowScheduleInfo}
-        onBackgroundClick={() => {
-          setIsShowScheduleInfo(false);
-        }}
-      >
-        <ScheduleInfo
-          summary={scheduleInfo.summary}
-          startDate={startDate}
-          endDate={endDate}
-          description={scheduleInfo.description}
-        />
-      </Modal>
+      {scheduleData && (
+        <Modal
+          rootId="schedule-info"
+          isShowModal={isShowScheduleInfo}
+          onBackgroundClick={() => {
+            setIsShowScheduleInfo(false);
+          }}
+        >
+          <ScheduleInfo scheduleData={scheduleData} onClickDelete={onClickDeleteSchedule} />
+        </Modal>
+      )}
     </div>
   );
 }

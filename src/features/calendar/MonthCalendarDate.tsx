@@ -1,4 +1,4 @@
-import React, { memo, MouseEventHandler } from "react";
+import React, { memo } from "react";
 import dayjs from "dayjs";
 import styled, { DefaultTheme } from "styled-components";
 

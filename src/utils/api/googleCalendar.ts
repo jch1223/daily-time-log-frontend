@@ -3,6 +3,12 @@ interface CreateGoogleCalendar {
   timeZone: string;
 }
 
+interface DeleteSchedule {
+  googleAccessToken: string;
+  calendarId: string;
+  scheduleId: string;
+}
+
 export async function getGoogleCalendarList(googleAccessToken: string) {
   const requestOptions = {
     method: "GET",
@@ -61,4 +67,26 @@ export async function getSchedules(googleAccessToken: string, calendarId: string
   }
 
   return response.json();
+}
+
+export async function deleteSchedule({
+  googleAccessToken,
+  calendarId,
+  scheduleId,
+}: DeleteSchedule) {
+  const requestOptions = {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${googleAccessToken}`,
+    },
+  };
+
+  const response = await fetch(
+    `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${scheduleId}`,
+    requestOptions,
+  );
+
+  if (!response.ok) {
+    throw new Error("Problem fetching data");
+  }
 }

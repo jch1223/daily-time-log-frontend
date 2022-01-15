@@ -52,9 +52,17 @@ const schedulesSlice = createSlice({
 
       state.schedulesData = action.payload;
     },
+    deleteScheduleById: (state, action) => {
+      const id = action.payload;
+
+      delete state.byScheduleId[id];
+      state.allSchedulesId = state.allSchedulesId.filter((item) => item !== id);
+      state.schedulesData = state.schedulesData.filter((item) => item.id !== id);
+    },
   },
 });
 
-export const { initGoogleSchedules, addGoogleSchedules } = schedulesSlice.actions;
+export const { initGoogleSchedules, addGoogleSchedules, deleteScheduleById } =
+  schedulesSlice.actions;
 
 export default schedulesSlice.reducer;

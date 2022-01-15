@@ -1,44 +1,50 @@
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import { MdCalendarToday, MdCreate, MdDelete, MdOutlineSubject } from "react-icons/md";
 import styled from "styled-components";
+import dayjs from "dayjs";
+
+import { ScheduleInfo as ScheduleInfoType } from "./schedulesSlice";
 
 interface ScheduleInfoProps {
-  summary: string;
-  startDate: string;
-  endDate: string;
-  description?: string;
+  scheduleData: ScheduleInfoType;
+  onClickDelete: MouseEventHandler<SVGElement>;
 }
 
-function ScheduleInfo({ summary, startDate, endDate, description }: ScheduleInfoProps) {
+function ScheduleInfo({ scheduleData, onClickDelete }: ScheduleInfoProps) {
+  const startDate = dayjs(scheduleData.start.date)
+    .tz(scheduleData.start.timeZone)
+    .format("YYYY-MM-DD");
+
+  const endDate = dayjs(scheduleData.end.date)
+    .tz(scheduleData.end.timeZone)
+    .subtract(1, "date")
+    .format("YYYY-MM-DD");
+
   return (
     <ScheduleInfoStyled>
       <Header>
         <MdCreate />
-        <MdDelete />
+        <MdDelete onClick={onClickDelete} />
       </Header>
       <Info>
         <Summary>
           <MdCalendarToday />
           <div>
-            <div>{summary}</div>
+            <div>{scheduleData.summary}</div>
             <div className="date">
               {startDate} - {endDate}
             </div>
           </div>
         </Summary>
-        {description && (
+        {scheduleData.description && (
           <Description>
-            <MdOutlineSubject /> {description}
+            <MdOutlineSubject /> {scheduleData.description}
           </Description>
         )}
       </Info>
     </ScheduleInfoStyled>
   );
 }
-
-ScheduleInfo.defaultProps = {
-  description: "",
-};
 
 const Description = styled.div`
   display: flex;
@@ -62,7 +68,6 @@ const Info = styled.div`
 const Header = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 20px;
 
   svg {
     cursor: pointer;
