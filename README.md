@@ -23,14 +23,13 @@ BACK-END: [https://github.com/jch1223/daily-time-log-backend](https://github.com
 ## Feature
 
 <div style="display: flex; text-align: center;">
-  <!-- 링크 수정 -->
   <img style="width: 48%; margin: 1%;" src="https://github.com/jch1223/daily-time-log-frontend/blob/master/readme.assets/running-time.gif?raw=true" alt="running-time" />
   <img style="width: 48%; margin: 1%;" src="https://github.com/jch1223/daily-time-log-frontend/blob/master/readme.assets/darkmode.gif?raw=true" alt="darkmode" />
 </div>
 
 ### Light & Dark Theme 모드
 
-styled-component의 `ThemeProvider`를 사용하여 Light Theme과 Dark Theme을 구분하여 구현하였습니다.
+styled-component의 `ThemeProvider`를 사용하여 Light Theme과 Dark Theme을 구현.
 
 <br />
 
@@ -49,6 +48,11 @@ styled-component의 `ThemeProvider`를 사용하여 Light Theme과 Dark Theme을
 <br />
 
 ### 진행 시간 표시
+
+<div style="display: flex; text-align: center;">
+  <img style="width: 48%; margin: 1%;" src="https://github.com/jch1223/daily-time-log-frontend/blob/master/readme.assets/before-timelog.gif?raw=true" alt="before-timelog" />
+  <img style="width: 48%; margin: 1%;" src="https://github.com/jch1223/daily-time-log-frontend/blob/master/readme.assets/aftre-timelog.gif?raw=true" alt="aftre-timelog" />
+</div>
 
 TIMETABLE이 날짜에 대한 정보도 가지고 있어야 진행 시간에 대한 데이터 관리가 편할 것 같다고 생각을 하여, TIMETABLE의 key값을 `YYYY-MM-DDTHH:mm:ss`로 지정을 하였습니다. 이로 인해 날짜가 바뀔 경우 TIMETABLE 전체가 리렌더링되면서 날짜을 빠른 속도로 변경 할 경우 렌더링이 정상적으로 되지 않는 현상이 있었습니다.
 
