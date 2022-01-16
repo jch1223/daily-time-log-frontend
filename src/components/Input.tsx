@@ -34,6 +34,8 @@ export const Input = styled.input<InputProps>`
   border: none;
   border-bottom: ${({ active, border, theme }) =>
     border && `2px solid ${active ? theme.palette.blue : theme.palette.lightGray}`};
+  background-color: ${({ theme }) => theme.color.backgroundColor};
+  color: ${({ theme }) => theme.color.font};
   transition: 0.2s all ease;
   outline: none;
 
