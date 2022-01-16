@@ -83,12 +83,13 @@ function RunningTime({ milestoneId, onPauseClick }: Props) {
 }
 
 const RunningTimeWrap = styled.div`
-  height: 50%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  color: #c5c5c5;
+  padding: 30px;
+  height: 30vh;
+  width: 550px;
 
   .title {
     font-size: 30px;

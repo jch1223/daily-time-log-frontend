@@ -26,6 +26,18 @@ declare module "styled-components" {
     };
     size: {
       headerHeight: string;
+      large: {
+        height: string;
+        fontSize: string;
+      };
+      medium: {
+        height: string;
+        fontSize: string;
+      };
+      small: {
+        height: string;
+        fontSize: string;
+      };
     };
   }
 }

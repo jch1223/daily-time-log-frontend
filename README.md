@@ -13,6 +13,8 @@
 
 ## Demo
 
+구글 로그인 시 `daily-time-log` 이름으로 보조 달력을 생성하고, 다른 달력에는 접근 권한이 없습니다. `daily-time-log` 달력에 일정을 생성, 삭제 할 수 있습니다.
+
 [https://www.daily-time-log.xyz](https://www.daily-time-log.xyz)
 
 ## Repository
@@ -31,7 +33,9 @@ BACK-END: [https://github.com/jch1223/daily-time-log-backend](https://github.com
 
 styled-component의 `ThemeProvider`를 사용하여 Light Theme과 Dark Theme을 구현.
 
-<br />
+### 캘린더 일정 생성 & 삭제
+
+구글 첫 로그인 시 `daily-time-log` 이름으로 보조 달력을 생성하고, 해당 달력에 일정을 추가 삭제 할 수 있습니다.
 
 ### 캘린더 일정 rendering
 
@@ -39,13 +43,9 @@ styled-component의 `ThemeProvider`를 사용하여 Light Theme과 Dark Theme을
 
 일정을 state에 넣을 때 index를 함께 지정하여 이를 기준으로 달력에서 일정의 위치를 정했습니다.
 
-<br />
-
 ### 목표 CRUD
 
 목표를 생성 할 때 `input` 태그가 아닌 div 태그의 `contentEditable="true"`속성을 이용하여 구현하였습니다. 목표 생성시 ref를 사용하여 focusing 합니다. play버튼을 클릭 시 진행 시간이 표시되는 모달창이 노출됩니다.
-
-<br />
 
 ### 진행 시간 표시
 
@@ -57,8 +57,6 @@ styled-component의 `ThemeProvider`를 사용하여 Light Theme과 Dark Theme을
 TIMETABLE이 날짜에 대한 정보도 가지고 있어야 진행 시간에 대한 데이터 관리가 편할 것 같다고 생각을 하여, TIMETABLE의 key값을 `YYYY-MM-DDTHH:mm:ss`로 지정을 하였습니다. 이로 인해 날짜가 바뀔 경우 TIMETABLE 전체가 리렌더링되면서 날짜을 빠른 속도로 변경 할 경우 렌더링이 정상적으로 되지 않는 현상이 있었습니다.
 
 이를 해결하기 로직과 key값을 `HH:mm:ss`로 변경하여, html이 dom을 다시 그리를 일을 최소화하여 날짜를 빠른 속도롤 변경하여도 렌더링이 정상적으로 되도록 수정하였습니다.
-
-<br />
 
 ### Date 관리
 

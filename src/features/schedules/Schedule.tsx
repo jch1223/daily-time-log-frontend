@@ -1,18 +1,57 @@
-import React from "react";
+import React, { MouseEventHandler, useState } from "react";
+import { useMutation } from "react-query";
 import styled, { css } from "styled-components";
 
+import { useAppDispatch, useAppSelector } from "../../app/store";
+import { deleteScheduleById } from "./schedulesSlice";
+import { deleteSchedule } from "../../utils/api/googleCalendar";
+
+import Modal from "../../components/Modal";
+import ScheduleInfo from "./ScheduleInfo";
+
 interface ScheduleProps {
+  id: string;
   isStart: boolean;
   isEnd: boolean;
   summary: string;
   position: number;
 }
 
-function Schedule({ isStart, isEnd, summary, position }: ScheduleProps) {
+function Schedule({ id, isStart, isEnd, summary, position }: ScheduleProps) {
+  const scheduleData = useAppSelector((state) => state.schedules.byScheduleId[id]);
+  const calendarId = useAppSelector((state) => state.auth.googleCalendarId);
+  const googleAccessToken = useAppSelector((state) => state.auth.googleAccessToken);
+
+  const [isShowScheduleInfo, setIsShowScheduleInfo] = useState(false);
+
+  const dispatch = useAppDispatch();
+
+  const deleteScheduleMutation = useMutation(deleteSchedule);
+
+  const onClickDeleteSchedule: MouseEventHandler = async () => {
+    deleteScheduleMutation.mutate({ googleAccessToken, calendarId, scheduleId: id });
+    dispatch(deleteScheduleById(id));
+  };
+
   return (
-    <ScheduleStyled isStart={isStart} isEnd={isEnd} position={position}>
-      <Summary>{summary}</Summary>
-    </ScheduleStyled>
+    <div>
+      <ScheduleStyled
+        isStart={isStart}
+        isEnd={isEnd}
+        position={position}
+        onClick={() => {
+          setIsShowScheduleInfo(true);
+        }}
+      >
+        <Summary>{summary}</Summary>
+      </ScheduleStyled>
+
+      {scheduleData && (
+        <Modal rootId="schedule-info" isShowModal={isShowScheduleInfo}>
+          <ScheduleInfo scheduleData={scheduleData} onClickDelete={onClickDeleteSchedule} />
+        </Modal>
+      )}
+    </div>
   );
 }
 
@@ -20,6 +59,7 @@ interface ScheduleStyledProps {
   isStart: boolean;
   isEnd: boolean;
   position: number;
+  onClick: MouseEventHandler;
 }
 
 const Summary = styled.div`
