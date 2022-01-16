@@ -133,7 +133,7 @@ function Milestone() {
         </div>
       </Title>
 
-      {!filteredMilestonesId.length && <div>등록된 목표가 없습니다</div>}
+      {!filteredMilestonesId.length && !isCreatedMilestone && <div>등록된 목표가 없습니다</div>}
 
       <div>
         {filteredMilestonesId.map((id) => {

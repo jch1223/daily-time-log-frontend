@@ -37,14 +37,14 @@ export async function createRunningTime({ milestoneId, runningTime }: CreateRunn
   }
 }
 
-export async function getRunningTimeByDate(startDate: string, endDate: string) {
+export async function getRunningTimeByDate(email: string, startDate: string, endDate: string) {
   if (useServer) {
     const requestOptions = {
       method: "GET",
     };
 
     const response = await fetch(
-      `${process.env.REACT_APP_API_SERVER}/goals/date?startDate=${startDate}&endDate=${endDate}`,
+      `${process.env.REACT_APP_API_SERVER}/goals/date?email=${email}&startDate=${startDate}&endDate=${endDate}`,
       requestOptions,
     );
 

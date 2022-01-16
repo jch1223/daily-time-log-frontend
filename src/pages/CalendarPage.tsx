@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 
 import { useAppSelector, useAppDispatch } from "../app/store";
 import { changeMode } from "../features/setting/settingSlice";
-import { addGoogleSchedules, ScheduleInfo } from "../features/schedules/schedulesSlice";
+import { addGoogleSchedules } from "../features/schedules/schedulesSlice";
 import { loadMilestones } from "../features/milestones/milestonesSlice";
 import { logIn } from "../utils/api/user";
 import {
@@ -94,11 +94,7 @@ function CalendarPage() {
 
   useEffect(() => {
     if (googleSchedulesData) {
-      const items = [...googleSchedulesData.items].sort((a: ScheduleInfo, b: ScheduleInfo) => {
-        return new Date(a.start.date).getTime() - new Date(b.start.date).getTime();
-      });
-
-      dispatch(addGoogleSchedules(items));
+      dispatch(addGoogleSchedules(googleSchedulesData.items));
     }
   }, [googleSchedulesData]);
 

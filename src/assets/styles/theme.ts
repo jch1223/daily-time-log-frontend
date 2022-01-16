@@ -16,6 +16,9 @@ const palette = {
 
 const size = {
   headerHeight: "75px",
+  large: { height: "3rem", fontSize: "1.25rem" },
+  medium: { height: "2.25rem", fontSize: "1rem" },
+  small: { height: "1.75rem", fontSize: "0.875rem" },
 };
 
 export const lightTheme: DefaultTheme = {
