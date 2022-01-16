@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import dayjs from "dayjs";
 import styled, { DefaultTheme } from "styled-components";
 
@@ -6,6 +6,8 @@ import { useAppDispatch, useAppSelector } from "../../app/store";
 import Schedule from "../schedules/Schedule";
 import { setDisplayedDate } from "./calendarSlice";
 import { FlexDirectionColumn } from "../../assets/styles/utilsStyled";
+import Modal from "../../components/Modal";
+import CreateSchedule from "../schedules/CreateSchedule";
 
 interface MonthCalendarDateProps {
   dateId: string;
@@ -23,7 +25,10 @@ function MonthCalendarDate({ dateId }: MonthCalendarDateProps) {
   const calendarByDateId = useAppSelector((state) => state.calendar.byDateId[dateId]);
   const schedulesById = useAppSelector((state) => state.schedules.byScheduleId);
 
-  const { date, month, isSaturday, isSunday, isToday, schedules } = calendarByDateId;
+  const [isShowCreateSchedule, setIsShowCreateSchedule] = useState(false);
+
+  const { date, month, year, timezone, isSaturday, isSunday, isToday, schedules } =
+    calendarByDateId;
   const isDisplayed = displayedDate === date && displayedMonth === month;
 
   const dispatch = useAppDispatch();
@@ -51,7 +56,14 @@ function MonthCalendarDate({ dateId }: MonthCalendarDateProps) {
         </Date>
       </DateWrap>
 
-      <ScheduleWrap>
+      <ScheduleWrap
+        className="schedule-wrap"
+        onClick={(e) => {
+          if (e.target instanceof Element && e.target.classList.contains("schedule-wrap")) {
+            setIsShowCreateSchedule(true);
+          }
+        }}
+      >
         {schedules.map((scheduleId, index) => {
           const startDate = schedulesById[scheduleId]?.start.date;
           const endDate = dayjs(schedulesById[scheduleId]?.end.date)
@@ -70,6 +82,17 @@ function MonthCalendarDate({ dateId }: MonthCalendarDateProps) {
           );
         })}
       </ScheduleWrap>
+
+      <Modal
+        rootId="create-schdule"
+        isShowModal={isShowCreateSchedule}
+        onBackgroundClick={() => setIsShowCreateSchedule(false)}
+      >
+        <CreateSchedule
+          date={{ date, month, year, timezone }}
+          onCloseButton={() => setIsShowCreateSchedule(false)}
+        />
+      </Modal>
     </FlexDirectionColumn>
   );
 }

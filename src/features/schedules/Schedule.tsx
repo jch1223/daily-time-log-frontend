@@ -47,13 +47,7 @@ function Schedule({ id, isStart, isEnd, summary, position }: ScheduleProps) {
       </ScheduleStyled>
 
       {scheduleData && (
-        <Modal
-          rootId="schedule-info"
-          isShowModal={isShowScheduleInfo}
-          onBackgroundClick={() => {
-            setIsShowScheduleInfo(false);
-          }}
-        >
+        <Modal rootId="schedule-info" isShowModal={isShowScheduleInfo}>
           <ScheduleInfo scheduleData={scheduleData} onClickDelete={onClickDeleteSchedule} />
         </Modal>
       )}

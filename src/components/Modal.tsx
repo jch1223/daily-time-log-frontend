@@ -8,7 +8,7 @@ import Portal from "./Portal";
 interface Props {
   rootId: string;
   isShowModal: boolean;
-  onBackgroundClick: MouseEventHandler<HTMLDivElement>;
+  onBackgroundClick?: MouseEventHandler<HTMLDivElement>;
   children: ReactNode;
 }
 
@@ -44,6 +44,11 @@ export default function Modal({ rootId, isShowModal, onBackgroundClick, children
     </Portal>
   );
 }
+
+Modal.defaultProps = {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  onBackgroundClick: () => {},
+};
 
 const Background = styled.div<{ disappear: boolean }>`
   position: fixed;

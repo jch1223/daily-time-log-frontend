@@ -45,12 +45,20 @@ const schedulesSlice = createSlice({
       state.byScheduleId = {};
     },
     addGoogleSchedules: (state, action: PayloadAction<ScheduleInfo[]>) => {
-      action.payload.forEach((item) => {
+      const googleSchedules = action.payload;
+
+      const sortedGoogleSchedules = [...googleSchedules].sort(
+        (a: ScheduleInfo, b: ScheduleInfo) => {
+          return new Date(a.start.date).getTime() - new Date(b.start.date).getTime();
+        },
+      );
+
+      sortedGoogleSchedules.forEach((item) => {
         state.allSchedulesId.push(item.id);
         state.byScheduleId[item.id] = item;
       });
 
-      state.schedulesData = action.payload;
+      state.schedulesData = sortedGoogleSchedules;
     },
     deleteScheduleById: (state, action) => {
       const id = action.payload;

@@ -8,6 +8,20 @@ interface DeleteSchedule {
   calendarId: string;
   scheduleId: string;
 }
+interface CreateSchedule {
+  googleAccessToken: string;
+  calendarId: string;
+  summary: string;
+  description: string;
+  start: {
+    date: string;
+    timeZone: string;
+  };
+  end: {
+    date: string;
+    timeZone: string;
+  };
+}
 
 export async function getGoogleCalendarList(googleAccessToken: string) {
   const requestOptions = {
@@ -59,6 +73,39 @@ export async function getSchedules(googleAccessToken: string, calendarId: string
 
   const response = await fetch(
     `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?timeMin=2021-01-01T00:00:00Z`,
+    requestOptions,
+  );
+
+  if (!response.ok) {
+    throw new Error("Problem fetching data");
+  }
+
+  return response.json();
+}
+
+export async function createSchedule({
+  googleAccessToken,
+  calendarId,
+  summary,
+  description,
+  start,
+  end,
+}: CreateSchedule) {
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${googleAccessToken}`,
+    },
+    body: JSON.stringify({
+      summary,
+      description,
+      start,
+      end,
+    }),
+  };
+
+  const response = await fetch(
+    `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events`,
     requestOptions,
   );
 

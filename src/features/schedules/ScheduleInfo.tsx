@@ -1,5 +1,5 @@
 import React, { MouseEventHandler } from "react";
-import { MdCalendarToday, MdCreate, MdDelete, MdOutlineSubject } from "react-icons/md";
+import { MdCalendarToday, MdDelete, MdOutlineSubject } from "react-icons/md";
 import styled from "styled-components";
 import dayjs from "dayjs";
 
@@ -23,7 +23,6 @@ function ScheduleInfo({ scheduleData, onClickDelete }: ScheduleInfoProps) {
   return (
     <ScheduleInfoStyled>
       <Header>
-        <MdCreate />
         <MdDelete onClick={onClickDelete} />
       </Header>
       <Info>

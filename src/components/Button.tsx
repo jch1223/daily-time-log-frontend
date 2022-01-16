@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import styled, { css } from "styled-components";
 import { boxShadow as boxShadowCss } from "../assets/styles/utilsStyled";
 
@@ -25,21 +25,32 @@ interface Props {
   fullWidth?: boolean;
   background?: boolean;
   boxShadow?: boolean;
-  onClick?(): void;
+  onClick?: MouseEventHandler;
+  disabled?: boolean;
 }
 
-function Button({ children, color, size, fullWidth, background, boxShadow, onClick }: Props) {
+function Button({
+  children,
+  color,
+  size,
+  fullWidth,
+  background,
+  boxShadow,
+  disabled,
+  onClick,
+}: Props) {
   return (
-    <StyledButton
+    <ButtonStyled
       color={color}
       size={size}
       fullWidth={fullWidth}
       background={background}
       boxShadow={boxShadow}
       onClick={onClick}
+      disabled={disabled}
     >
       {children}
-    </StyledButton>
+    </ButtonStyled>
   );
 }
 
@@ -62,7 +73,7 @@ const fullWidthStyles = css<Props>`
 `;
 
 const colorStyles = css<Props>`
-  ${({ theme, color, background }) => {
+  ${({ theme, color, background, disabled }) => {
     const selected = theme.palette[color];
 
     if (!background) {
@@ -72,8 +83,14 @@ const colorStyles = css<Props>`
       `;
     }
 
+    if (disabled) {
+      return;
+    }
+
     return css`
       background: ${selected};
+      color: ${theme.color.buttonFont};
+
       :hover {
         background: ${theme.palette[`dark${color}`]};
       }
@@ -94,13 +111,12 @@ const sizeStyles = css<Props>`
   `}
 `;
 
-const StyledButton = styled.button`
+const ButtonStyled = styled.button`
   display: inline-flex;
   align-items: center;
   outline: none;
   border: none;
   border-radius: 4px;
-  color: ${({ theme }) => theme.color.buttonFont};
   cursor: pointer;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -117,6 +133,7 @@ Button.defaultProps = {
   background: true,
   fullWidth: false,
   boxShadow: false,
+  disabled: false,
 };
 
 export default Button;
