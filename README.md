@@ -13,8 +13,6 @@
 
 ## Demo
 
-구글 로그인 시 `daily-time-log` 이름으로 보조 달력을 생성하고, 다른 달력에는 접근 권한이 없습니다. `daily-time-log` 달력에 일정을 생성, 삭제 할 수 있습니다.
-
 [https://www.daily-time-log.xyz](https://www.daily-time-log.xyz)
 
 ## Repository
@@ -35,6 +33,8 @@ styled-component의 `ThemeProvider`를 사용하여 Light Theme과 Dark Theme을
 
 ### 캘린더 일정 생성 & 삭제
 
+  <img style="width: 50%;" src="https://github.com/jch1223/daily-time-log-frontend/blob/master/readme.assets/schedule-demo.gif?raw=true" alt="schedule-demo" />
+  
 구글 첫 로그인 시 `daily-time-log` 이름으로 보조 달력을 생성하고, 해당 달력에 일정을 추가 삭제 할 수 있습니다.
 
 ### 캘린더 일정 rendering
