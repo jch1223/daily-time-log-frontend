@@ -83,11 +83,7 @@ function MonthCalendarDate({ dateId }: MonthCalendarDateProps) {
         })}
       </ScheduleWrap>
 
-      <Modal
-        rootId="create-schdule"
-        isShowModal={isShowCreateSchedule}
-        onBackgroundClick={() => setIsShowCreateSchedule(false)}
-      >
+      <Modal rootId="create-schdule" isShowModal={isShowCreateSchedule}>
         <CreateSchedule
           date={{ date, month, year, timezone }}
           onCloseButton={() => setIsShowCreateSchedule(false)}

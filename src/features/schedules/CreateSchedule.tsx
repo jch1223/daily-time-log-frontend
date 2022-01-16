@@ -65,7 +65,7 @@ function CreateSchedule({ onCloseButton, date }: CreateScheduleProps) {
   return (
     <CreateScheduleStyled>
       <Header>
-        <MdClose onClick={(e) => onCloseButton(e)} />
+        <MdClose onClick={onCloseButton} />
       </Header>
       <Content>
         <Row>
