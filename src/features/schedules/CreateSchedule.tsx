@@ -41,6 +41,7 @@ function CreateSchedule({ onCloseButton, date }: CreateScheduleProps) {
 
   const onClickSave: MouseEventHandler = (e) => {
     if (isDisabledButton) {
+      // eslint-disable-next-line no-alert
       return alert("일정 종료 날짜가 시작 날짜보다 이전입니다.");
     }
 

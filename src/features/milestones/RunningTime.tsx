@@ -29,24 +29,27 @@ function RunningTime({ milestoneId, onPauseClick }: Props) {
       setRunningTime(dayjs.duration(dayjs().diff(dayjs(start))).format("HH:mm:ss"));
     }, 1000);
 
-    const runningTime = {
-      start: {
-        dateTime: start.format("YYYY-MM-DDTHH:mm"),
-        timezone,
-      },
-      end: {
-        dateTime: dayjs().tz(timezone).format("YYYY-MM-DDTHH:mm"),
-        timezone,
-      },
+    const createStartAndEndTime = () => {
+      return {
+        start: {
+          dateTime: start.format("YYYY-MM-DDTHH:mm"),
+          timezone,
+        },
+        end: {
+          dateTime: dayjs().tz(timezone).format("YYYY-MM-DDTHH:mm"),
+          timezone,
+        },
+      };
     };
+
     const beforeunloadListener = () => {
-      createRunningTimeMutation.mutate({ milestoneId, runningTime });
+      createRunningTimeMutation.mutate({ milestoneId, runningTime: createStartAndEndTime() });
     };
 
     window.addEventListener("beforeunload", beforeunloadListener);
 
     return () => {
-      createRunningTimeMutation.mutate({ milestoneId, runningTime });
+      createRunningTimeMutation.mutate({ milestoneId, runningTime: createStartAndEndTime() });
       window.removeEventListener("beforeunload", beforeunloadListener);
       clearInterval(setIntervalId);
     };

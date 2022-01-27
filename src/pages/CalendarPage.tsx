@@ -74,6 +74,7 @@ function CalendarPage() {
   useEffect(() => {
     if (googleCalendarList) {
       const dailyTimeLogCalendar = googleCalendarList.items.find(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (item: any) => item.summary === "daily-time-log",
       );
 
