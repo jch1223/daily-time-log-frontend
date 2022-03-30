@@ -1,7 +1,7 @@
 import React from "react";
 
 import { useAppSelector } from "../../app/store";
-import Button from "../../components/Button";
+import Button from "../common/Button";
 
 import useGoogleAuth from "../../utils/hooks/useGoogleAuth";
 

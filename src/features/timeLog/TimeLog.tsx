@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../app/store";
 import { addRunningTimes, loadTimeLog } from "./timeLogSlice";
 import { getRunningTimeByDate } from "../../utils/api/runningTimes";
 
-import Error from "../../components/Error";
+import Error from "../common/Error";
 
 export const WEEKS = ["일", "월", "화", "수", "목", "금", "토"];
 

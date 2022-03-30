@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import React, { MouseEventHandler } from "react";
 import styled, { css } from "styled-components";
-import { boxShadow as boxShadowCss } from "../assets/styles/utilsStyled";
+import { boxShadow as boxShadowCss } from "../../assets/styles/utilsStyled";
 
 interface Sizes {
   large: {

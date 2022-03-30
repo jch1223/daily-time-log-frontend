@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { ThemeProvider } from "styled-components";
 
 import Button from "../Button";
-import { lightTheme } from "../../assets/styles/theme";
+import { lightTheme } from "../../../assets/styles/theme";
 
 describe("Button", () => {
   const children = "button";

@@ -1,7 +1,7 @@
 import React, { MouseEventHandler, ReactNode, useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 
-import { fadeIn, fadeOut, slideDown, slideUp } from "../assets/styles/utilsStyled";
+import { fadeIn, fadeOut, slideDown, slideUp } from "../../assets/styles/utilsStyled";
 
 import Portal from "./Portal";
 

@@ -1,7 +1,7 @@
 import React, { ReactNode, useEffect } from "react";
 import { Route, useHistory } from "react-router-dom";
 
-import { useAppSelector } from "../app/store";
+import { useAppSelector } from "../../app/store";
 
 interface Props {
   children: ReactNode;

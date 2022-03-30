@@ -4,7 +4,7 @@ import styled from "styled-components";
 import background from "../assets/login-background.png";
 import { boxShadow } from "../assets/styles/utilsStyled";
 
-import Loading from "../components/Loading";
+import Loading from "../features/common/Loading";
 import GoogleAuth from "../features/auth/GoogleAuth";
 import MonthCalendar from "../features/calendar/MonthCalendar";
 

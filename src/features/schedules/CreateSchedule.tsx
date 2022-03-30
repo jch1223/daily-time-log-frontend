@@ -5,8 +5,8 @@ import { useMutation } from "react-query";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../app/store";
 
-import Button from "../../components/Button";
-import { Input } from "../../components/Input";
+import Button from "../common/Button";
+import { Input } from "../common/Input";
 import { createSchedule } from "../../utils/api/googleCalendar";
 import { addGoogleSchedules } from "./schedulesSlice";
 

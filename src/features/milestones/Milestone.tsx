@@ -20,8 +20,8 @@ import {
   updateMilestoneSummary,
 } from "../../utils/api/milestones";
 
-import Error from "../../components/Error";
-import Modal from "../../components/Modal";
+import Error from "../common/Error";
+import Modal from "../common/Modal";
 import MilestoneEditableBlock from "./MilestoneEditableBlock";
 import RunningTime from "./RunningTime";
 

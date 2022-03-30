@@ -6,7 +6,7 @@ import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../app/store";
 import { loadCalendar } from "../features/calendar/calendarSlice";
 
-import Button from "../components/Button";
+import Button from "../features/common/Button";
 import Profile from "../features/auth/Profile";
 
 function Header() {

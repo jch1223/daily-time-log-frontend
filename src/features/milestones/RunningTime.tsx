@@ -7,7 +7,7 @@ import { MdPauseCircle } from "react-icons/md";
 import { useAppDispatch } from "../../app/store";
 import { createRunningTime } from "../../utils/api/runningTimes";
 
-import Error from "../../components/Error";
+import Error from "../common/Error";
 import { addRunningTimes } from "../timeLog/timeLogSlice";
 
 interface Props {

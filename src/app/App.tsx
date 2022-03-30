@@ -9,7 +9,7 @@ import { useAppSelector } from "./store";
 
 import CalendarPage from "../pages/CalendarPage";
 import IndexPage from "../pages/IndexPage";
-import AuthRoute from "../components/AuthRoute";
+import AuthRoute from "../features/common/AuthRoute";
 
 const queryClient = new QueryClient();
 

@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "../../app/store";
 import { deleteScheduleById } from "./schedulesSlice";
 import { deleteSchedule } from "../../utils/api/googleCalendar";
 
-import Modal from "../../components/Modal";
+import Modal from "../common/Modal";
 import ScheduleInfo from "./ScheduleInfo";
 
 interface ScheduleProps {

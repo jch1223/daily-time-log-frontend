@@ -15,7 +15,7 @@ import {
 
 import Layout from "../layouts";
 import Side from "../layouts/Side";
-import Error from "../components/Error";
+import Error from "../features/common/Error";
 import MonthCalendar from "../features/calendar/MonthCalendar";
 import Milestone from "../features/milestones/Milestone";
 import TimeLog from "../features/timeLog/TimeLog";

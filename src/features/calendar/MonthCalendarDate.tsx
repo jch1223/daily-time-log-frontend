@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "../../app/store";
 import Schedule from "../schedules/Schedule";
 import { setDisplayedDate } from "./calendarSlice";
 import { FlexDirectionColumn } from "../../assets/styles/utilsStyled";
-import Modal from "../../components/Modal";
+import Modal from "../common/Modal";
 import CreateSchedule from "../schedules/CreateSchedule";
 
 interface MonthCalendarDateProps {
